@@ -1,5 +1,5 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/auth-guard/jwt-guard.guard';
+import { JwtAuthGuard } from 'src/auth/auth-guard/jwt-guard';
 import { UsersService } from '../services/users.service';
 import {UserDTO, GamesDTO, AllGames, topPlayers} from '../dto/dto-classes'
 import { HomeService } from '../services/home.service';

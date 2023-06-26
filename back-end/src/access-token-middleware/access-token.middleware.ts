@@ -6,7 +6,7 @@ import { AuthService } from 'src/auth/auth-services/auth.service';
 export class AccessTokenMiddleware implements NestMiddleware {
   use(req: any, res: any, next: () => void) {
     const token = req.cookies['access_token'];
-    // console.log(token);
+    // console.log("mid = ", token);
       if (token) {
       req.token = token;
     }

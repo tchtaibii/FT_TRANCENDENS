@@ -3,7 +3,7 @@ import { Express, query } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth-services/auth.service';
 import { Response } from 'express';
-import { JwtAuthGuard } from './auth-guard/jwt-guard.guard';
+import { JwtAuthGuard } from './auth-guard/jwt-guard';
 import { User } from '@prisma/client';
 import { UsersService } from 'src/users/services/users.service';
 import { AccessTokenMiddleware } from '../access-token-middleware/access-token.middleware'

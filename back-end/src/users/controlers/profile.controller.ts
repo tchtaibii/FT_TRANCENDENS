@@ -1,5 +1,5 @@
 import { Body, ConsoleLogger, Controller, Get, NotFoundException, Param, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/auth-guard/jwt-guard.guard';
+import { JwtAuthGuard } from 'src/auth/auth-guard/jwt-guard';
 import { UsersService } from '../services/users.service';
 import {UserDTO, GamesDTO, AllGames, topPlayers} from '../dto/dto-classes'
 import { ProfileService } from '../services/profile.service';
@@ -26,12 +26,12 @@ export class ProfileController {
 
     @Get(':username/profile')
     async getProfile(@Req() req, @Res() res, @Param('username') username : string){
-        var blocked;
+        // var blocked;
         const user = await this.ProfileService.ReturnOneUserByusername(username);
-        if (user.UserId !== req.user.UserId)
-            blocked = await this.ProfileService.isBlocked(user, req.user);
-		if (blocked || !user)
-			throw new NotFoundException('User profile not found');
+        // if (user.UserId !== req.user.UserId)
+        //     blocked = await this.ProfileService.isBlocked(user, req.user);
+		// if (blocked || !user)
+		// 	throw new NotFoundException('User profile not found');
         const Isowner = user.username === req.user.username;
         let isFriend = false;
         if (!Isowner)

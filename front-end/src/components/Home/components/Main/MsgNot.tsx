@@ -3,15 +3,33 @@ import test from '../../../../assets/img/test.svg'
 import "./MsgNot.scss"
 import inviFriend from "../../../../assets/img/invitation-friend.svg"
 import BellImg from "../../../../assets/img/bell.svg"
+import burger from "../../../../assets/img/burger.svg"
 import GradienBox from '../../../../tools/GradienBox'
+import { NavLink } from 'react-router-dom'
 import { useOnClickOutside } from 'usehooks-ts'
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../../../store/store'
 import { getNotification } from '../../../../features/notificationsSlice'
-import axios from 'axios'
+import { ReactSVG } from 'react-svg';
+import axios from '../../../../Interceptor/Interceptor'
+import LogoutImg from "../../../../assets/img/Logout.svg";
+import HomeImg from "../../../../assets/img/Home.svg";
+import ProfImg from "../../../../assets/img/profile.svg";
+import SetfImg from "../../../../assets/img/Settings.svg";
+import ChatImg from "../../../../assets/img/chat.svg";
+import Stream from "../../../../assets/img/stream.svg";
+import LeaderBoard from "../../../../assets/img/leaderBoard.svg";
+import { motion, AnimatePresence } from 'framer-motion'
+
 function MsgNot() {
 	const [isVisible, setIsVisible] = useState(false);
+	const [isNav, setNavMo] = useState(false);
 	const ref = useRef(null)
+	const [Login, setLogin] = useState('')
+	useEffect(() => {
+		axios.get('/Home/Hero').then((response) => setLogin(response.data))
+		console.log('hey', Login)
+	}, [])
 	const handleClickOutside = () => {
 		setIsVisible(false)
 	}
@@ -29,7 +47,64 @@ function MsgNot() {
 					<NotificationCont />
 				</div>
 			}
-
+			<div onClick={() => setNavMo(true)} className='burger'>
+				<GradienBox mywidth="49px" myheight="49px" myborder="10px">
+					<button className='btn-msgnot'><img style={{ width: '1.5rem' }} src={burger} alt='' /></button>
+				</GradienBox>
+			</div>
+			<AnimatePresence mode='wait'>
+				{isNav &&
+					<motion.div className="nav-mobile"
+						key='nav-mobile.'
+						initial={{ x: '100vh' }}
+						animate={{ x: 0 }}
+						exit={{ x: '100vh' }}
+					>
+						<button onClick={() => setNavMo(false)}>X</button>
+						<ul>
+							<NavLink onClick={() => setNavMo(false)} className={({ isActive }) =>
+								isActive ? 'nav-icon-act nav-mobile-icon' : 'nav-icon nav-mobile-icon'
+							} to='/'>
+								<ReactSVG src={HomeImg} />
+								{/* <img style={{ width: '1.5rem' }} src={HomeImg} alt="Home" /> */}
+							</NavLink>
+							<NavLink onClick={() => setNavMo(false)} className={({ isActive }) =>
+								isActive ? 'nav-icon-act nav-mobile-icon' : 'nav-icon nav-mobile-icon'
+							} to={'profile/' + Login}>
+								<ReactSVG src={ProfImg} />
+								{/* <img style={{ width: '1.5rem' }} src={ProfImg} alt="Profile" /> */}
+							</NavLink>
+							<NavLink onClick={() => setNavMo(false)} className={({ isActive }) =>
+								isActive ? 'nav-icon-act nav-mobile-icon' : 'nav-icon nav-mobile-icon'
+							} to='chat'>
+								<ReactSVG src={ChatImg} />
+								{/* <img style={{ width: '1.5rem' }} src={ChatImg} alt="Chat" /> */}
+							</NavLink>
+							<NavLink onClick={() => setNavMo(false)} className={({ isActive }) =>
+								isActive ? 'nav-icon-act nav-mobile-icon' : 'nav-icon nav-mobile-icon'
+							} to='stream'>
+								<ReactSVG src={Stream} />
+								{/* <img style={{ width: '1.5rem' }} src={Stream} alt="Stream" /> */}
+							</NavLink>
+							<NavLink onClick={() => setNavMo(false)} className={({ isActive }) =>
+								isActive ? 'nav-icon-act nav-mobile-icon' : 'nav-icon nav-mobile-icon'
+							} to='leaderBoard'>
+								<ReactSVG src={LeaderBoard} />
+								{/* <img style={{ width: '1.5rem' }} src={LeaderBoard} alt="Leader Board" /> */}
+							</NavLink>
+							<NavLink onClick={() => setNavMo(false)} className={({ isActive }) =>
+								isActive ? 'nav-icon-act nav-mobile-icon' : 'nav-icon nav-mobile-icon'
+							} to='settings'>
+								<ReactSVG src={SetfImg} />
+								{/* <img style={{ width: '1.5rem' }} src={SetfImg} alt="Settings" /> */}
+							</NavLink>
+							<a style={{ paddingTop: '10rem' }} href="http://localhost:3001/auth/logout" className='logout'>
+								<img style={{ width: '15rem' }} src={LogoutImg} alt="" />
+							</a>
+						</ul>
+					</motion.div>
+				}
+			</AnimatePresence>
 		</div>
 	)
 }

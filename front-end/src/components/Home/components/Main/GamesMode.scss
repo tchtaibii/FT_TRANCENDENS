@@ -158,16 +158,17 @@ body:has(#friendA:hover) #friendIMG {
 }
 
 .custom-nav-btn {
-    width: toRem(42);
-    height: toRem(42);
+    width: 2.625rem;
+    height: 2.625rem;
     box-shadow: 0px 0.25rem 2.5rem rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(0.75rem);
     border-radius: 0.8125rem;
     background: linear-gradient(to bottom, #5699AE, #E15253);
-    padding: 0.0625rem;
+    padding: toRem(1);
     position: absolute;
-    // top: 0;
-    // left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .content-nav {
         width: 100%;
@@ -207,4 +208,22 @@ body:has(#friendA:hover) #friendIMG {
     // position: relative;
     // z-index: 1;
     margin-inline: auto;
+}
+
+
+.gamesmodeCont-mobile{
+    display: none;
+    flex-direction: column;
+    gap: toRem(30);
+    width: 100vw;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: toRem(80);
+    margin-top: toRem(30);
+    div{
+        .container-games{
+            // width: 50rem;
+
+        }
+    }
 }

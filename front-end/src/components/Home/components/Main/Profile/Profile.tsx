@@ -121,14 +121,14 @@ function Profile(props: any) {
                 await axios.post('/SendRequest', { receiverId: props.userId }).then(response => {
                     // console.log(response);
                 })
-                .catch(error => {
-                    console.log(error);
-                });
+                    .catch(error => {
+                        console.log(error);
+                    });
             }
             setSendInvitation(props.Sent === false ? 'Add Friend' : 'Cancel');
             setInvi(!invi);
         };
-        
+
         return (
             <button onClick={() => {
                 handleClick();
@@ -147,7 +147,7 @@ function Profile(props: any) {
 
     return (
         <div className="ProfileComponent-Activity-Friends">
-            <div className="fa-Profile">
+            <div className="fa-Profile profile-hol">
                 <div className="textActive">
                     <h1>Activity</h1>
                     <Infobtn />
@@ -161,7 +161,7 @@ function Profile(props: any) {
             </div>
             <div className="fa-Profile">
                 <h1>Friends</h1>
-                <GradienBox mywidth={'399px'} myheight={'324px'} myborder={'40px'}>
+                <GradienBox mywidth={window.innerWidth > 770 ? '399px' : '1200px'} myheight={'324px'} myborder={'40px'}>
                     <div className="content-friend">
                         <div className="content-fri">
                             {
@@ -189,7 +189,7 @@ function Profile(props: any) {
 
                         </div>
                         <div className="con-fr-fot">
-                            { myFriends.length + ' Friends'}
+                            {myFriends.length + ' Friends'}
                         </div>
                     </div>
                 </GradienBox>
@@ -202,7 +202,7 @@ function Profile(props: any) {
 export function ProfileProfile() {
 
     const { login } = useParams();
-
+    
     const [widthPro, setwidthPro] = useState(0);
     const [opacity, setOpacity] = useState(0);
     const [ProfileRight, setPR] = useState<ProfileRightType>({
@@ -234,62 +234,64 @@ export function ProfileProfile() {
     }, [login, ProfileRight])
     console.log(ProfileRight);
     return (
-        <GradienBox mywidth={'397px'} myheight={'526px'} myborder={'40px'}>
-            <div className="container-Profile-profile">
-                <h1>Profile</h1>
-                <div className='imgS'>
-                    <img src={ProfileRight.avatar} alt="" />
-                </div>
-                <h2>{ProfileRight.username}</h2>
-                <div className="status"><span className={(!ProfileRight ? 'txt-dotss' : 'dotss greenDotss')}></span><span className={(!ProfileRight ? 'txt-status' : 'txt-status greenStatus')}>{(!ProfileRight ? 'Offline' : 'Online')}</span></div>
-                <div className="buttons-f">
-                    {
-                        ProfileRight.Isowner === false ?
-                            <>
-                                {/* { */}
-                                {
-                                    ProfileRight.isFriend ?
-                                        <>
-                                            <button><Friendbtn /></button>
-                                            <button><Blockbtn /></button>
-                                            <button><Chatbtn /></button>
-                                            <button><Playbtn /></button>
-                                        </> :
-                                        <>
-                                            <button><Blockbtn /></button>
-                                            <button><Addbtn /></button>
-                                        </>
-
-                                }
-
-                                {/* } */}
-                            </> : ''
-                    }
-                </div>
-                <div className="progress">
-                    <div className="content-progress">
-                        {/* style={{ width: widthPro }} */}
-                        <div style={{ backgroundImage: 'linear-gradient(to right, #00887A ' + (widthPro) + '%, #2C282C ' + (widthPro) + '%)', opacity }} className="absoluteProgress"></div>
-                        <h5 className='From'>{'Lv.' + ProfileRight.level}</h5>
-                        <h5 className='center'>{ProfileRight.xp + 'XP   /   ' + (200 * (ProfileRight.level + 1)) + 'XP'}</h5>
-                        <h5 className='to'>{'Lv.' + (ProfileRight.level + 1)}</h5>
+        <div className="profileRE">
+            <GradienBox mywidth={window.innerWidth > 770 ? '397px' : '1200px'} myheight={'526px'} myborder={'40px'}>
+                <div className="container-Profile-profile">
+                    <h1>Profile</h1>
+                    <div className='imgS'>
+                        <img src={ProfileRight.avatar} alt="" />
                     </div>
-                </div>
-                <div className="footerP">
-                    <div className="footerCon">
-                        <div className="footedge">
-                            <h4>Rank</h4>
-                            <h4 className='green'>2</h4>
-                        </div>
-                        <div className="footCenter"></div>
-                        <div className="footedge gaping-edge">
-                            <h4>Ratings</h4>
-                            <h4 className='green'>8.9</h4>
+                    <h2>{ProfileRight.username}</h2>
+                    <div className="status"><span className={(!ProfileRight ? 'txt-dotss' : 'dotss greenDotss')}></span><span className={(!ProfileRight ? 'txt-status' : 'txt-status greenStatus')}>{(!ProfileRight ? 'Offline' : 'Online')}</span></div>
+                    <div className="buttons-f">
+                        {
+                            ProfileRight.Isowner === false ?
+                                <>
+                                    {/* { */}
+                                    {
+                                        ProfileRight.isFriend ?
+                                            <>
+                                                <button><Friendbtn /></button>
+                                                <button><Blockbtn /></button>
+                                                <button><Chatbtn /></button>
+                                                <button><Playbtn /></button>
+                                            </> :
+                                            <>
+                                                <button><Blockbtn /></button>
+                                                <button><Addbtn /></button>
+                                            </>
+
+                                    }
+
+                                    {/* } */}
+                                </> : ''
+                        }
+                    </div>
+                    <div className="progress">
+                        <div className="content-progress">
+                            {/* style={{ width: widthPro }} */}
+                            <div style={{ backgroundImage: 'linear-gradient(to right, #00887A ' + (widthPro) + '%, #2C282C ' + (widthPro) + '%)', opacity }} className="absoluteProgress"></div>
+                            <h5 className='From'>{'Lv.' + ProfileRight.level}</h5>
+                            <h5 className='center'>{ProfileRight.xp + 'XP   /   ' + (200 * (ProfileRight.level + 1)) + 'XP'}</h5>
+                            <h5 className='to'>{'Lv.' + (ProfileRight.level + 1)}</h5>
                         </div>
                     </div>
+                    <div className="footerP">
+                        <div className="footerCon">
+                            <div className="footedge">
+                                <h4>Rank</h4>
+                                <h4 className='green'>2</h4>
+                            </div>
+                            <div className="footCenter"></div>
+                            <div className="footedge gaping-edge">
+                                <h4>Ratings</h4>
+                                <h4 className='green'>8.9</h4>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </GradienBox>
+            </GradienBox>
+        </div>
     )
 }
 
@@ -408,6 +410,7 @@ export function ProfileDown() {
             })
         },
     }
+    // console.log(window.innerHeight)
     return (
         <div className="profileDown">
             <div className="AchivementsProfile">
@@ -472,7 +475,7 @@ export function ProfileDown() {
             </div>
             <div className="HistoryProfile">
                 <h1>Games History</h1>
-                <GradienBox mywidth={'885px'} myheight={'388px'} myborder={'40px'}>
+                <GradienBox minh={'386px'} vh={630} mywidth={window.innerWidth > 770 ? '885px' : '1200px'} myheight={'388px'} myborder={'40px'}>
                     <div className="gameHistory">
                         <div className="headerHistory">
                             <div className="game-h wins">{(allGames != undefined ? allGames.win : 0) + ' WINS'}</div>

@@ -5,12 +5,12 @@ import gold from "../../../../assets/img/Gold.svg"
 import Silver from "../../../../assets/img/silver.svg"
 import Bronze from "../../../../assets/img/bronze.svg"
 import intero from "../../../../assets/img/interogation.svg"
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import axios from '../../../../Interceptor/Interceptor'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../../store/store'
 import { setFalse, setTrue } from '../../../../features/isLoading';
-function RankTable() {
+function  	RankTable() {
 
 	const dispatch: AppDispatch = useDispatch()
 	const [rankData, setBestPlayers] = useState([])
@@ -35,7 +35,7 @@ function RankTable() {
 		award: Iaward
 	}
 	var newObject: any[] = [];
-	for (let index = 0; index < 6; index++) {
+	for (let index = 0; index < 100; index++) {
 		if (rankData[index] === undefined)
 			newObject.push(noPlayer);
 		else {
@@ -60,22 +60,17 @@ function RankTable() {
 			<div className="bp">
 				<div className='bp-head'>
 					<div className="head-">
-						<h3>#</h3>
-						<h3>player</h3>
-						<h3>points</h3>
-						<h3>Level</h3>
-					</div>
-					<div className="head-">
-						<h3>#</h3>
-						<h3 style={{ right: '1rem', position: 'relative' }}>player</h3>
-						<h3 style={{ right: '0.313rem', position: 'relative' }}>points</h3>
-						<h3>Level</h3>
+						<h3 style={{ right: '-4rem', position: 'relative' }}>#</h3>
+						<h3 style={{ right: '-10.5rem', position: 'relative' }}>player</h3>
+						<h3 style={{ right: '-35rem', position: 'relative' }}>points</h3>
+						<h3 style={{ right: '-50.5rem', position: 'relative' }}>Level</h3>
 					</div>
 				</div>
 				<div className="rank">
 					{
 						newObject.map((e, index) => {
-							return <PlayerRank key={(index + 1) + 'player'} award={e.award} avatar={e.avatar} login={e.login} points={e.points} level={e.level} />
+							// if (index < 1)
+								return <PlayerRank key={(index + 1) + 'player'} award={e.award} avatar={e.avatar} login={e.login} points={e.points} level={e.level} />
 						})}
 				</div>
 			</div>

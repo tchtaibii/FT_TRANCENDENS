@@ -38,7 +38,15 @@ $base-screen-font-size: $base-font-size;
   }
 }
 
-// Generate media queries for various screen widths
-@for $i from 320px through 7680px {
+@for $i from 320px through 770px {
+  $base-font-size: 9.8px;
+  $base-screen-width : 770px;
+  $base-screen-font-size: $base-font-size;
+  @include font-size($i);
+}
+@for $i from 771px through 7680px {
+  $base-font-size: 16px;
+  $base-screen-width : 1920px;
+  $base-screen-font-size: $base-font-size;
   @include font-size($i);
 }

@@ -162,3 +162,47 @@
         color: #FFFFFF;
     }
 }
+
+.burger {
+    display: none;
+}
+
+.nav-mobile {
+    display: none;
+    width: 100vw;
+    position: absolute;
+    height: 100vh;
+    background-color: #ED5152;
+    left: 0;
+    top: 0;
+    background: linear-gradient(135deg, rgba(19, 16, 16, 0.1), rgba(12, 7, 7, 0));
+    backdrop-filter: blur(2rem);
+    -webkit-backdrop-filter: blur(0.125rem);
+    border-radius: 1.25rem;
+    border: 1px solid rgba(237, 81, 82, 0.18);
+    box-shadow: 0 0.5rem 2rem 0 rgba(0, 0, 0, 0.37);
+
+    ul {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        gap: toRem(70);
+        a{
+            .logout{
+                box-shadow: none;
+                width: 30%;
+            }
+        }
+    }
+
+    button {
+        font-size: toRem(90);
+        position: absolute;
+        right: toRem(50);
+        top: toRem(70);
+        color: #ED5152;
+        // backdrop-filter: drop-shadow(toRem(3) toRem(3) toRem(3) black);
+    }
+}

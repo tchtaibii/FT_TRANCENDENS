@@ -164,13 +164,13 @@ export class ProfileService {
 					}
 					else
 					{
-						friend2.accepted = friendship.Accepted;
-						if (friend2.accepted)
+						// friend2.accepted = friendship.Accepted;
+						// if (friend2.accepted)
 							return {
 								UserId	: friend.UserId,
 								avatar : friend.avatar,
 								username : friend.username,
-								Accepted : true,
+								Accepted : false,
 								sentInvitation : false,
 								isOwner : true,
 							}
@@ -329,7 +329,7 @@ export class ProfileService {
 
 			let { GameId, Mode, isDraw, Rounds, WinnerXP, looserXP } = games[i];
 
-			let won = games[i].WinnerId == user.UserId ? true : false;
+			let won = games[i].WinnerId === user.UserId ? true : false;
 
 			isadv = games[i].PlayerId1 === user.UserId ? games[i].PlayerId2 : games[i].PlayerId1;
 		
@@ -361,16 +361,17 @@ export class ProfileService {
 		};
 	}
 
-	async updatePhoto(file, username)
+	async updatePhoto(file, UserId)
 	{
 		const filename = `${Date.now()}-${file.originalname}`;
         const path = join(__dirname, '../../../uploads', filename);
 		console.log(path);
         await fs.writeFile(path, file.buffer);
-		// const picture = await this.prisma.user.update({
-		// 	where: { username, },
-		// 	data : { avatar : path },
-		// })
+		const pathPicture = process.env.HOST + process.env.PORT + '/uploads' + filename;
+		const picture = await this.prisma.user.update({
+			where: { UserId, },
+			data : { avatar : pathPicture },
+		})
 		return true;
 	}
 

@@ -134,7 +134,7 @@ export class UsersService {
 			}
 		});
 
-		await this.prisma.notification.create({
+		const notification =  await this.prisma.notification.create({
 			data: {
 				UserId: receiverId,
 				Type: notificationType.friendship_request, 
@@ -150,7 +150,7 @@ export class UsersService {
 			data: { Accepted : true},
 		});
 
-		await this.prisma.notification.create({
+		const notification =  await this.prisma.notification.create({
 			data: {
 				UserId: friend.SenderId,
 				Type: notificationType.Accepted_request, 

@@ -19,7 +19,7 @@ export class WebSocketAuthGuard implements CanActivate {
       const { authorization } = client.handshake.headers;
       Logger.log({authorization});
       const token : string = authorization.split(' ')[1];
-      const playload = verify(token, process.env.SECRET_KEY);
-      return playload;
+      client.data.playload = verify(token, process.env.SECRET_KEY);
+      return client;
   }
 }

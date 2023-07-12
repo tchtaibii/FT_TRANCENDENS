@@ -1,45 +1,78 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { Logger, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { verify } from 'jsonwebtoken';
 import { Server, Socket } from "socket.io"
 import { Client } from 'socket.io/dist/client';
-import { WebSocketAuthGuard } from 'src/auth/auth-guard/wsjwt-guard';
+import { WebSocketAuthGuard } from 'src/auth/auth-guard/Wsjwt-guard';
 import { SocketIOMIDDELWARE } from 'src/auth/auth-services/ws';
 import * as cookie from 'cookie';
+import { EventsService } from './events.service';
+import { UsersService } from 'src/users/services/users.service';
+import { PrismaClient } from '@prisma/client';
+import { threadId } from 'worker_threads';
 
 
-@WebSocketGateway({ cors: { origin: '*', credentials: true } })
+@WebSocketGateway()
 // @UseGuards(WebSocketAuthGuard)
 export class EventsGateway {
+  constructor(private readonly socketService : EventsService){}
+  prisma = new PrismaClient();
+
+
   @WebSocketServer()
   server : Server
 
-  // afterInit(client : Socket)
-  // {
-  //   client.use(SocketIOMIDDELWARE() as any);  
-  //   Logger.log('afterInit'); 
-  // }
-
-  handleConnection(client: Socket, ...args: any[]) {
-    const request = client.handshake;
-    // console.log(`Client connected: ${client.id}`);
-    // console.log('Cookies:', request.headers.cookie);
-    const cookies = cookie.parse(request.headers.cookie);
-
-    const token = request.headers.cookie;
-    console.log(token);
-    // try {
-    //   const decoded = verify(token, process.env.SECRET_KEY);
-    //   console.log(decoded);
-    // } catch (e) {
-    //   console.log('Invalid token', e);
-    // }
+  afterInit(client : Socket)
+  {
+    client.use(SocketIOMIDDELWARE() as any);
   }
 
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    console.log('m here');
-    return 'Hello world!';
+  async handleConnection(client: Socket) {
+
+    const user = await this.prisma.user.findUnique({
+      where : {
+        UserId : client.data.playload.userId, 
+      }
+    })
+
+	if (!user)
+		throw new UnauthorizedException('no user has been found');
+
+	await this.prisma.user.update({
+		where : { UserId : user.UserId },
+		data : { status : true},
+	})
+    this.socketService.storeSocket(client.data.playload, client);
   }
 
+  async handleDisconnect(client :Socket) {
+
+	const user = await this.prisma.user.findUnique({
+		where : {
+		  UserId : client.data.playload.userId, 
+		}
+	})
+
+	if (!user)
+	  throw new UnauthorizedException('no user has been found');
+
+	await this.prisma.user.update({
+		where : { UserId : user.UserId },
+		data : { status : false},
+	})
+
+  }
+
+//   @SubscribeMessage('message')
+//   handleMessage(client: any): string {
+//     console.log('m here');
+//     this.socketService.emitToAll("message", "hello from emiit");
+//     return 'Hello world!';
+//   }
+
+//   @SubscribeMessage('notification')
+//   a(client: any): string {
+//     console.log('m');
+//     return 'notification! a zeby';
+//   }
 }

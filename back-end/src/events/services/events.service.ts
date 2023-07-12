@@ -36,7 +36,9 @@ export class EventsService {
         sockets.forEach(socket => {
           socket.emit(event, data);
         });
+        true;
       }
+      false;
     }
   
     emitToAll(event: string, data: any): void {

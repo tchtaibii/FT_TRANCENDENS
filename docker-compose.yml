@@ -11,16 +11,16 @@ services:
       - ./pgdata:/var/lib/postgresql/data
     ports:
       - 5432:5432
-  # back-end:
-  #   build: ./back-end
-  #   restart: always
-  #   depends_on:
-  #     - db
-  #   volumes:
-  #     - ./back-end/src:/usr/src/app/src
-  #   ports:
-  #     - "3001:3001"
-  #     - "5555:5555"
+  back-end:
+    build: ./back-end
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - ./back-end/src:/usr/src/app/src
+    ports:
+      - "3001:3001"
+      - "5555:5555"
   front-end:
     build: ./front-end
     restart: always

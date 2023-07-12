@@ -6,7 +6,7 @@ import { Client } from 'socket.io/dist/client';
 import { WebSocketAuthGuard } from 'src/auth/auth-guard/Wsjwt-guard';
 import { SocketIOMIDDELWARE } from 'src/auth/auth-services/ws';
 import * as cookie from 'cookie';
-import { EventsService } from './events.service';
+import { EventsService } from '../services/events.service';
 import { UsersService } from 'src/users/services/users.service';
 import { PrismaClient } from '@prisma/client';
 import { threadId } from 'worker_threads';

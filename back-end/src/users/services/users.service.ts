@@ -3,6 +3,7 @@ import { PrismaClient, User, Game, notificationType } from '@prisma/client';
 import { GamesDTO, AllGames, topPlayers, RecentActivity, ProfileFriends, blockedlist } from '../dto/dto-classes';
 import { create } from 'domain';
 import { type } from 'os';
+import { NotificationGateway } from 'src/events/notification/notification.gateway';
 
 @Injectable()
 export class UsersService {
@@ -141,6 +142,7 @@ export class UsersService {
 				isRead: false,
 			  },
 		})
+		// NotificationGateway
 	}
 
 	async AcceptRequest(FriendshipId : number)

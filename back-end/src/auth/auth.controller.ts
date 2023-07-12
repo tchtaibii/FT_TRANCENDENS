@@ -76,7 +76,7 @@ export class AuthControlers {
             RefreshToken = await this.AuthService.generateRefreshJwtToken(user);
             res.cookie('refresh_token', RefreshToken, { httpOnly: true, secure : true});
             res.cookie('access_token', accessToken, { httpOnly: true, secure : true });
-            console.log("refresh");
+            // console.log("refresh");
             res.json(true);
           } catch (err) {
             throw new UnauthorizedException('Invalid refresh token');

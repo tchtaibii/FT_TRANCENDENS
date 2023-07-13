@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { SettingService } from '../services/setting.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/auth-guard/jwt-guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -28,11 +28,20 @@ export class SettingController {
     {
         await this.SettingService.removeAccount(res, req.user);
     }
-
+    @ApiBody({ 
+        schema: {
+          type: 'object',
+          properties: {
+            usernmae: {
+              type: 'string',
+            },
+          },
+        },
+    })
     @Patch('updateUsername')
     async updateUsername(@Body('username') newUsername: string, @Req() req)
     {
-        return await this.SettingService.updateUsername(newUsername, req.user.Username);
+        return await this.SettingService.updateUsername(newUsername, req.user);
     }
 
     @Post('UpdatePicture')

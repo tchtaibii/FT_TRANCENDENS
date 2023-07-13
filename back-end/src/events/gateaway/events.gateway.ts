@@ -3,7 +3,7 @@ import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/web
 import { verify } from 'jsonwebtoken';
 import { Server, Socket } from "socket.io"
 import { Client } from 'socket.io/dist/client';
-import { WebSocketAuthGuard } from 'src/auth/auth-guard/Wsjwt-guard';
+// import { WebSocketAuthGuard } from 'src/auth/auth-guard/Wsjwt-guard';
 import { SocketIOMIDDELWARE } from 'src/auth/auth-services/ws';
 import * as cookie from 'cookie';
 import { EventsService } from '../services/events.service';

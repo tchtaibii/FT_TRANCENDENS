@@ -1,6 +1,6 @@
 import './Settings.scss'
 import GradienBox from '../../../../../tools/GradienBox'
-import image from './image.svg'
+import axios from '../../../../../Interceptor/Interceptor'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -46,10 +46,16 @@ const Edit = () => {
     )
 
 }
+type Info =  {
+    avatar:String,
+    username:String,
+    email:String
+}
 function Settings() {
     const Admin = useSelector((state: any) => state.admin);
     const [LinkGoogle, setLinkGoogle] = useState(true);
     const [isOff, setisOff] = useState(false);
+    const [myInfo, setInfo] = useState<Info>({avatar: "" , username: "", email: ""});
 
     const handleChange = (event: any) => {
         if (event.target.checked) {
@@ -60,6 +66,13 @@ function Settings() {
         setLinkGoogle(current => !current);
     };
     console.log(Admin);
+    
+    useEffect(() => {
+        axios.get("/setting/account").then((resp) => {
+            setInfo(resp.data);
+        })
+    }, [])
+
     return (
         <div className="settings-Container">
             <div className="header-settings">
@@ -75,7 +88,7 @@ function Settings() {
                 <div className="AccountSettings">
                     <h2>Account</h2>
                     <div className="account-set">
-                        <div style={{ backgroundImage: "url(" + Admin.avatar + ')' }} className="image-pro-settings">
+                        <div style={{ backgroundImage: "url(" + myInfo.avatar + ')' }} className="image-pro-settings">
                             <button className="editAv">EDIT<br />AVATAR</button>
                             <button className='Pen'><div className="penC"><Pen /></div></button>
                         </div>
@@ -87,19 +100,7 @@ function Settings() {
                                     </div>
                                 </GradienBox>
                                 <GradienBox mywidth="480px" myheight="59px" myborder="25px">
-                                    <div className="inputContent"><input placeholder={Admin.login} type="text" /><button><Edit /></button></div>
-
-                                </GradienBox>
-                            </div>
-                            <div className="input-settings">
-                                <GradienBox mywidth="59px" myheight="59px" myborder="25px">
-                                    <div className="icon-edit">
-                                        <Password />
-                                    </div>
-                                </GradienBox>
-                                <GradienBox mywidth="480px" myheight="59px" myborder="25px">
-                                    <div className="inputContent"><input placeholder='**********' type="password" /><button><Edit /></button></div>
-
+                                    <div className="inputContent"><input placeholder={myInfo.username} type="text" /><button><Edit /></button></div>
                                 </GradienBox>
                             </div>
                             <div className="input-settings">
@@ -109,7 +110,7 @@ function Settings() {
                                     </div>
                                 </GradienBox>
                                 <GradienBox mywidth="480px" myheight="59px" myborder="25px">
-                                    <div className="inputContent"><input placeholder='tehsusrhist@gmail.com' type="text" /><button><Edit /></button></div>
+                                    <div className="inputContent"><input placeholder={myInfo.email} type="text" /><button><Edit /></button></div>
 
                                 </GradienBox>
                             </div>

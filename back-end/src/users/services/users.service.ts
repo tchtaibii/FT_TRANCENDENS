@@ -53,63 +53,7 @@ export class UsersService {
     }
 
 
-	async getBlockedlist(User : User)
-	{
-		var blockedlist : blockedlist [] = [];
-		const blockedBySender = await this.prisma.friendship.findMany({
-			where : {
-					SenderId: User.UserId,
-					blockedBySender : true,
-				},
-			select : {
-				receiver :
-				{
-					select : {
-						UserId : true,
-						username : true,
-						avatar : true,
-					}
-				}
-			}
-		});
 
-		blockedBySender.map((friend) => {
-			const { avatar, UserId, username} = friend.receiver;
-			blockedlist.push({
-				avatar : avatar,
-				username : username,
-				UserId : UserId,
-			})
-		});
-
-		const blockedByreceiver = await this.prisma.friendship.findMany({
-			where : {
-					ReceiverId: User.UserId,
-					blockedByReceiver : true,
-				},
-			select : {
-				sender:
-				{
-					select : {
-						UserId : true,
-						username : true,
-						avatar : true,
-					}
-				}
-			}
-		});
-
-		blockedByreceiver.map((friend) => {
-			const { avatar, UserId, username} = friend.sender;
-			blockedlist.push({
-				avatar : avatar,
-				username : username,
-				UserId : UserId,
-			})
-		});
-
-		return blockedlist; 
-	}
 
 
 	async sendRequest(User : User, receiverId : string)

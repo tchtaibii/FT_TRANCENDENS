@@ -17,7 +17,7 @@ export class ProfileController {
     @Get(':username/gamehistory')
     async getGameHistory(@Req() req, @Res() res, @Param('username') username : string)
 	{	
-        console.log(username);
+        // console.log(username);
 		const user = await this.ProfileService.ReturnOneUserByusername(username);
 		if (!user)
 			throw new NotFoundException('User profile not found');
@@ -60,21 +60,6 @@ export class ProfileController {
 		res.json(friends);
 	}
 
-    @Post('UpdatePicture')
-    @UseInterceptors(FileInterceptor('file'))
-    async UpdateProfile(@UploadedFile() file, @Req() req)
-    {
-        return await this.ProfileService.updatePhoto(file, req.user);
-    }
-
-    @Patch(':username/updateUsername')
-    async updateUsername(@Body('username') newUsername: string, @Param('username') oldusername : string, @Req() req)
-    {
-        if (req.user.username === newUsername)
-            throw new Error('No changes has been made');
-        return await this.ProfileService.updateUsername(newUsername, oldusername);
-    }
-    
     @Post('blockUser')
     @Post('CancelRequest')
     @ApiBody({ 

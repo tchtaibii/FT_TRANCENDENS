@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaClient, User, } from '@prisma/client';
 import { GamesDTO, ProfileFriends } from '../dto/dto-classes';
 import { join } from 'path';
-import { promises as fs } from 'fs';
 import { ConflictException } from '@nestjs/common';
 
 
@@ -361,34 +360,7 @@ export class ProfileService {
 		};
 	}
 
-	async updatePhoto(file, User : User)
-	{
-		const filename = `${User.username}-${file.originalname}`;
-        const path = join(__dirname, '../../../uploads', filename);
-		console.log(path);
-        await fs.writeFile(path, file.buffer);
-		const pathPicture = process.env.HOST + process.env.PORT + '/uploads' + filename;
-		const picture = await this.prisma.user.update({
-			where: { UserId : User.UserId },
-			data : { avatar : pathPicture },
-		})
-		return true;
-	}
 
-	async updateUsername(newUsername : string, oldusername : string)
-	{
-		const exist = await this.prisma.user.findUnique({
-			where : {username : newUsername},
-		});
 
-		if (exist)
-			throw new ConflictException('Username is already in use');
 
-		const picture = await this.prisma.user.update({
-			where: { username : oldusername },
-			data : { username : newUsername },
-		})
-
-		return true;
-	}
 }

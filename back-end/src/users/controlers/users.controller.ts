@@ -40,12 +40,6 @@ export class UsersController {
         await this.UserService.cancelRequest(friendshipId);
     }
 
-    @Get('blockedlist')
-    async getBlockedlist(@Req() req)
-    {
-        const list = await this.UserService.getBlockedlist(req.user);
-        return list;
-    }
 
     // @Get('Get-Notification')
     // getNotification()

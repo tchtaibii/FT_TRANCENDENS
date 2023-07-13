@@ -16,7 +16,8 @@ export class ProfileController {
 
     @Get(':username/gamehistory')
     async getGameHistory(@Req() req, @Res() res, @Param('username') username : string)
-	{	 
+	{	
+        console.log(username);
 		const user = await this.ProfileService.ReturnOneUserByusername(username);
 		if (!user)
 			throw new NotFoundException('User profile not found');
@@ -27,15 +28,17 @@ export class ProfileController {
     @Get(':username/profile')
     async getProfile(@Req() req, @Res() res, @Param('username') username : string){
         // var blocked;
+        // console.log("hahaha\n");
         const user = await this.ProfileService.ReturnOneUserByusername(username);
         // if (user.UserId !== req.user.UserId)
         //     blocked = await this.ProfileService.isBlocked(user, req.user);
 		// if (blocked || !user)
 		// 	throw new NotFoundException('User profile not found');
+        // console.log("here\n");
         const Isowner = user.username === req.user.username;
         let isFriend = false;
         if (!Isowner)
-            isFriend = await this.ProfileService.checkisfriend(user);
+            isFriend = await this.ProfileService.checkisfriend(user, req.user);
         res.json({
             avatar 	 : user.avatar,
             status 	 : user.status,
@@ -61,7 +64,7 @@ export class ProfileController {
     @UseInterceptors(FileInterceptor('file'))
     async UpdateProfile(@UploadedFile() file, @Req() req)
     {
-        return await this.ProfileService.updatePhoto(file, req.UserId);
+        return await this.ProfileService.updatePhoto(file, req.user);
     }
 
     @Patch(':username/updateUsername')

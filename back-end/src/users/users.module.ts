@@ -6,10 +6,12 @@ import { ProfileController } from './controlers/profile.controller';
 import { HomeController } from './controlers/home.controller';
 import { ProfileService } from './services/profile.service';
 import { HomeService } from './services/home.service';
+import { SettingController } from './controlers/setting.controller';
+import { SettingService } from './services/setting.service';
 
 @Module({
-  providers: [UsersService, ProfileService, HomeService],
-  controllers: [UsersController, ProfileController, HomeController],
+  providers: [UsersService, ProfileService, HomeService, SettingService],
+  controllers: [UsersController, ProfileController, HomeController, SettingController],
   exports: [UsersService]
 })
 

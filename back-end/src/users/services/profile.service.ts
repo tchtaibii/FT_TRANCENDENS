@@ -107,7 +107,8 @@ export class ProfileService {
 				}
 			}
 		});
-			
+
+
 		if (user.UserId !== authUser.UserId)
 		{
 			let friendsInfo2 = await this.prisma.friendship.findMany({
@@ -138,18 +139,17 @@ export class ProfileService {
 						}
 					}
 				}
-
 			});
 
 			var friend2;
+			var accepted = false;
 			const afriends = friendsInfo.map((friendship) => {
 				const friend = friendship.sender.username === user.username ? friendship.receiver : friendship.sender;
 					if (friend.username !== authUser.username)
 					{
 						const isMutual = friendsInfo2.some((friendship) => {
 							friend2 = friendship.sender.UserId === authUser.UserId ? friendship.receiver : friendship.sender;
-							if (friend.UserId === friend2.UserId)
-								friend2.accepted = friendship.Accepted;
+							accepted = friendship.sender.UserId === authUser.UserId ? friend2.accepted : false;
 							return friend.UserId === friend2.UserId;
 						});
 						return {
@@ -157,20 +157,19 @@ export class ProfileService {
 							UserId	: friend.UserId,
 							avatar : friend.avatar,
 							username : friend.username,
-							Accepted : friend2.accepted,
+							Accepted : accepted,
 							sentInvitation : isMutual,
 							isOwner : false,
 						}
 					}
 					else
 					{
-						// friend2.accepted = friendship.Accepted;
-						// if (friend2.accepted)
+						if (friendship.Accepted)
 							return {
 								UserId	: friend.UserId,
 								avatar : friend.avatar,
 								username : friend.username,
-								Accepted : false,
+								Accepted : true,
 								sentInvitation : false,
 								isOwner : true,
 							}
@@ -198,14 +197,15 @@ export class ProfileService {
 		}
 	}
 
-    async checkisfriend(user : User)
+    async checkisfriend(user : User, AuthUser : User)
 	{
 		const friend = await this.prisma.friendship.findMany({
 			where :
 			{
 				AND : [
 					{
-						OR: [{SenderId : user.UserId}, {ReceiverId : user.UserId}]
+						OR: [{SenderId : user.UserId, ReceiverId : AuthUser.UserId},
+							{SenderId : AuthUser.UserId, ReceiverId : user.UserId},]
 					},
 					{
 						Accepted : true,
@@ -361,15 +361,15 @@ export class ProfileService {
 		};
 	}
 
-	async updatePhoto(file, UserId)
+	async updatePhoto(file, User : User)
 	{
-		const filename = `${Date.now()}-${file.originalname}`;
+		const filename = `${User.username}-${file.originalname}`;
         const path = join(__dirname, '../../../uploads', filename);
 		console.log(path);
         await fs.writeFile(path, file.buffer);
 		const pathPicture = process.env.HOST + process.env.PORT + '/uploads' + filename;
 		const picture = await this.prisma.user.update({
-			where: { UserId, },
+			where: { UserId : User.UserId },
 			data : { avatar : pathPicture },
 		})
 		return true;

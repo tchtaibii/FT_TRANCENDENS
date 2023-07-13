@@ -70,3 +70,10 @@ export class blockedlist
 	avatar 	 : string;
 	username : string;
 }
+
+export class setting
+{
+	avatar : string;
+	username : string;
+	email : string;
+}

@@ -40,16 +40,16 @@ export class HomeService {
 		);
 
 		let topPlayers = await this.prisma.user.findMany({
-			orderBy: {
-			  XP: 'desc'
-			},
+			orderBy: [
+				{ level: 'desc' },
+				{ XP: 'desc' }
+			  ]
 		  });
 
 		topPlayers = topPlayers.filter(user => !blockedUserIds.includes(user.UserId));
 
-		const top6Players = topPlayers.slice(0, 6);
 
-		const top = top6Players.map(player => ({
+		const top = topPlayers.map(player => ({
 			avatar: player.avatar,
 			username: player.username,
 			XP: player.XP,

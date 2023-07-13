@@ -1,7 +1,8 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { SettingService } from '../services/setting.service';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/auth-guard/jwt-guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('setting')
 @ApiTags('Setting')
@@ -15,4 +16,29 @@ export class SettingController {
         res.json(infos);
     }
 
+    @Get('blockedlist')
+    async getBlockedlist(@Req() req, @Res() res)
+    {
+        const list = await this.SettingService.getBlockedlist(req.user);
+        res.json(res);
+    }
+
+    @Post("DeleteAccount")
+    async DeleteAccount(@Res() res, @Req() req)
+    {
+        await this.SettingService.removeAccount(res, req.user);
+    }
+
+    @Patch('updateUsername')
+    async updateUsername(@Body('username') newUsername: string, @Req() req)
+    {
+        return await this.SettingService.updateUsername(newUsername, req.user.Username);
+    }
+
+    @Post('UpdatePicture')
+    @UseInterceptors(FileInterceptor('file'))
+    async UpdateProfile(@UploadedFile() file, @Req() req)
+    {
+        return await this.SettingService.updatePhoto(file, req.user);
+    }
 }

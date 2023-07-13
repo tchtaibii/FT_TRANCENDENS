@@ -46,17 +46,17 @@ const Edit = () => {
     )
 
 }
-type Info =  {
-    avatar:String,
-    username:String,
-    email:String
+type Info = {
+    avatar: string,
+    username: string,
+    email: string
 }
 function Settings() {
     const Admin = useSelector((state: any) => state.admin);
     const [LinkGoogle, setLinkGoogle] = useState(true);
     const [isOff, setisOff] = useState(false);
-    const [myInfo, setInfo] = useState<Info>({avatar: "" , username: "", email: ""});
-
+    const [username, setUsername] = useState("");
+    const [myInfo, setInfo] = useState<Info>({ avatar: "", username: "", email: "" });
     const handleChange = (event: any) => {
         if (event.target.checked) {
             console.log('✅ Checkbox is checked');
@@ -66,10 +66,11 @@ function Settings() {
         setLinkGoogle(current => !current);
     };
     console.log(Admin);
-    
+
     useEffect(() => {
         axios.get("/setting/account").then((resp) => {
             setInfo(resp.data);
+            setUsername(resp.data.username);
         })
     }, [])
 
@@ -100,7 +101,16 @@ function Settings() {
                                     </div>
                                 </GradienBox>
                                 <GradienBox mywidth="480px" myheight="59px" myborder="25px">
-                                    <div className="inputContent"><input placeholder={myInfo.username} type="text" /><button><Edit /></button></div>
+                                    <div className="inputContent"><input onChange={(event) => {
+                                        setUsername(event.target.value);
+                                    }} placeholder={myInfo.username} type="text" /><button onClick={() => {
+                                        axios.patch("/setting/updateUsername", { username }).then(() => {
+                                            setInfo((prev: Info) => ({ ...prev, username }));
+                                        }).catch((err) => {
+                                            console.log(err);
+                                        })
+                                    }}><Edit /></button></div>
+                                    
                                 </GradienBox>
                             </div>
                             <div className="input-settings">
@@ -109,10 +119,10 @@ function Settings() {
                                         <Email />
                                     </div>
                                 </GradienBox>
-                                <GradienBox mywidth="480px" myheight="59px" myborder="25px">
-                                    <div className="inputContent"><input placeholder={myInfo.email} type="text" /><button><Edit /></button></div>
+                                    <GradienBox mywidth="480px" myheight="59px" myborder="25px">
+                                        <div className="inputContent"><input style={{ color: "gray", cursor: "not-allowed"}} value={myInfo.email} type="text" disabled /><button style={{cursor: "not-allowed"}}><Edit /></button></div>
+                                    </GradienBox>
 
-                                </GradienBox>
                             </div>
                         </div>
                     </div>

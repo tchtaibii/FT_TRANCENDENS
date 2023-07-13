@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, Res } from '@nestjs/common';
+import { Body, ConflictException, HttpException, HttpStatus, Injectable, Res } from '@nestjs/common';
 import { PrismaClient, User } from '@prisma/client';
 import { blockedlist, setting } from '../dto/dto-classes';
 import { join } from 'path';
@@ -126,17 +126,24 @@ export class SettingService {
 		res.redirect(process.env.FrontIp + '/login');
 	}
 
-    async updateUsername(newUsername : string, oldusername : string)
+    async updateUsername(newUsername : string, User : User)
 	{
+        const usernamePattern = /^[a-zA-Z0-9]+$/;
+
+        if (newUsername.length < 5 || newUsername.length > 8 || !usernamePattern.test(newUsername))
+            throw new HttpException("Error in username", HttpStatus.BAD_REQUEST);
+
 		const exist = await this.prisma.user.findUnique({
 			where : {username : newUsername},
 		});
 
-		if (exist)
+        if (newUsername == User.username)
+            return true;
+		else if (exist)
 			throw new ConflictException('Username is already in use');
 
 		const picture = await this.prisma.user.update({
-			where: { username : oldusername },
+			where: { UserId : User.UserId },
 			data : { username : newUsername },
 		})
 

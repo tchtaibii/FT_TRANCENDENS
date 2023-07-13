@@ -4,6 +4,9 @@ import axios from '../../../../../Interceptor/Interceptor'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../../../store/store'
+import { setFalse, setTrue } from '../../../../../features/isLoading';
 const BackHome = () => {
     return (
         <svg width="0.938rem" height="0.938rem" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -52,8 +55,10 @@ type Info = {
     email: string
 }
 function Settings() {
+    const dispatch: AppDispatch = useDispatch()
     const Admin = useSelector((state: any) => state.admin);
     const [LinkGoogle, setLinkGoogle] = useState(true);
+    const [UsernameStatus, setStatus] = useState<boolean | undefined>(undefined);
     const [isOff, setisOff] = useState(false);
     const [username, setUsername] = useState("");
     const [myInfo, setInfo] = useState<Info>({ avatar: "", username: "", email: "" });
@@ -68,9 +73,11 @@ function Settings() {
     console.log(Admin);
 
     useEffect(() => {
+        dispatch(setTrue());
         axios.get("/setting/account").then((resp) => {
             setInfo(resp.data);
             setUsername(resp.data.username);
+            dispatch(setFalse());
         })
     }, [])
 
@@ -106,12 +113,16 @@ function Settings() {
                                     }} placeholder={myInfo.username} type="text" /><button onClick={() => {
                                         axios.patch("/setting/updateUsername", { username }).then(() => {
                                             setInfo((prev: Info) => ({ ...prev, username }));
+                                            setStatus(true);
                                         }).catch((err) => {
                                             console.log(err);
+                                            setStatus(false);
                                         })
                                     }}><Edit /></button></div>
-                                    
                                 </GradienBox>
+                                {
+                                    UsernameStatus && (UsernameStatus === true ? <p className='validate statusInput'>Username Changed Success</p> : <p className='Error statusInput'>Wrong Username !</p>)
+                                }
                             </div>
                             <div className="input-settings">
                                 <GradienBox mywidth="59px" myheight="59px" myborder="25px">
@@ -119,9 +130,9 @@ function Settings() {
                                         <Email />
                                     </div>
                                 </GradienBox>
-                                    <GradienBox mywidth="480px" myheight="59px" myborder="25px">
-                                        <div className="inputContent"><input style={{ color: "gray", cursor: "not-allowed"}} value={myInfo.email} type="text" disabled /><button style={{cursor: "not-allowed"}}><Edit /></button></div>
-                                    </GradienBox>
+                                <GradienBox mywidth="480px" myheight="59px" myborder="25px">
+                                    <div className="inputContent"><input style={{ color: "gray", cursor: "not-allowed" }} value={myInfo.email} type="text" disabled /><button style={{ cursor: "not-allowed" }}><Edit /></button></div>
+                                </GradienBox>
 
                             </div>
                         </div>

@@ -48,6 +48,7 @@ export class SettingController {
     @UseInterceptors(FileInterceptor('file'))
     async UpdateProfile(@UploadedFile() file, @Req() req)
     {
+        console.log("hashshasha");
         return await this.SettingService.updatePhoto(file, req.user);
     }
 }

@@ -636,7 +636,7 @@ svg {
                     flex-direction: column;
                     padding-right: toRem(25);
                     gap: 1rem;
-                    height: toRem(300);
+                    max-height: toRem(300);
                     overflow-y: scroll;
                     scrollbar-width: none;
     

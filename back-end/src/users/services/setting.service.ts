@@ -156,10 +156,10 @@ export class SettingService {
         const path = join(__dirname, '../../../uploads', filename);
 		console.log(path);
         await fs.writeFile(path, file.buffer);
-		const pathPicture = process.env.HOST + process.env.PORT + '/uploads' + filename;
+		const pathPicture = process.env.HOST + process.env.PORT + '/uploads/' + filename;
 		const picture = await this.prisma.user.update({
 			where: { UserId : User.UserId },
-			data : { avatar : pathPicture },
+			data : { avatar : pathPicture, isUploaded : true},
 		})
 		return true;
 	}
@@ -175,15 +175,15 @@ export class SettingService {
 
     async updateStatus(user : User)
     {
-        const status = this.prisma.user.findUnique({
+        const status = await this.prisma.user.findUnique({
             where : { UserId : user.UserId },
             select : { status : true }
         });
         
         await this.prisma.user.update({
             where : { UserId : user.UserId},
-            data : { status : !status }
+            data : { status : !status.status }
         })
-        return !status;
+        return !status.status;
     }
 }

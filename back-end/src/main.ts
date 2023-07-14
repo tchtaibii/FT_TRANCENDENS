@@ -13,7 +13,7 @@ async function bootstrap() {
     .setTitle('Trencendece')
     .setDescription('the back-end API')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('back-end')
     .build();
 
   const document = SwaggerModule.createDocument(app as any, config);
@@ -26,7 +26,7 @@ async function bootstrap() {
       credentials: true,
   });
 
-  app.use('uploads', express.static(join(__dirname, '..', 'uploads')));
+  // app.use('uploads', express.static(join(__dirname, '..', 'uploads')));
   await app.listen(process.env.PORT, '0.0.0.0');
 }
 

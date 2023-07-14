@@ -19,6 +19,7 @@ services:
     volumes:
       - ./back-end/src:/usr/src/app/src
       - ./back-end/uploads:/usr/src/app/uploads
+      - ./back-end/prisma:/usr/src/app/prisma
     ports:
       - "3001:3001"
       - "5555:5555"

@@ -18,6 +18,7 @@ services:
       - db
     volumes:
       - ./back-end/src:/usr/src/app/src
+      - ./back-end/uploads:/usr/src/app/uploads
     ports:
       - "3001:3001"
       - "5555:5555"

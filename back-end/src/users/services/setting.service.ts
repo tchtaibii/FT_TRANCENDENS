@@ -2,7 +2,7 @@ import { Body, ConflictException, HttpException, HttpStatus, Injectable, Res } f
 import { PrismaClient, User } from '@prisma/client';
 import { blockedlist, setting } from '../dto/dto-classes';
 import { join } from 'path';
-import { promises as fs } from 'fs';
+import { promises as fs, stat } from 'fs';
 import { async } from 'rxjs';
 
 
@@ -123,13 +123,14 @@ export class SettingService {
 		res.clearCookie('access_token');
 		res.clearCookie('refresh_token');
 		res.clearCookie('isAuthenticated');
+		res.redirect(process.env.FrontIp + '/login');
 	}
 
     async updateUsername(newUsername : string, User : User)
 	{
         const usernamePattern = /^[a-zA-Z0-9]+$/;
 
-        if (newUsername.length < 5 || newUsername.length > 8 || !usernamePattern.test(newUsername))
+        if (newUsername.length < 5 || newUsername.length > 10 || !usernamePattern.test(newUsername))
             throw new HttpException("Error in username", HttpStatus.BAD_REQUEST);
 
 		const exist = await this.prisma.user.findUnique({
@@ -162,4 +163,27 @@ export class SettingService {
 		})
 		return true;
 	}
+
+    async getStatus(User : User)
+    {
+        const status = await this.prisma.user.findUnique({
+            where :{ UserId : User.UserId},
+            select : {status : true},
+        })
+        return status;
+    }
+
+    async updateStatus(user : User)
+    {
+        const status = this.prisma.user.findUnique({
+            where : { UserId : user.UserId },
+            select : { status : true }
+        });
+        
+        await this.prisma.user.update({
+            where : { UserId : user.UserId},
+            data : { status : !status }
+        })
+        return !status;
+    }
 }

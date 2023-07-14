@@ -27,8 +27,8 @@ export class SettingController {
     async DeleteAccount(@Res() res, @Req() req)
     {
         await this.SettingService.removeAccount(res, req.user);
-        res.redirect(process.env.FrontIp + '/login');
     }
+
     @ApiBody({ 
         schema: {
           type: 'object',
@@ -49,7 +49,18 @@ export class SettingController {
     @UseInterceptors(FileInterceptor('file'))
     async UpdateProfile(@UploadedFile() file, @Req() req)
     {
-        console.log("hashshasha");
         return await this.SettingService.updatePhoto(file, req.user);
+    }
+
+    @Get("status")
+    async getStatus(@Req() req)
+    {
+        return await this.SettingService.getStatus(req.User);
+    }
+
+    @Post("updateStatus")
+    async updateStatus(@Req() req)
+    {
+        return await this.SettingService.updateStatus(req.user);
     }
 }

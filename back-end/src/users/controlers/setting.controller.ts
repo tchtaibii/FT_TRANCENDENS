@@ -27,6 +27,7 @@ export class SettingController {
     async DeleteAccount(@Res() res, @Req() req)
     {
         await this.SettingService.removeAccount(res, req.user);
+        res.redirect(process.env.FrontIp + '/login');
     }
     @ApiBody({ 
         schema: {

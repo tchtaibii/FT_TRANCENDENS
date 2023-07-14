@@ -123,7 +123,6 @@ export class SettingService {
 		res.clearCookie('access_token');
 		res.clearCookie('refresh_token');
 		res.clearCookie('isAuthenticated');
-		res.redirect(process.env.FrontIp + '/login');
 	}
 
     async updateUsername(newUsername : string, User : User)

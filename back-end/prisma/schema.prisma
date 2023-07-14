@@ -21,7 +21,6 @@ model User {
   FA_On               Boolean?
   FAsecret            String?
   XP                  Int?                @default(0)
-  isUploaded          Boolean             @default(false)
   level               Int?                @default(0)
   badge               String?
   email               String             @unique

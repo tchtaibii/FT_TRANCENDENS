@@ -122,4 +122,9 @@ export class UsersService {
 		}
 	}
 
+	async getNotification(User : User)
+	{
+		// const notification 
+	}
+
 }

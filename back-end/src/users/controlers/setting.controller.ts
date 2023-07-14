@@ -20,7 +20,7 @@ export class SettingController {
     async getBlockedlist(@Req() req, @Res() res)
     {
         const list = await this.SettingService.getBlockedlist(req.user);
-        res.json(res);
+        res.json(list);
     }
 
     @Post("DeleteAccount")

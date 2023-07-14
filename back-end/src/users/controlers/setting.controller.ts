@@ -40,25 +40,19 @@ export class SettingController {
         },
     })
 
-    @Post('updateInfo')
-    @UseInterceptors(FileInterceptor('file'))
-    async updateUsername(@Body('username') newUsername: string, @Req() req, @UploadedFile() file?)
+    @Post('updateUsername')
+    async updateUsername(@Body('username') newUsername: string, @Req() req,)
     {
-        console.log("m in");
-        // await this.SettingService.updateUsername(newUsername, req.user);
-        // if (file)
-        // {
-            console.log("here");
-            await this.SettingService.updatePhoto(file, req.user);
-        // }
+        await this.SettingService.updateUsername(newUsername, req.user);
         return true;
     }
 
-    // @Post('UpdatePicture')
-    // async UpdateProfile(@UploadedFile() file, @Req() req)
-    // {
-    //     return
-    // }
+    @Post('UpdatePicture')
+    @UseInterceptors(FileInterceptor('file'))
+    async UpdateProfile(@UploadedFile() file, @Req() req)
+    {
+        await this.SettingService.updatePhoto(file, req.user);
+    }
 
     @Get("status")
     async getStatus(@Req() req)

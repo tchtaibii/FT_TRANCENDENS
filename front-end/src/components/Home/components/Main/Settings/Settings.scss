@@ -195,7 +195,8 @@
             border-radius: toRem(20);
             padding-top: toRem(79);
             position: relative;
-            transform: translateY(-2rem);
+            transform: translate(toRem(58),toRem(-37));
+            // translate(58px,-37px)
             // flex-direction: column-reverse;
 
             .editAv {
@@ -479,7 +480,7 @@ svg {
 }
 
 .validate {
-    transform: translate(6.5rem, 3rem);
+    // transform: translate(6.5rem, 3rem);
     color: #22BFAF;
     text-shadow:
         0 0 7px #22BFAF;

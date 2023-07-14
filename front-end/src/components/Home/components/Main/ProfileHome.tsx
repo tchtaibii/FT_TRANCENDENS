@@ -45,7 +45,7 @@ function ProfileHome() {
                             <div className='mid1'>
                                 <img className='mid-img1' alt='' src={data.avatar} />
                                 <div className='m1-nl'>
-                                    <h1>{data.username}</h1>
+                                    <h1 style={{width: '6.25rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap' ,overflow: 'hidden'}}>{data.username}</h1>
                                     <div className='m1-l'>
                                         <img className='mid-img2' src={SBadge} alt='' />
                                         <h3>Level <span>{data.level}</span></h3>

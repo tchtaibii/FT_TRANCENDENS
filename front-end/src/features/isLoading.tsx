@@ -7,7 +7,7 @@ const Loading = createSlice({
     initialState,
     reducers : {
         setTrue : (state:any) => {
-            state.isLoading = false;
+            state.isLoading = true;
         },
         setFalse : (state:any) => {
             state.isLoading = false;

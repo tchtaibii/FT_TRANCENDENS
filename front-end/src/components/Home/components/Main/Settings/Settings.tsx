@@ -9,6 +9,8 @@ import { AppDispatch } from '../../../../../store/store'
 import { motion, AnimatePresence } from 'framer-motion'
 import { setFalse, setTrue } from '../../../../../features/isLoading';
 import { getAdmin, setUsername as setUSer, setStatus as statusSet } from '../../../../../features/adminSlice'
+import Blockedlist from './BlockedList'
+
 
 const BackHome = () => {
     return (
@@ -62,6 +64,8 @@ function Settings() {
     const Admin = useSelector((state: any) => state.admin);
     const [LinkGoogle, setLinkGoogle] = useState(true);
     const [isDelete, setDeleteTab] = useState(false);
+    const [isBlockedList, setBlockedTab] = useState(false);
+    const [isPopUp, setPopUp] = useState(false);
     const [imgChange, setImgChange] = useState<File | null>(null);
     const [UsernameStatus, setStatus] = useState<boolean | undefined>(undefined);
     const [isOff, setisOff] = useState<boolean | null>(null);
@@ -75,22 +79,22 @@ function Settings() {
         dispatch(setTrue());
         dispatch(getAdmin());
         const FetchData = async () => {
-        await axios.get("/setting/account").then((resp) => {
-            setInfo(resp.data);
-            setUsername(resp.data.username);
-            
-        })
-        if (isOff === null) {
-            axios.get("/setting/status").then((resp) => {
-                setisOff(!resp.data.status);
-                console.log("status", isOff)
+            await axios.get("/setting/account").then((resp) => {
+                setInfo(resp.data);
+                setUsername(resp.data.username);
+
             })
+            if (isOff === null) {
+                axios.get("/setting/status").then((resp) => {
+                    setisOff(!resp.data.status);
+                    console.log("status", isOff)
+                })
+            }
+            dispatch(setFalse());
+            // setTimeout(() => {},2000)
+
         }
-        dispatch(setFalse());
-        // setTimeout(() => {},2000)
-        
-    }
-    FetchData()
+        FetchData()
     }, [])
     const deleteAccount = () => {
         axios.post("/setting/DeleteAccount").catch((resp) => {
@@ -112,13 +116,13 @@ function Settings() {
         await axios.post("/setting/updateStatus", !isOff).then((resp) => console.log(resp))
         setisOff(!isOff)
         // setTimeout(() => {
-            // console.log('hello');
-            dispatch(setFalse());
+        // console.log('hello');
+        dispatch(setFalse());
         // }, 200);
-        
+
     }
     const HandleImg = async (event: any) => {
-        
+
         if (imgChange !== null) {
             event.preventDefault();
             const data = new FormData();
@@ -243,11 +247,15 @@ function Settings() {
                         <h1>Account Management</h1>
                         <div className="center-cont-act">
                             <h2>Blocked Accounts</h2>
-                            <button className="showListC">
+                            <button onClick={()=> {
+                                setPopUp(true);
+                                setBlockedTab(true);
+                            }} className="showListC">
                                 <div className='showlist' style={{ display: 'flex', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>Show list</div>
                             </button>
                         </div>
                         <div onClick={() => {
+                            setPopUp(true);
                             setDeleteTab(true);
                         }} className="bottom-cont">
                             <button className="deleteAccount">
@@ -258,30 +266,47 @@ function Settings() {
                 </GradienBox>
             </div>
             <AnimatePresence mode='wait'>
-                {isDelete &&
+                {isPopUp &&
                     <motion.div
                         key='delete-pop'
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         className="deleteFull">
-                        <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0 }}
-                            key={'delete-side'}
-                            transition={{ ease: "easeInOut", duration: 0.2 }} className='DeleteAccount'>
-                            <div className="delete-cont">
-                                <h4>Delete Account</h4>
-                                <p>This action will permanently delete your account and all associated data. You will lose access to your profile, settings, and any content or information associated with your account. This cannot be undone.</p>
-                                <div className="buttns">
-                                    <button onClick={deleteAccount} className="imsure btnDelet">I'm sure</button>
-                                    <button onClick={() => {
-                                        setDeleteTab(false);
-                                    }} className="cancel btnDelet">Cancel</button>
+                        {
+                            isDelete &&
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                exit={{ scale: 0 }}
+                                key={'delete-side'}
+                                transition={{ ease: "easeInOut", duration: 0.2 }} className='DeleteAccount'>
+                                <div className="delete-cont">
+                                    <h4>Delete Account</h4>
+                                    <p>This action will permanently delete your account and all associated data. You will lose access to your profile, settings, and any content or information associated with your account. This cannot be undone.</p>
+                                    <div className="buttns">
+                                        <button onClick={deleteAccount} className="imsure btnDelet">I'm sure</button>
+                                        <button onClick={() => {
+                                            setDeleteTab(false);
+                                            setPopUp(false);
+                                        }} className="cancel btnDelet">Cancel</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.div>
+                            </motion.div>
+                        }
+                        {
+                            isBlockedList &&
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                exit={{ scale: 0 }}
+                                key={'Block-Side'}
+                                transition={{ ease: "easeInOut", duration: 0.2 }}
+                            >
+                                <Blockedlist />
+                            </motion.div>
+                        }
+
                     </motion.div>
                 }
             </AnimatePresence>

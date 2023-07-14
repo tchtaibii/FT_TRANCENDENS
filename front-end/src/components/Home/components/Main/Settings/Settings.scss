@@ -195,7 +195,7 @@
             border-radius: toRem(20);
             padding-top: toRem(79);
             position: relative;
-            transform: translate(toRem(58),toRem(-37));
+            transform: translate(toRem(58), toRem(-37));
             // translate(58px,-37px)
             // flex-direction: column-reverse;
 
@@ -578,6 +578,7 @@ svg {
                 .imsure {
                     background: #00887A;
                     transition: all 0.3s ease-in-out;
+
                     &:hover {
                         opacity: 0.8;
                     }
@@ -586,6 +587,7 @@ svg {
                 .cancel {
                     background: #ED5152;
                     transition: all 0.3s ease-in-out;
+
                     &:hover {
                         opacity: 0.8;
                     }
@@ -593,5 +595,104 @@ svg {
             }
         }
 
+    }
+
+    .BlockedList {
+        width: toRem(420);
+        min-height: toRem(228);
+        height: fit-content;
+        max-height: toRem(500);
+        box-shadow: 0px toRem(4) toRem(40) 0px rgba(0, 0, 0, 0.50);
+        border-radius: toRem(40);
+        background-image: linear-gradient(to bottom, #5699AE, #E15253);
+        padding: toRem(1.5);
+
+        .Blocked-cont {
+            width: 100%;
+            height: 100%;
+            min-height: toRem(228);
+            height: fit-content;
+            max-height: toRem(500);
+            border-radius: toRem(40);
+            display: flex;
+            flex-direction: column;
+            background-color: #232225;
+            padding-top: toRem(35);
+            padding-left: toRem(25);
+            gap: toRem(51);
+
+            h1 {
+                color: #FFF;
+                font-size: toRem(22);
+                font-style: normal;
+                font-weight: 556;
+                line-height: normal;
+            }
+            .blockedListC{
+                padding-bottom: toRem(60);
+                overflow: visible;
+                .usersBlocked {
+                    display: flex;
+                    flex-direction: column;
+                    padding-right: toRem(25);
+                    gap: 1rem;
+                    height: toRem(300);
+                    overflow-y: scroll;
+                    scrollbar-width: none;
+    
+                    &::-webkit-scrollbar {
+                        display: none;
+                    }
+    
+                    .userBlocked {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: space-between;
+    
+                        .infoUser {
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            gap: toRem(17.6);
+    
+                            img {
+                                width: toRem(60.403);
+                                height: toRem(60.403);
+                            }
+    
+                            p {
+                                color: #FFF;
+                                font-size: toRem(22);
+                                font-style: normal;
+                                font-weight: 556;
+                                line-height: normal;
+                            }
+                        }
+    
+                        button {
+                            width: toRem(129);
+                            height: toRem(40);
+                            border-radius: toRem(15);
+                            padding: toRem(1);
+                            box-shadow: 0px toRem(4) toRem(15) 0px rgba(0, 0, 0, 0.50);
+                            background-image: linear-gradient(to bottom, #5699AE, #E15253);
+    
+                            .unblockBTN {
+                                width: 100%;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                height: 100%;
+                                border-radius: toRem(15);
+                                background-color: #232225;
+                            }
+                        }
+                    }
+                }
+            }
+
+            
+        }
     }
 }

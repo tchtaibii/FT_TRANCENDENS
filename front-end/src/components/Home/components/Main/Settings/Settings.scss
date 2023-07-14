@@ -440,7 +440,7 @@ svg {
     0% {
         left: toRem(82);
         // opacity: 0;
-        
+
     }
 
     100% {
@@ -465,24 +465,27 @@ svg {
 
 
 
-.statusInput{
+.statusInput {
     position: absolute;
     transform: translate(33.9rem, 15.3rem);
     font-size: 0.8rem;
 }
-.Error{
+
+.Error {
     color: #E15253;
     text-shadow:
-      0 0 7px #a60a0a,
-      0 0 7px #a60a0a;
+        0 0 7px #a60a0a,
+        0 0 7px #a60a0a;
 }
-.validate{
+
+.validate {
     transform: translate(6.5rem, 3rem);
     color: #22BFAF;
     text-shadow:
-    0 0 7px #22BFAF;
+        0 0 7px #22BFAF;
 }
-.saveBtn{
+
+.saveBtn {
     background: #00887A;
     border-radius: 1.188rem;
     box-shadow: 0px toRem(4) toRem(4) 0px rgba(0, 0, 0, 0.25);
@@ -491,11 +494,94 @@ svg {
     transform: translate(32.9rem, 0rem);
     width: toRem(100);
     height: toRem(37);
+
     // transform-origin: center;
-    &:hover{
+    &:hover {
         background: #0a7469;
     }
-    &:active{
+
+    &:active {
         transform: translate(32.9rem, 0rem) scale(0.98);
     }
 }
+.deleteFull{
+    width: 100vw;
+    height: 100vh;
+    background: rgba(47, 45, 53, 0.30);
+    backdrop-filter: blur(toRem(2));
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999999999999999999999999999999999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .DeleteAccount {
+    // position: absolute;
+    width: toRem(420);
+    height: toRem(352);
+    box-shadow: 0px toRem(4) toRem(40) 0px rgba(0, 0, 0, 0.50);
+    border-radius: toRem(40);
+    background-image: linear-gradient(to bottom, #5699AE, #E15253);
+    padding: toRem(1);
+    // top: 15rem;
+
+    .delete-cont {
+        width: 100%;
+        height: 100%;
+        background-color: #232225;
+        border-radius: toRem(40);
+        display: flex;
+        flex-direction: column;
+        gap: toRem(43);
+        padding-top: toRem(27);
+        padding-right: toRem(37);
+        padding-left: toRem(43);
+
+        h4 {
+            color: #FFF;
+            font-family: 'SF';
+            font-size: toRem(22);
+            font-weight: 556;
+        }
+
+        p {
+            color: #FFF;
+            font-size: toRem(21);
+            font-weight: 300;
+        }
+
+        .buttns {
+            width: 100%;
+            display: flex;
+            gap: toRem(23);
+            align-items: center;
+            justify-content: center;
+            &:hover{
+                opacity: ;
+            }
+
+            .btnDelet {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: toRem(100);
+                height: toRem(37);
+                font-size: toRem(15);
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                border-radius: toRem(19);
+            }
+            .imsure{
+                background: #00887A;
+            }
+            .cancel{
+                background: #ED5152;
+            }
+        }
+    }
+
+}
+}
+

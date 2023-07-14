@@ -155,23 +155,23 @@ function Settings() {
 
                             </div>
                             <button className='saveBtn' style={{}} onClick={() => {
-                                if (imgChange !== null && username !== myInfo.username) {
-                                    const data = new FormData();
-                                    axios.post("/setting/updateInfo", { username, img: data })
-                                        .then(() => {
-                                            setInfo((prev: Info) => ({ ...prev, username }));
-                                            window.location.reload(false);
-                                        })
-                                        .catch((err) => {
-                                            console.log("An error occurred:", err);
-                                            setStatus(false);
-                                        });
+                                const data = new FormData();
+                                if (imgChange) {
+                                    data.append('file', imgChange);
                                 }
+                                axios.post("/setting/updateInfo", { username, img: imgChange ? data : undefined })
+                                    .then(() => {
+                                        setInfo((prev: Info) => ({ ...prev, username }));
+                                        window.location.reload(false);
+                                    })
+                                    .catch((err) => {
+                                        console.log("An error occurred:", err);
+                                        setStatus(false);
+                                    });
                             }}>Save</button>
                             {
                                 (UsernameStatus === false ? <p className='Error statusInput'>Wrong Username !</p> : <></>)
                             }
-                            <p className='Error statusInput'>Wrong Input !</p>
                         </div>
                     </div>
                 </div>
@@ -214,6 +214,19 @@ function Settings() {
                     </div>
                 </GradienBox>
             </div>
+            {/* <div className="deleteFull">
+                <div className='DeleteAccount'>
+                    <div className="delete-cont">
+                        <h4>Delete Account</h4>
+                        <p>This action will permanently delete your account and all associated data. You will lose access to your profile, settings, and any content or information associated with your account. This cannot be undone.</p>
+                        <div className="buttns">
+                            <button className="imsure btnDelet">I'm sure</button>
+                            <button className="cancel btnDelet">Cancel</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div> */}
         </div>
     )
 }

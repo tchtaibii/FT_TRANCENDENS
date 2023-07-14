@@ -37,6 +37,7 @@ export class SettingService {
 					blockedBySender : true,
 				},
 			select : {
+				FriendshipId : true,
 				receiver :
 				{
 					select : {
@@ -51,9 +52,10 @@ export class SettingService {
 		blockedBySender.map((friend) => {
 			const { avatar, UserId, username} = friend.receiver;
 			blockedlist.push({
-				avatar : avatar,
-				username : username,
-				UserId : UserId,
+				friendshipId : friend.FriendshipId,
+				avatar,
+				username,
+				UserId,
 			})
 		});
 
@@ -63,6 +65,7 @@ export class SettingService {
 					blockedByReceiver : true,
 				},
 			select : {
+				FriendshipId : true,
 				sender:
 				{
 					select : {
@@ -77,9 +80,10 @@ export class SettingService {
 		blockedByreceiver.map((friend) => {
 			const { avatar, UserId, username} = friend.sender;
 			blockedlist.push({
-				avatar : avatar,
-				username : username,
-				UserId : UserId,
+				friendshipId : friend.FriendshipId,
+				avatar,
+				username,
+				UserId,
 			})
 		});
 
@@ -154,12 +158,11 @@ export class SettingService {
 	{
 		const filename = `${User.username}-${file.originalname}`;
         const path = join(__dirname, '../../../uploads', filename);
-		console.log(path);
         await fs.writeFile(path, file.buffer);
 		const pathPicture = process.env.HOST + process.env.PORT + '/uploads/' + filename;
 		const picture = await this.prisma.user.update({
 			where: { UserId : User.UserId },
-			data : { avatar : pathPicture, isUploaded : true},
+			data : { avatar : pathPicture},
 		})
 		return true;
 	}
@@ -184,6 +187,6 @@ export class SettingService {
             where : { UserId : user.UserId},
             data : { status : !status.status }
         })
-        return !status.status;
+        return true;
     }
 }

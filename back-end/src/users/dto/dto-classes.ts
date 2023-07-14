@@ -66,9 +66,10 @@ export class ProfileFriends
 
 export class blockedlist
 {
-	UserId 	 : string;
-	avatar 	 : string;
-	username : string;
+	friendshipId 	: number;
+	UserId 	 		: string;
+	avatar 	 		: string;
+	username 		: string;
 }
 
 export class setting
@@ -76,4 +77,9 @@ export class setting
 	avatar : string;
 	username : string;
 	email : string;
+}
+
+export class Notification
+{
+	
 }

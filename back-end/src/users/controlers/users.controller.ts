@@ -40,6 +40,11 @@ export class UsersController {
         await this.UserService.cancelRequest(friendshipId);
     }
 
+    @Get('getNotification')
+    async getNotification(@Req() req)
+    {
+		this.UserService.getNotification(req.user);
+    }
 
     // @Get('Get-Notification')
     // getNotification()

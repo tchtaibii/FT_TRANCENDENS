@@ -77,7 +77,9 @@ export class ProfileService {
     
     async userFriends(user : User, authUser : User)
 	{
-		const friendsInfo = await this.prisma.friendship.findMany({
+		const blocked = await this.getBlockeduserIds(authUser);
+
+		const friendsInfo1 = await this.prisma.friendship.findMany({
 			where : {
 				AND : [
 					{
@@ -107,6 +109,9 @@ export class ProfileService {
 			}
 		});
 
+		var friendsInfo = friendsInfo1.filter(authUser => !blocked.includes(authUser.receiver.UserId));
+
+		friendsInfo = friendsInfo.filter(authUser => !blocked.includes(authUser.sender.UserId));
 
 		if (user.UserId !== authUser.UserId)
 		{
@@ -115,7 +120,7 @@ export class ProfileService {
 					AND : [
 						{
 							OR: [{SenderId : authUser.UserId}, {ReceiverId : authUser.UserId}]
-						},
+						},				
 					],
 					blockedByReceiver : false,
 					blockedBySender : false,
@@ -175,6 +180,7 @@ export class ProfileService {
 					}
 					
 			}).filter((friend) => friend !== undefined);
+
 			return afriends;
 		}
 		else if (user.UserId === authUser.UserId)
@@ -192,6 +198,7 @@ export class ProfileService {
 						isOwner : false,
 					}
 			}).filter((frienship) => frienship !== undefined);
+
 			return friends;
 		}
 	}
@@ -240,7 +247,7 @@ export class ProfileService {
 		return isBlocked === null;
 	}
 
-	async fetchgame(user : User)
+	async getBlockeduserIds(user : User)
 	{
 		const blockedUser = await this.prisma.friendship.findMany({
 			where : {
@@ -270,7 +277,55 @@ export class ProfileService {
 		const blockedUserIds = blockedUser.map(friendship =>
 			friendship.SenderId === user.UserId ? friendship.ReceiverId : friendship.SenderId
 		);
+	
+		return blockedUserIds;
+	}
 
+	async countGames(games, user, blockedUserIds)
+	{
+		const Draw = await this.prisma.game.count({
+			where:{
+				isDraw: true,
+				OR: [
+						{ 
+							PlayerId1: user.UserId, 
+							PlayerId2: { not: { in: blockedUserIds } },
+						},
+						{ 
+							PlayerId2: user.UserId, 
+							PlayerId1: { not: { in: blockedUserIds } },
+						},
+				  ],
+			}
+		});
+
+		const win = await this.prisma.game.count({
+			where:{
+				WinnerId: user.UserId,
+				OR: [
+						{ 
+							PlayerId1: user.UserId, 
+							PlayerId2: { not: { in: blockedUserIds } },
+						},
+						{ 
+							PlayerId2: user.UserId, 
+							PlayerId1: { not: { in: blockedUserIds } },
+						},
+				],
+			}
+		});
+
+		const loose = games.length - (win + Draw);
+
+		return {
+			loose,
+			Draw,
+			win
+		};
+	}
+
+	async Allgames(user, blockedUserIds)
+	{
 		let games = await this.prisma.game.findMany({
 			where: {
 				OR: [
@@ -288,42 +343,25 @@ export class ProfileService {
 				CreationTime : "desc"
 			}
 		})
-		const Draw = await this.prisma.game.count({
-			where:{
-				isDraw: true,
-				OR: [
-					{ 
-					  PlayerId1: user.UserId, 
-					  PlayerId2: { not: { in: blockedUserIds } },
-					},
-					{ 
-					  PlayerId2: user.UserId, 
-					  PlayerId1: { not: { in: blockedUserIds } },
-					},
-				  ],
-			}
-		});
+		return games;
+	}
 
-		const win = await this.prisma.game.count({
-			where:{
-				WinnerId: user.UserId,
-				OR: [
-					{ 
-					  PlayerId1: user.UserId, 
-					  PlayerId2: { not: { in: blockedUserIds } },
-					},
-					{ 
-					  PlayerId2: user.UserId, 
-					  PlayerId1: { not: { in: blockedUserIds } },
-					},
-				],
-			}
-		});
+	async fetchgame(user : User, authUser : User)
+	{
+		const blockedUserIds = await this.getBlockeduserIds(authUser);
+		
+		let games1 = await this.Allgames(user, blockedUserIds);
 
-		const loose = games.length - (win + Draw);
+		var games = games1.filter(gameUser => !blockedUserIds.includes(gameUser.PlayerId1));
 
+		games = games.filter(user => !blockedUserIds.includes(user.PlayerId2));
+
+		const count = this.countGames(games, user, blockedUserIds);
+	
 		let AllGames : GamesDTO [] = [];
+
 		let isadv;
+
 		for (let i = 0; i < games.length; i++){
 
 			let { GameId, Mode, isDraw, Rounds, WinnerXP, looserXP } = games[i];
@@ -353,9 +391,9 @@ export class ProfileService {
 		}
 	
 		return {
-			win,
-			loose,
-			Draw,
+			win : (await count).win,
+			loose : (await count).loose,
+			Draw : (await count).Draw,
 			AllGames
 		};
 	}

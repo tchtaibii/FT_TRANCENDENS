@@ -32,7 +32,7 @@ function ActivityContent(props: any) {
 function Activity() {
 	const [isAll, setIsALL] = useState({ boolAll: true });
 	const [data, seData] = useState([]);
-	console.log(data)
+	// console.log(data)
 	useEffect(() => {
 		axios.get('Home/RecentActivity').then((response) => seData(response.data));
 	}, [])

@@ -4,7 +4,7 @@ import { MessageType } from '../interface/interfaces'
 
 export const getMessage = createAsyncThunk('message/Message', async () => {
     const response = await axios.get("http://localhost:3001/messages");
-    // console.log('axios data message fetching', response.data);
+   console.log('axios data message fetching', response.data);
     return response.data;
 });
 

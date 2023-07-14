@@ -17,7 +17,7 @@ export class ProfileController {
     @Get(':username/gamehistory')
     async getGameHistory(@Req() req, @Res() res, @Param('username') username : string)
 	{	
-        // console.log(username);
+       console.log(username);
 		const user = await this.ProfileService.ReturnOneUserByusername(username);
 		if (!user)
 			throw new NotFoundException('User profile not found');
@@ -28,13 +28,13 @@ export class ProfileController {
     @Get(':username/profile')
     async getProfile(@Req() req, @Res() res, @Param('username') username : string){
         // var blocked;
-        // console.log("hahaha\n");
+       console.log("hahaha\n");
         const user = await this.ProfileService.ReturnOneUserByusername(username);
         // if (user.UserId !== req.user.UserId)
         //     blocked = await this.ProfileService.isBlocked(user, req.user);
 		// if (blocked || !user)
 		// 	throw new NotFoundException('User profile not found');
-        // console.log("here\n");
+       console.log("here\n");
         const Isowner = user.username === req.user.username;
         let isFriend = false;
         if (!Isowner)

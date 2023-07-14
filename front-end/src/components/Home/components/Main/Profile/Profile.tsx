@@ -119,7 +119,7 @@ function Profile(props: any) {
         const handleClick = async () => {
             if (props.Sent === false) {
                 await axios.post('/SendRequest', { receiverId: props.userId }).then(response => {
-                    // console.log(response);
+                   console.log(response);
                 })
                     .catch(error => {
                         console.log(error);
@@ -379,7 +379,7 @@ export function ProfileDown() {
             try {
                 const response = await axios.get('/Profile/' + login + '/gamehistory');
                 setAllGams(response.data);
-                // console.log('allGame', allGames)
+               console.log('allGame', allGames)
             } catch (error) {
                 // Handle error
             }
@@ -412,7 +412,7 @@ export function ProfileDown() {
             })
         },
     }
-    // console.log(window.innerHeight)
+   console.log(window.innerHeight)
     return (
         <div className="profileDown">
             <div className="AchivementsProfile">

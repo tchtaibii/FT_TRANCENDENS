@@ -28,7 +28,7 @@ function MsgNot() {
 	const [Login, setLogin] = useState('')
 	useEffect(() => {
 		axios.get('/Home/Hero').then((response) => setLogin(response.data))
-		console.log('hey', Login)
+		// console.log('hey', Login)
 	}, [])
 	const handleClickOutside = () => {
 		setIsVisible(false)
@@ -126,7 +126,7 @@ function NotificationCont() {
 
 	const [isEffect, setIsEffect] = useState(false);
 	const DataNotifications: any = useSelector((state: any) => state.notification);
-	console.log('notification :', DataNotifications);
+	// console.log('notification :', DataNotifications);
 	const notifi = DataNotifications.notifications;
 
 	const dispatch: AppDispatch = useDispatch()

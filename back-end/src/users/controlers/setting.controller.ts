@@ -45,7 +45,7 @@ export class SettingController {
     async updateUsername(@Body('username') newUsername: string, @Req() req, @UploadedFile() file?)
     {
         console.log("m in");
-        await this.SettingService.updateUsername(newUsername, req.user);
+        // await this.SettingService.updateUsername(newUsername, req.user);
         // if (file)
         // {
             console.log("here");
@@ -63,7 +63,7 @@ export class SettingController {
     @Get("status")
     async getStatus(@Req() req)
     {
-        return await this.SettingService.getStatus(req.User);
+        return await this.SettingService.getStatus(req.user);
     }
 
     @Post("updateStatus")

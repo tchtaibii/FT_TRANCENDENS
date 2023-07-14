@@ -12,7 +12,7 @@ const Loading = createSlice({
         setFalse : (state:any) => {
             state.isLoading = false;
         }
-    }
+    },
 })
 
 export const { setTrue, setFalse } = Loading.actions;

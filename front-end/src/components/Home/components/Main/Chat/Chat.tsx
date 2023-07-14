@@ -74,7 +74,7 @@ function ChatContent(params: any) {
 			setMessageTyping('');
 		}
 	}
-	console.log(messageTyping);
+	// console.log(messageTyping);
 	return (
 		<div className="chatContent">
 			<div className="header">

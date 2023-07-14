@@ -3,10 +3,13 @@ import GradienBox from '../../../../../tools/GradienBox'
 import axios from '../../../../../Interceptor/Interceptor'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, ChangeEvent } from 'react'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../../../store/store'
+import { motion, AnimatePresence } from 'framer-motion'
 import { setFalse, setTrue } from '../../../../../features/isLoading';
+import { getAdmin, setUsername as setUSer, setStatus as statusSet } from '../../../../../features/adminSlice'
+
 const BackHome = () => {
     return (
         <svg width="0.938rem" height="0.938rem" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -58,20 +61,22 @@ function Settings() {
     const dispatch: AppDispatch = useDispatch()
     const Admin = useSelector((state: any) => state.admin);
     const [LinkGoogle, setLinkGoogle] = useState(true);
+    const [isDelete, setDeleteTab] = useState(false);
     const [imgChange, setImgChange] = useState<File | null>(null);
     const [UsernameStatus, setStatus] = useState<boolean | undefined>(undefined);
-    const [isOff, setisOff] = useState(false);
+    const [isOff, setisOff] = useState<boolean | null>(null);
     const [username, setUsername] = useState("");
     const [myInfo, setInfo] = useState<Info>({ avatar: "", username: "", email: "" });
+    const [updateS, setUpdate] = useState(false);
     const handleChange = (event: any) => {
         if (event.target.checked) {
-            console.log('✅ Checkbox is checked');
+            // console.log('✅ Checkbox is checked');
         } else {
-            console.log('⛔️ Checkbox is NOT checked');
+            // console.log('⛔️ Checkbox is NOT checked');
         }
         setLinkGoogle(current => !current);
     };
-    console.log(Admin);
+    console.log(isOff);
 
     useEffect(() => {
         dispatch(setFalse());
@@ -80,36 +85,71 @@ function Settings() {
             setUsername(resp.data.username);
             // dispatch(setFalse());
         })
+        if (isOff === null) {
+            axios.get("/setting/status").then((resp) => {
+                setisOff(!resp.data.status); 
+                console.log("status", isOff)
+            })
+        }
     }, [])
     const deleteAccount = () => {
         axios.post("/setting/DeleteAccount").catch((resp) => {
-            console.log(resp);
+            // console.log(resp);
         }).then(() => {
-            console.log('hello')
+            // console.log('hello')
             window.location.reload(false);
         })
-
     }
+    const divStyle = {
+        backgroundImage: imgChange === null ? `url(${myInfo.avatar})` : `url(${URL.createObjectURL(imgChange)})`
+    };
 
-    // const ChangeImage = () => {
-    //     axios.post("/setting/UpdatePicture", )
-    // }
-    const handleFileChange = (event: any) => {
-        console.log(event.target.files);
-        if (event.target.files)
-            setImgChange(event.target.files[0]);
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        setImgChange(file);
+    };
+    const handleStatus = () => {
+        axios.post("/setting/updateStatus", !isOff).then((resp) => console.log(resp))
+        setisOff(!isOff)
     }
-    // const handleUpload = (event: any) => {
-    //     if (imgChange !== null) {
-    //         event.preventDefault();
-    //         const data = new FormData();
-    //         data.append('file', imgChange);
-    //         console.log(data);
-    //         axios.post("/setting/UpdatePicture", data).then((res) => {
-    //             console.log(res.statusText);
-    //         });
-    //     }
-    // }
+    const HandleImg = (event:any) => {
+        if (imgChange !== null) {
+            event.preventDefault();
+            const data = new FormData();
+            data.append('file', imgChange);
+            console.log(imgChange);
+            const headers = {
+                'Content-Type': 'multipart/form-data'
+              };
+            axios.post("/setting/UpdatePicture", data, { headers: headers as any }).then((res) => {
+                console.log(res.statusText);
+            });
+        }
+    }
+    const handleSave = (event: any) => {
+        // event.preventDefault();
+        // const data = new FormData();
+        // if (imgChange) {
+        //     data.append('File', imgChange);
+        // }
+        // axios
+        //     .post("/setting/updateInfo", data) // Send the FormData directly
+        //     .then((resp) => {
+        //         setStatus(true);
+        //         setInfo((prev: Info) => ({ ...prev, username }));
+        //     })
+        //     .catch((err) => {
+        //         setUpdate(!updateS);
+        //         setImgChange(null);
+        //         // console.log("An error occurred:", err);
+        //         // setStatus(false);
+        //     });
+    }
+    useEffect(() => {
+        dispatch(setUSer(username));
+        if (isOff !== null)
+            dispatch(statusSet(isOff));
+    }, [updateS, isOff])
     return (
         <div className="settings-Container">
             <div className="header-settings">
@@ -125,10 +165,10 @@ function Settings() {
                 <div className="AccountSettings">
                     <h2>Account</h2>
                     <div className="account-set">
-                        <div style={{ backgroundImage: "url(" + myInfo.avatar + ')' }} className="image-pro-settings">
+                        <div style={divStyle} className="image-pro-settings">
                             <div className="editAv">EDIT<br />AVATAR</div>
                             <input onChange={handleFileChange} accept=".png, .jpg, .jpeg" type="file" name="" id="" style={{ width: "100%", height: "10.375rem", cursor: 'pointer', zIndex: "9999999999999", opacity: 0, position: "relative", transform: "translateY(-10.2rem)" }} />
-                            <button style={{ zIndex: "999999999999999999999999999999" }} className='Pen'><div className="penC"><Pen /></div></button>
+                            <button onClick={HandleImg} style={{ zIndex: "999999999999999999999999999999" }} className='Pen'><div className="penC"><Pen /></div></button>
                         </div>
                         <div className="edit-NEP">
                             <div className="input-settings">
@@ -152,25 +192,10 @@ function Settings() {
                                 <GradienBox mywidth="480px" myheight="59px" myborder="25px">
                                     <div className="inputContent"><input style={{ color: "gray", cursor: "not-allowed" }} value={myInfo.email} type="text" disabled /><button style={{ cursor: "not-allowed" }}><Edit /></button></div>
                                 </GradienBox>
-
                             </div>
-                            <button className='saveBtn' style={{}} onClick={() => {
-                                const data = new FormData();
-                                if (imgChange) {
-                                    data.append('file', imgChange);
-                                }
-                                axios.post("/setting/updateInfo", { username, img: imgChange ? data : undefined })
-                                    .then(() => {
-                                        setInfo((prev: Info) => ({ ...prev, username }));
-                                        window.location.reload(false);
-                                    })
-                                    .catch((err) => {
-                                        console.log("An error occurred:", err);
-                                        setStatus(false);
-                                    });
-                            }}>Save</button>
+                            <button className='saveBtn' style={{}} onClick={handleSave}>Save</button>
                             {
-                                (UsernameStatus === false ? <p className='Error statusInput'>Wrong Username !</p> : <></>)
+                                (UsernameStatus === false ? <p className='Error statusInput'>Something Wrong!</p> : <></>)
                             }
                         </div>
                     </div>
@@ -189,11 +214,15 @@ function Settings() {
                         </div>
                         <div className="bottom-cont bottom-update">
                             <h2>Default Status</h2>
-                            <div className="button-switch">
-                                <div className={!isOff ? "switch-back offline-active-btn" : 'switch-back online-active-btn'} />
-                                <button onClick={() => !isOff && setisOff(true)} className='online-btn'>Offline</button>
-                                <button onClick={() => isOff && setisOff(false)} className='offline-btn'>Online</button>
-                            </div>
+                            {
+                                // isOff === null &&
+                                <div className="button-switch">
+                                    <div className={isOff ? "switch-back offline-active-btn" : 'switch-back online-active-btn'} />
+                                    <button onClick={handleStatus} className='online-btn'>Offline</button>
+                                    <button onClick={handleStatus} className='offline-btn'>Online</button>
+                                </div>
+                            }
+
                         </div>
                     </div>
                 </GradienBox>
@@ -206,7 +235,9 @@ function Settings() {
                                 <div className='showlist' style={{ display: 'flex', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>Show list</div>
                             </button>
                         </div>
-                        <div onClick={deleteAccount} className="bottom-cont">
+                        <div onClick={() => {
+                            setDeleteTab(true);
+                        }} className="bottom-cont">
                             <button className="deleteAccount">
                                 <div className="deleteAcountU">Delete Account</div>
                             </button>
@@ -214,19 +245,35 @@ function Settings() {
                     </div>
                 </GradienBox>
             </div>
-            {/* <div className="deleteFull">
-                <div className='DeleteAccount'>
-                    <div className="delete-cont">
-                        <h4>Delete Account</h4>
-                        <p>This action will permanently delete your account and all associated data. You will lose access to your profile, settings, and any content or information associated with your account. This cannot be undone.</p>
-                        <div className="buttns">
-                            <button className="imsure btnDelet">I'm sure</button>
-                            <button className="cancel btnDelet">Cancel</button>
+            <AnimatePresence mode='wait'>
+                {isDelete &&
+                    <motion.div
+                        key='delete-pop'
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="deleteFull">
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0 }}
+                            key={'delete-side'}
+                            transition={{ ease: "easeInOut", duration: 0.2 }} className='DeleteAccount'>
+                            <div className="delete-cont">
+                                <h4>Delete Account</h4>
+                                <p>This action will permanently delete your account and all associated data. You will lose access to your profile, settings, and any content or information associated with your account. This cannot be undone.</p>
+                                <div className="buttns">
+                                    <button onClick={deleteAccount} className="imsure btnDelet">I'm sure</button>
+                                    <button onClick={() => {
+                                        setDeleteTab(false);
+                                    }} className="cancel btnDelet">Cancel</button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                }
+            </AnimatePresence>
 
-                        </div>
-                    </div>
-                </div>
-            </div> */}
         </div>
     )
 }

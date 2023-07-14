@@ -69,50 +69,56 @@ function Settings() {
     const [myInfo, setInfo] = useState<Info>({ avatar: "", username: "", email: "" });
     const [updateS, setUpdate] = useState(false);
     const handleChange = (event: any) => {
-        if (event.target.checked) {
-            // console.log('✅ Checkbox is checked');
-        } else {
-            // console.log('⛔️ Checkbox is NOT checked');
-        }
         setLinkGoogle(current => !current);
     };
-    console.log(isOff);
-
     useEffect(() => {
-        dispatch(setFalse());
-        axios.get("/setting/account").then((resp) => {
+        dispatch(setTrue());
+        dispatch(getAdmin());
+        const FetchData = async () => {
+        await axios.get("/setting/account").then((resp) => {
             setInfo(resp.data);
             setUsername(resp.data.username);
-            // dispatch(setFalse());
+            
         })
         if (isOff === null) {
             axios.get("/setting/status").then((resp) => {
-                setisOff(!resp.data.status); 
+                setisOff(!resp.data.status);
                 console.log("status", isOff)
             })
         }
+        dispatch(setFalse());
+        // setTimeout(() => {},2000)
+        
+    }
+    FetchData()
     }, [])
     const deleteAccount = () => {
         axios.post("/setting/DeleteAccount").catch((resp) => {
-            // console.log(resp);
         }).then(() => {
-            // console.log('hello')
             window.location.reload(false);
         })
     }
     const divStyle = {
-        backgroundImage: imgChange === null ? `url(${myInfo.avatar})` : `url(${URL.createObjectURL(imgChange)})`
+        backgroundImage: imgChange === null ? `url(${myInfo.avatar})` : `url(${URL.createObjectURL(imgChange)})`,
+
     };
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
         setImgChange(file);
     };
-    const handleStatus = () => {
-        axios.post("/setting/updateStatus", !isOff).then((resp) => console.log(resp))
+    const handleStatus = async () => {
+        dispatch(setTrue());
+        await axios.post("/setting/updateStatus", !isOff).then((resp) => console.log(resp))
         setisOff(!isOff)
+        // setTimeout(() => {
+            // console.log('hello');
+            dispatch(setFalse());
+        // }, 200);
+        
     }
-    const HandleImg = (event:any) => {
+    const HandleImg = async (event: any) => {
+        
         if (imgChange !== null) {
             event.preventDefault();
             const data = new FormData();
@@ -120,33 +126,39 @@ function Settings() {
             console.log(imgChange);
             const headers = {
                 'Content-Type': 'multipart/form-data'
-              };
-            axios.post("/setting/UpdatePicture", data, { headers: headers as any }).then((res) => {
+            };
+            dispatch(setTrue());
+            await axios.post("/setting/UpdatePicture", data, { headers: headers as any }).then((res) => {
                 console.log(res.statusText);
             });
+            dispatch(getAdmin());
+            dispatch(setFalse());
         }
     }
-    const handleSave = (event: any) => {
-        // event.preventDefault();
-        // const data = new FormData();
-        // if (imgChange) {
-        //     data.append('File', imgChange);
-        // }
-        // axios
-        //     .post("/setting/updateInfo", data) // Send the FormData directly
-        //     .then((resp) => {
-        //         setStatus(true);
-        //         setInfo((prev: Info) => ({ ...prev, username }));
-        //     })
-        //     .catch((err) => {
-        //         setUpdate(!updateS);
-        //         setImgChange(null);
-        //         // console.log("An error occurred:", err);
-        //         // setStatus(false);
-        //     });
+    const handleSave = async (event: any) => {
+        dispatch(setTrue());
+        if (username !== myInfo.username) {
+            await axios
+                .post("/setting/updateUsername", { username })
+                .then((resp) => {
+                    setStatus(true);
+                    setInfo((prev: Info) => ({ ...prev, username }));
+                    setUpdate(!updateS);
+                })
+                .catch((err) => {
+                    setImgChange(null);
+                    setStatus(false);
+                });
+        }
+        dispatch(setFalse());
     }
     useEffect(() => {
-        dispatch(setUSer(username));
+        // if (username !== myInfo.username)
+        {
+            // dispatch(setTrue());
+            dispatch(setUSer(username));
+            // dispatch(setFalse());
+        }
         if (isOff !== null)
             dispatch(statusSet(isOff));
     }, [updateS, isOff])
@@ -195,7 +207,7 @@ function Settings() {
                             </div>
                             <button className='saveBtn' style={{}} onClick={handleSave}>Save</button>
                             {
-                                (UsernameStatus === false ? <p className='Error statusInput'>Something Wrong!</p> : <></>)
+                                (UsernameStatus !== undefined && (UsernameStatus === false ? <p className='Error statusInput'>Something Wrong!</p> : <p className='validate statusInput'>Update Success!</p>))
                             }
                         </div>
                     </div>

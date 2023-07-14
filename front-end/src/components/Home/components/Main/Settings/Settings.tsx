@@ -99,17 +99,17 @@ function Settings() {
         if (event.target.files)
             setImgChange(event.target.files[0]);
     }
-    const handleUpload = (event: any) => {
-        if (imgChange !== null) {
-            event.preventDefault();
-            const data = new FormData();
-            data.append('file', imgChange);
-            console.log(data);
-            axios.post("/setting/UpdatePicture", data).then((res) => {
-                console.log(res.statusText);
-            });
-        }
-    }
+    // const handleUpload = (event: any) => {
+    //     if (imgChange !== null) {
+    //         event.preventDefault();
+    //         const data = new FormData();
+    //         data.append('file', imgChange);
+    //         console.log(data);
+    //         axios.post("/setting/UpdatePicture", data).then((res) => {
+    //             console.log(res.statusText);
+    //         });
+    //     }
+    // }
     return (
         <div className="settings-Container">
             <div className="header-settings">
@@ -128,7 +128,7 @@ function Settings() {
                         <div style={{ backgroundImage: "url(" + myInfo.avatar + ')' }} className="image-pro-settings">
                             <div className="editAv">EDIT<br />AVATAR</div>
                             <input onChange={handleFileChange} accept=".png, .jpg, .jpeg" type="file" name="" id="" style={{ width: "100%", height: "10.375rem", cursor: 'pointer', zIndex: "9999999999999", opacity: 0, position: "relative", transform: "translateY(-10.5rem)" }} />
-                            <button style={{ zIndex: "999999999999999999999999999999" }} onClick={handleUpload} className='Pen'><div className="penC"><Pen /></div></button>
+                            <button style={{ zIndex: "999999999999999999999999999999" }} className='Pen'><div className="penC"><Pen /></div></button>
                         </div>
                         <div className="edit-NEP">
                             <div className="input-settings">
@@ -140,26 +140,8 @@ function Settings() {
                                 <GradienBox mywidth="480px" myheight="59px" myborder="25px">
                                     <div className="inputContent"><input onChange={(event) => {
                                         setUsername(event.target.value);
-                                    }} placeholder={myInfo.username} type="text" /><button onClick={() => {
-                                        console.log(username.length);
-                                        if (username !== myInfo.username) {
-                                            axios.patch("/setting/updateUsername", { username })
-                                                .then(() => {
-                                                    setInfo((prev: Info) => ({ ...prev, username }));
-                                                    setStatus(true);
-                                                    // window.location.reload(false);
-                                                })
-                                                .catch((err) => {
-                                                    console.log("An error occurred:", err);
-                                                    setStatus(false);
-                                                });
-                                        }
-
-                                    }}><Edit /></button></div>
+                                    }} placeholder={myInfo.username} type="text" /><button><Edit /></button></div>
                                 </GradienBox>
-                                {
-                                    (UsernameStatus === true ? <p className='validate statusInput'>Username Changed Success</p> : UsernameStatus === false ? <p className='Error statusInput'>Wrong Username !</p> : <></>)
-                                }
                             </div>
                             <div className="input-settings">
                                 <GradienBox mywidth="59px" myheight="59px" myborder="25px">
@@ -172,9 +154,24 @@ function Settings() {
                                 </GradienBox>
 
                             </div>
-                            <button style={{}} onClick={() => {
-
+                            <button className='saveBtn' style={{}} onClick={() => {
+                                if (imgChange !== null && username !== myInfo.username) {
+                                    const data = new FormData();
+                                    axios.post("/setting/updateInfo", { username, img: data })
+                                        .then(() => {
+                                            setInfo((prev: Info) => ({ ...prev, username }));
+                                            window.location.reload(false);
+                                        })
+                                        .catch((err) => {
+                                            console.log("An error occurred:", err);
+                                            setStatus(false);
+                                        });
+                                }
                             }}>Save</button>
+                            {
+                                (UsernameStatus === false ? <p className='Error statusInput'>Wrong Username !</p> : <></>)
+                            }
+                            <p className='Error statusInput'>Wrong Input !</p>
                         </div>
                     </div>
                 </div>

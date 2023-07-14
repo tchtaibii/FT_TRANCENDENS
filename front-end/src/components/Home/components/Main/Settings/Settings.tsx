@@ -58,6 +58,7 @@ function Settings() {
     const dispatch: AppDispatch = useDispatch()
     const Admin = useSelector((state: any) => state.admin);
     const [LinkGoogle, setLinkGoogle] = useState(true);
+    const [imgChange, setImgChange] = useState<File | null>(null);
     const [UsernameStatus, setStatus] = useState<boolean | undefined>(undefined);
     const [isOff, setisOff] = useState(false);
     const [username, setUsername] = useState("");
@@ -73,14 +74,42 @@ function Settings() {
     console.log(Admin);
 
     useEffect(() => {
-        dispatch(setTrue());
+        dispatch(setFalse());
         axios.get("/setting/account").then((resp) => {
             setInfo(resp.data);
             setUsername(resp.data.username);
-            dispatch(setFalse());
+            // dispatch(setFalse());
         })
     }, [])
+    const deleteAccount = () => {
+        axios.post("/setting/DeleteAccount").catch((resp) => {
+            console.log(resp);
+        }).then(() => {
+            console.log('hello')
+            window.location.reload(false);
+        })
 
+    }
+
+    // const ChangeImage = () => {
+    //     axios.post("/setting/UpdatePicture", )
+    // }
+    const handleFileChange = (event: any) => {
+        console.log(event.target.files);
+        if (event.target.files)
+            setImgChange(event.target.files[0]);
+    }
+    const handleUpload = (event: any) => {
+        if (imgChange !== null) {
+            event.preventDefault();
+            const data = new FormData();
+            data.append('file', imgChange);
+            console.log(data);
+            axios.post("/setting/UpdatePicture", data).then((res) => {
+                console.log(res.statusText);
+            });
+        }
+    }
     return (
         <div className="settings-Container">
             <div className="header-settings">
@@ -97,8 +126,9 @@ function Settings() {
                     <h2>Account</h2>
                     <div className="account-set">
                         <div style={{ backgroundImage: "url(" + myInfo.avatar + ')' }} className="image-pro-settings">
-                            <button className="editAv">EDIT<br />AVATAR</button>
-                            <button className='Pen'><div className="penC"><Pen /></div></button>
+                            <div className="editAv">EDIT<br />AVATAR</div>
+                            <input onChange={handleFileChange} accept=".png, .jpg, .jpeg" type="file" name="" id="" style={{ width: "100%", height: "10.375rem", cursor: 'pointer', zIndex: "9999999999999", opacity: 0, position: "relative", transform: "translateY(-10.5rem)" }} />
+                            <button style={{ zIndex: "999999999999999999999999999999" }} onClick={handleUpload} className='Pen'><div className="penC"><Pen /></div></button>
                         </div>
                         <div className="edit-NEP">
                             <div className="input-settings">
@@ -111,17 +141,24 @@ function Settings() {
                                     <div className="inputContent"><input onChange={(event) => {
                                         setUsername(event.target.value);
                                     }} placeholder={myInfo.username} type="text" /><button onClick={() => {
-                                        axios.patch("/setting/updateUsername", { username }).then(() => {
-                                            setInfo((prev: Info) => ({ ...prev, username }));
-                                            setStatus(true);
-                                        }).catch((err) => {
-                                            console.log(err);
-                                            setStatus(false);
-                                        })
+                                        console.log(username.length);
+                                        if (username !== myInfo.username) {
+                                            axios.patch("/setting/updateUsername", { username })
+                                                .then(() => {
+                                                    setInfo((prev: Info) => ({ ...prev, username }));
+                                                    setStatus(true);
+                                                    // window.location.reload(false);
+                                                })
+                                                .catch((err) => {
+                                                    console.log("An error occurred:", err);
+                                                    setStatus(false);
+                                                });
+                                        }
+
                                     }}><Edit /></button></div>
                                 </GradienBox>
                                 {
-                                    UsernameStatus && (UsernameStatus === true ? <p className='validate statusInput'>Username Changed Success</p> : <p className='Error statusInput'>Wrong Username !</p>)
+                                    (UsernameStatus === true ? <p className='validate statusInput'>Username Changed Success</p> : UsernameStatus === false ? <p className='Error statusInput'>Wrong Username !</p> : <></>)
                                 }
                             </div>
                             <div className="input-settings">
@@ -135,6 +172,9 @@ function Settings() {
                                 </GradienBox>
 
                             </div>
+                            <button style={{}} onClick={() => {
+
+                            }}>Save</button>
                         </div>
                     </div>
                 </div>
@@ -169,7 +209,7 @@ function Settings() {
                                 <div className='showlist' style={{ display: 'flex', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>Show list</div>
                             </button>
                         </div>
-                        <div className="bottom-cont">
+                        <div onClick={deleteAccount} className="bottom-cont">
                             <button className="deleteAccount">
                                 <div className="deleteAcountU">Delete Account</div>
                             </button>

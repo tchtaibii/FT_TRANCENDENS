@@ -202,7 +202,7 @@ function Profile(props: any) {
 export function ProfileProfile() {
 
     const { login } = useParams();
-    
+
     const [widthPro, setwidthPro] = useState(0);
     const [opacity, setOpacity] = useState(0);
     const [ProfileRight, setPR] = useState<ProfileRightType>({
@@ -306,9 +306,9 @@ function TheGame(props: any) {
                         <div className="enemyScore">
                             <h1>{props.login}</h1>
                             <div className="score">
-                                <h1 className='Goal Win'>10</h1>
+                                <h1 className='Goal Win'>{props.winner}</h1>
                                 <div className="Goal Win">|</div>
-                                <h1 className='Goal Lose'>10</h1>
+                                <h1 className='Goal Lose'>{props.loser}</h1>
                             </div>
                         </div>
                     </div>
@@ -341,6 +341,8 @@ type GamesDTO =
         Rounds: number;
         advPic: string;
         AdvName: string;
+        Winnerxp: number;
+        looserxp: number;
     }
 type AllGames =
     {
@@ -486,9 +488,10 @@ export function ProfileDown() {
                         </div>
                         <div className="gameHistoryC">
                             {
-                                allGames?.AllGames.map((e) => <TheGame key={e.GameId}
+                                allGames?.AllGames.map((e) => <TheGame loser={e.looserxp} winner={e.Winnerxp} key={e.GameId}
                                     login={e.AdvName} mode={e.Mode} avatar={e.advPic}
-                                    theGame={e.isDraw ? 'draw' : e.won ? 'win' : 'lose'}
+                                    theGame={e.isDraw ? 'draw' : e.won ? 'win' : 'lose'
+                                    }
                                 />)
                             }
                         </div>

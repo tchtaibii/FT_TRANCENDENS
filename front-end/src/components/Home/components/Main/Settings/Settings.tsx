@@ -127,7 +127,7 @@ function Settings() {
                     <div className="account-set">
                         <div style={{ backgroundImage: "url(" + myInfo.avatar + ')' }} className="image-pro-settings">
                             <div className="editAv">EDIT<br />AVATAR</div>
-                            <input onChange={handleFileChange} accept=".png, .jpg, .jpeg" type="file" name="" id="" style={{ width: "100%", height: "10.375rem", cursor: 'pointer', zIndex: "9999999999999", opacity: 0, position: "relative", transform: "translateY(-10.5rem)" }} />
+                            <input onChange={handleFileChange} accept=".png, .jpg, .jpeg" type="file" name="" id="" style={{ width: "100%", height: "10.375rem", cursor: 'pointer', zIndex: "9999999999999", opacity: 0, position: "relative", transform: "translateY(-10.2rem)" }} />
                             <button style={{ zIndex: "999999999999999999999999999999" }} className='Pen'><div className="penC"><Pen /></div></button>
                         </div>
                         <div className="edit-NEP">

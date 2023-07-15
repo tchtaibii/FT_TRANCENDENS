@@ -29,9 +29,9 @@ export class ProfileService {
 		const user = await this.ReturnOneUserByusername(username);
 		if (user.UserId !== User.UserId)
 		    blocked = await this.isBlocked(user, User);
-		if (blocked || !user)
-			throw new NotFoundException('User profile not found');
 		console.log(blocked);
+		// if (blocked || !user)
+		// 	throw new NotFoundException('User profile not found');
 		const Isowner = user.username === User.username;
 		var isSent = false;
 		var isFriend = false;
@@ -44,12 +44,13 @@ export class ProfileService {
 		}
 
 		return ({
-			UserId   : user.UserId,
-			avatar 	 : user.avatar,
-			status 	 : user.status,
-			level  	 : user.level,
-			xp       : user.XP,
-			username : user.username,
+			friendshipId 	: friend[0].FriendshipId,
+			UserId   		: user.UserId,
+			avatar 	 		: user.avatar,
+			status 	 		: user.status,
+			level  	 		: user.level,
+			xp       		: user.XP,
+			username 		: user.username,
 			Isowner,
 			isSent,
 			isFriend,
@@ -278,7 +279,7 @@ export class ProfileService {
 			}
 		});
 		console.log(isBlocked);
-		return isBlocked === null;
+		return !(isBlocked === undefined);
 	}
 
 	async getBlockeduserIds(user : User)

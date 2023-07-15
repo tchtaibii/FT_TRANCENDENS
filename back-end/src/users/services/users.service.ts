@@ -79,13 +79,13 @@ export class UsersService {
 			}
 		});
 
-		const notification =  await this.prisma.notification.create({
-			data: {
-				UserId: receiverId,
-				Type: notificationType.friendship_request, 
-				isRead: false,
-			  },
-		})
+		// const notification =  await this.prisma.notification.create({
+		// 	data: {
+		// 		UserId: receiverId,
+		// 		Type: notificationType.friendship_request, 
+		// 		isRead: false,
+		// 	  },
+		// })
 		// NotificationGateway
 	}
 

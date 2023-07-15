@@ -31,6 +31,7 @@ export class ProfileController {
         const profile = await this.ProfileService.getProfile(req.user, username);
 
         res.json({
+            friendshipId: profile.friendshipId,
             UserId: profile.UserId,
             avatar: profile.avatar,
             status: profile.status,

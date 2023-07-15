@@ -3,13 +3,14 @@ import { PrismaClient, User, } from '@prisma/client';
 import { GamesDTO, ProfileFriends } from '../dto/dto-classes';
 import { join } from 'path';
 import { ConflictException } from '@nestjs/common';
+import { HomeService } from './home.service';
 
 
 
 @Injectable()
 export class ProfileService {
     prisma = new PrismaClient();
-	constructor(){}
+	constructor(private readonly HomeService : HomeService){}
 
     async ReturnOneUserByusername(username : string){
 		const findUser = await this.prisma.user.findUnique({
@@ -23,14 +24,42 @@ export class ProfileService {
 		return findUser;
     }
 
+	async calculRating(user)
+	{
+		const block = await this.getBlockeduserIds(user);
+		const games = await this.Allgames(user, block);
+		const count = await this.countGames(games, user, block);
+
+		const rating = (drawCount, lossCount, winCount) => {
+			const totalGames = drawCount + lossCount + winCount;
+			const winPercentage = winCount / totalGames;
+			const rating = (winPercentage * 10).toFixed(2);
+			return rating;
+		  };
+		  
+		const playerRating = rating(count.Draw, count.loose, count.win);
+
+		return playerRating;
+	}
+
+	async playerRank(user)
+	{
+		const table =  await this.HomeService.Best6Players(user);
+		return table.findIndex(player => player.username === user.username) + 1;
+	}
+
 	async getProfile(User : User, username)
 	{
 		var blocked;
+
 		const user = await this.ReturnOneUserByusername(username);
+
 		if (user && user.UserId !== User.UserId)
 		    blocked = await this.isBlocked(user, User);
+
 		if (blocked || !user)
 			throw new NotFoundException('User profile not found');
+
 		const Isowner = user.username === User.username;
 		var isSent = false;
 		var isFriend = false;
@@ -45,7 +74,16 @@ export class ProfileService {
 			friendshipId = isSent || isFriend ? friend[0].FriendshipId : 0;
 		}
 
+		user.avatar =  user.avatar.search("cdn.intra.42.fr") == -1 ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
+
+		const playerRating = await this.calculRating(user);
+
+		const rank = await this.playerRank(user);
+
+		console.log(rank);
+
 		return ({
+			rating			: playerRating,
 			friendshipId	: friendshipId,
 			UserId   		: user.UserId,
 			avatar 	 		: user.avatar,
@@ -56,6 +94,7 @@ export class ProfileService {
 			Isowner,
 			isSent,
 			isFriend,
+			rank,
 		});
 	}
 
@@ -185,6 +224,7 @@ export class ProfileService {
 			var accepted = false;
 			const afriends = friendsInfo.map((friendship) => {
 				const friend = friendship.sender.username === user.username ? friendship.receiver : friendship.sender;
+					friend.avatar = friend.avatar.search("cdn.intra.42.fr") === -1 ? process.env.HOST + process.env.PORT + friend.avatar : friend.avatar;
 					if (friend.username !== authUser.username)
 					{
 						const isMutual = friendsInfo2.some((friendship) => {
@@ -223,6 +263,7 @@ export class ProfileService {
 		{
 			const friends : ProfileFriends[] = friendsInfo.map((friendsInfo) => {
 				const check = friendsInfo.sender.UserId === user.UserId ? friendsInfo.receiver : friendsInfo.sender;
+				check.avatar = check.avatar.search("cdn.intra.42.fr") === -1 ? process.env.HOST + process.env.PORT + check.avatar : check.avatar;
 				if (friendsInfo.Accepted)
 					return {
 						friendshipId : friendsInfo.FriendshipId,
@@ -409,6 +450,9 @@ export class ProfileService {
 				}
 			});
 
+			if (adv.avatar.search("cdn.intra.42.fr") === -1)
+				adv.avatar = process.env.HOST + process.env.PORT + adv.avatar;
+
 			let Game: GamesDTO = {
 				GameId: GameId.toString(),
 				Mode: Mode,
@@ -430,8 +474,5 @@ export class ProfileService {
 			AllGames
 		};
 	}
-
-
-
 
 }

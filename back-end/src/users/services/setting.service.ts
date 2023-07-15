@@ -6,6 +6,7 @@ import { promises as fs, stat } from 'fs';
 import { async } from 'rxjs';
 
 
+
 @Injectable()
 export class SettingService {
     prisma = new PrismaClient();
@@ -25,6 +26,7 @@ export class SettingService {
                 email : true,
             }
         });
+		infos.avatar = infos.avatar.search("cdn.intra.42.fr") === -1 ? process.env.HOST + process.env.PORT + infos.avatar : infos.avatar;
         return infos;
     }
 
@@ -50,7 +52,8 @@ export class SettingService {
 		});
 
 		blockedBySender.map((friend) => {
-			const { avatar, UserId, username} = friend.receiver;
+			let { avatar, UserId, username} = friend.receiver;
+			avatar = avatar.search("cdn.intra.42.fr") === -1 ? process.env.HOST + process.env.PORT + avatar : avatar;
 			blockedlist.push({
 				friendshipId : friend.FriendshipId,
 				avatar,
@@ -159,7 +162,7 @@ export class SettingService {
 		const filename = `${User.username}-${file.originalname}`;
         const path = join(__dirname, '../../../uploads', filename);
         await fs.writeFile(path, file.buffer);
-		const pathPicture = process.env.HOST + process.env.PORT + '/uploads/' + filename;
+		const pathPicture = '/uploads/' + filename;
 		const picture = await this.prisma.user.update({
 			where: { UserId : User.UserId },
 			data : { avatar : pathPicture},

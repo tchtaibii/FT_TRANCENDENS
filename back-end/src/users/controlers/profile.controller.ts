@@ -41,6 +41,8 @@ export class ProfileController {
             isOwner: profile.Isowner,
             isSent: profile.isSent,
             isFriend: profile.isFriend,
+            rating: profile.rating,
+            rank: profile.rank,
         });
     }
 
@@ -73,3 +75,4 @@ export class ProfileController {
         const blocked = await this.ProfileService.blockUser(req.user, user);
     }
 }
+ 

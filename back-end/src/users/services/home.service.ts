@@ -49,12 +49,16 @@ export class HomeService {
 		topPlayers = topPlayers.filter(user => !blockedUserIds.includes(user.UserId));
 
 
-		const top = topPlayers.map(player => ({
-			avatar: player.avatar,
-			username: player.username,
-			XP: player.XP,
-			level: player.level,
-		}));
+		const top = topPlayers.map((player) => {
+			player.avatar = player.avatar.search("cdn.intra.42.fr") === -1 ? process.env.HOST + process.env.PORT + player.avatar : player.avatar;
+			// const rating = this.calculRating.calculRating(user);
+			return {
+				avatar: player.avatar,
+				username: player.username,
+				XP: player.XP,
+				level: player.level,
+			}
+		});
 
 		return top;
 	}
@@ -147,6 +151,10 @@ export class HomeService {
 
 		const recently : RecentActivity[] = [];
 		for (let i = 0; i < allgames.length; i++) {
+			
+			allgames[i].Player2.avatar = allgames[i].Player2.avatar.search("cdn.intra.42.fr") === -1 ? process.env.HOST + process.env.PORT + allgames[i].Player2.avatar : allgames[i].Player2.avatar;
+			allgames[i].Player1.avatar = allgames[i].Player1.avatar.search("cdn.intra.42.fr") === -1 ? process.env.HOST + process.env.PORT + allgames[i].Player1.avatar : allgames[i].Player1.avatar;
+			
 			if (allgames[i].isDraw)
 			{
 				recently.push( {

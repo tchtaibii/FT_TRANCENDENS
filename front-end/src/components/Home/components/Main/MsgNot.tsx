@@ -36,9 +36,9 @@ function MsgNot() {
 	useOnClickOutside(ref, handleClickOutside)
 	return (
 		<div className='msgNot-cont' ref={ref}>
-			{/* <GradienBox mywidth="49px" myheight="49px" myborder="10px">
+			<GradienBox mywidth="49px" myheight="49px" myborder="10px">
 				<button className='btn-msgnot'><img style={{ width: '1.5rem' }} src={inviFriend} alt='' /></button>
-			</GradienBox> */}
+			</GradienBox>
 			<GradienBox mywidth="49px" myheight="49px" myborder="10px">
 				<button onClick={() => setIsVisible(!isVisible)} className='btn-msgnot'><img style={{ width: '1.5rem' }} alt='' src={BellImg} /></button>
 			</GradienBox>

@@ -222,6 +222,7 @@ export function ProfileProfile() {
         friendshipId: 0,
         isSent: false,
     });
+    const [update, setUpdate] = useState(false);
     const dispatch: AppDispatch = useDispatch()
 
 
@@ -236,25 +237,28 @@ export function ProfileProfile() {
             setOpacity(1);
         }
         Fetch();
-    }, [login])
+    }, [login, update])
     useEffect(() => {
         setwidthPro(((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
         setOpacity(1);
-    }, [login, ProfileRight])
+    }, [, , ProfileRight])
     console.log('proo', ProfileRight);
     const AddFriend = async () => {
         await axios.post("/SendRequest", { receiverId: ProfileRight.UserId }).then(resp => {
             console.log(resp);
+            setUpdate(!update);
         })
     }
     const BlockUser = async () => {
         await axios.post("/Profile/blockUser", { blockedUser: ProfileRight.username }).then(resp => {
             console.log(resp);
+            setUpdate(!update);
         })
     }
     const CancelFriend = async () => {
-        await axios.post("/CancelRequest", { FriendshipId: ProfileRight.FriendshipId }).then(resp => {
+        await axios.post("/CancelRequest", { FriendshipId: ProfileRight.friendshipId }).then(resp => {
             console.log(resp);
+            setUpdate(!update);
         })
     }
     return (
@@ -282,7 +286,9 @@ export function ProfileProfile() {
                                             </> :
                                             <>
                                                 <button onClick={BlockUser}><Blockbtn /></button>
-                                                <button onClick={AddFriend}><Addbtn /></button>
+                                                {
+                                                    (ProfileRight.isSent === false ?  <button onClick={AddFriend}><Addbtn /></button> : <button onClick={CancelFriend}><UnFriendbtn /></button>)
+                                                }
                                             </>
 
                                     }

@@ -101,9 +101,11 @@ type ProfileRightType = {
     level: number;
     xp: number;
     username: string;
-    Isowner: boolean;
+    isOwner: boolean;
     UserId: string;
-    isFriend: boolean
+    isFriend: boolean;
+    friendshipId: number;
+    isSent: boolean;
 }
 
 
@@ -214,9 +216,11 @@ export function ProfileProfile() {
         level: 0,
         xp: 0,
         username: '',
-        Isowner: true,
+        isOwner: true,
         UserId: "",
-        isFriend: false
+        isFriend: false,
+        friendshipId: 0,
+        isSent: false,
     });
     const dispatch: AppDispatch = useDispatch()
 
@@ -249,7 +253,7 @@ export function ProfileProfile() {
         })
     }
     const CancelFriend = async () => {
-        await axios.post("/CancelRequest", { blockedUser: ProfileRight.username }).then(resp => {
+        await axios.post("/CancelRequest", { FriendshipId: ProfileRight.FriendshipId }).then(resp => {
             console.log(resp);
         })
     }
@@ -265,13 +269,13 @@ export function ProfileProfile() {
                     <div className="status"><span className={(!ProfileRight ? 'txt-dotss' : 'dotss greenDotss')}></span><span className={(!ProfileRight ? 'txt-status' : 'txt-status greenStatus')}>{(!ProfileRight ? 'Offline' : 'Online')}</span></div>
                     <div className="buttons-f">
                         {
-                            ProfileRight.Isowner === false ?
+                            ProfileRight.isOwner === false ?
                                 <>
                                     {/* { */}
                                     {
-                                        !ProfileRight.isFriend ?
+                                        ProfileRight.isFriend ?
                                             <>
-                                                <button><UnFriendbtn /></button>
+                                                <button onClick={CancelFriend}><UnFriendbtn /></button>
                                                 <button onClick={BlockUser}><Blockbtn /></button>
                                                 <button><Chatbtn /></button>
                                                 <button><Playbtn /></button>

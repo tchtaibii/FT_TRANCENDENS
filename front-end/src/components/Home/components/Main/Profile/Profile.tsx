@@ -270,7 +270,7 @@ export function ProfileProfile() {
                         <img src={ProfileRight.avatar} alt="" />
                     </div>
                     <h2>{ProfileRight.username}</h2>
-                    <div className="status"><span className={(!ProfileRight ? 'txt-dotss' : 'dotss greenDotss')}></span><span className={(!ProfileRight ? 'txt-status' : 'txt-status greenStatus')}>{(!ProfileRight ? 'Offline' : 'Online')}</span></div>
+                    <div className="status"><span className={(ProfileRight.status ? 'dotss' : 'dotss greenDotss')}></span><span className={(ProfileRight.status ? 'txt-status' : 'txt-status greenStatus')}>{(ProfileRight.status ? 'Offline' : 'Online')}</span></div>
                     <div className="buttons-f">
                         {
                             ProfileRight.isOwner === false ?

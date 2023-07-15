@@ -30,15 +30,6 @@ export class UsersService {
 		return true;
     }
 
-	async cancelRequest(FriendshipId : number)
-	{
-		const friendship = await this.prisma.friendship.delete({
-			where: {
-			  FriendshipId: FriendshipId
-			},
-		});
-		return true;
-	}
 
 	async ReturnOneUser(user : User){
 		const findUser = await this.prisma.user.findUnique({
@@ -51,61 +42,6 @@ export class UsersService {
 		}
 		return findUser;
     }
-
-
-
-
-
-	async sendRequest(User : User, receiverId : string)
-	{
-		const existingRequest = await this.prisma.friendship.findFirst({
-			where: {
-			  SenderId: User.UserId,
-			  ReceiverId: receiverId
-			}
-		});
-
-		if (existingRequest)
-			return true;
-
-		await this.prisma.friendship.create ({
-			data: {
-			  sender: {
-				connect: { UserId: User.UserId }
-			  },
-			  receiver: {
-				connect: { UserId: receiverId }
-			  },
-			}
-		});
-
-		// const notification =  await this.prisma.notification.create({
-		// 	data: {
-		// 		UserId: receiverId,
-		// 		Type: notificationType.friendship_request, 
-		// 		isRead: false,
-		// 	  },
-		// })
-		// NotificationGateway
-	}
-
-	async AcceptRequest(FriendshipId : number)
-	{
-		const friend = await this.prisma.friendship.update({
-			where: { FriendshipId : FriendshipId,  },
-			data: { Accepted : true},
-		});
-
-		const notification =  await this.prisma.notification.create({
-			data: {
-				UserId: friend.SenderId,
-				Type: notificationType.Accepted_request, 
-				isRead: false,
-			  },
-		})
-	}
-
-	
 
 	async updateUser(email, updatedObject)
 	{
@@ -122,9 +58,9 @@ export class UsersService {
 		}
 	}
 
-	async getNotification(User : User)
-	{
-		// const notification 
-	}
+	// async getNotification(User : User)
+	// {
+	// 	// const notification 
+	// }
 
 }

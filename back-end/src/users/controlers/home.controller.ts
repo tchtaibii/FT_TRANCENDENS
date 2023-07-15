@@ -26,9 +26,8 @@ export class HomeController {
     async GetProfile(@Req() req, @Res() res){
         let lastGame = await this.HomeService.lastGame(req.user);
         var avatar = req.user.avatar;
-        if (req.user.avatar.search("cdn.intra.42.fr") === -1)
+        if (req.user.avatar.search("https://cdn.intra.42.fr/users/") === -1)
             avatar = process.env.HOST + process.env.PORT + req.user.avatar;
-        console.log(avatar);
         res.json({
             lastGame : lastGame,
             avatar : avatar,

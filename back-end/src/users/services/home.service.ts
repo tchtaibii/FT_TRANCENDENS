@@ -166,9 +166,8 @@ export class HomeService {
 		topPlayers = topPlayers.filter(user => !blockedUserIds.includes(user.UserId));
 
 		const top = await Promise.all(topPlayers.map(async (player) => {
-			player.avatar = player.avatar.search("cdn.intra.42.fr") === -1 ? process.env.HOST + process.env.PORT + player.avatar : player.avatar;
+			player.avatar = player.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + player.avatar : player.avatar;
 			const rating = await this.calculRating(player.UserId);
-			// console.log(rating);
 			return {
 				rating,
 				avatar: player.avatar,
@@ -270,8 +269,8 @@ export class HomeService {
 		const recently : RecentActivity[] = [];
 		for (let i = 0; i < allgames.length; i++) {
 			
-			allgames[i].Player2.avatar = allgames[i].Player2.avatar.search("cdn.intra.42.fr") === -1 ? process.env.HOST + process.env.PORT + allgames[i].Player2.avatar : allgames[i].Player2.avatar;
-			allgames[i].Player1.avatar = allgames[i].Player1.avatar.search("cdn.intra.42.fr") === -1 ? process.env.HOST + process.env.PORT + allgames[i].Player1.avatar : allgames[i].Player1.avatar;
+			allgames[i].Player2.avatar = allgames[i].Player2.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + allgames[i].Player2.avatar : allgames[i].Player2.avatar;
+			allgames[i].Player1.avatar = allgames[i].Player1.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + allgames[i].Player1.avatar : allgames[i].Player1.avatar;
 			
 			if (allgames[i].isDraw)
 			{

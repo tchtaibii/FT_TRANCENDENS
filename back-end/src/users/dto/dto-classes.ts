@@ -79,7 +79,9 @@ export class setting
 	email : string;
 }
 
-export class Notification
+export class request
 {
-	
+	avatar 	 : string;
+	username : string;
+	friendshipId : number;	
 }

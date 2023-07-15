@@ -11,38 +11,10 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 export class UsersController {
     constructor(private readonly UserService : UsersService){}
 
-    @Post('SendRequest')
-    async sendRequest(@Body('receiverId') receiver : string, @Req() req, @Res() res){
-        const already = await this.UserService.sendRequest(req.user, receiver);
-        res.json(already);
-    }
-
-    @Post('AcceptRequest')
-    async AcceptRequest(@Body('requestId', new ParseIntPipe) FriendshipId : number){
-        await this.UserService.AcceptRequest(FriendshipId);
-        return true;
-    }
-
-    @Post('CancelRequest')
-    @ApiBody({ 
-        schema: {
-          type: 'object',
-          properties: {
-            FriendshipId: {
-              type: 'number',
-            },
-          },
-        },
-    })
-    async RemoveRequest(@Body('FriendshipId') friendshipId : number)
-    {
-        await this.UserService.cancelRequest(friendshipId);
-    }
-
     @Get('getNotification')
     async getNotification(@Req() req)
     {
-		this.UserService.getNotification(req.user);
+		  // this.UserService.getNotification(req.user);
     }
 
     // @Get('Get-Notification')

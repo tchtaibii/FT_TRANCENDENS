@@ -74,7 +74,7 @@ export class ProfileService {
 			friendshipId = isSent || isFriend ? friend[0].FriendshipId : 0;
 		}
 
-		user.avatar =  user.avatar.search("cdn.intra.42.fr") == -1 ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
+		user.avatar =  user.avatar.search("https://cdn.intra.42.fr/users/") == -1 ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
 
 		const playerRating = await this.calculRating(user);
 
@@ -95,7 +95,6 @@ export class ProfileService {
 			rank,
 		});
 	}
-
 	async blockUser(user : User, targetUser : User)
 	{
 		var friend = await this.prisma.friendship.findFirst({
@@ -222,7 +221,7 @@ export class ProfileService {
 			var accepted = false;
 			const afriends = friendsInfo.map((friendship) => {
 				const friend = friendship.sender.username === user.username ? friendship.receiver : friendship.sender;
-					friend.avatar = friend.avatar.search("cdn.intra.42.fr") === -1 ? process.env.HOST + process.env.PORT + friend.avatar : friend.avatar;
+					friend.avatar = friend.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + friend.avatar : friend.avatar;
 					if (friend.username !== authUser.username)
 					{
 						const isMutual = friendsInfo2.some((friendship) => {
@@ -261,7 +260,7 @@ export class ProfileService {
 		{
 			const friends : ProfileFriends[] = friendsInfo.map((friendsInfo) => {
 				const check = friendsInfo.sender.UserId === user.UserId ? friendsInfo.receiver : friendsInfo.sender;
-				check.avatar = check.avatar.search("cdn.intra.42.fr") === -1 ? process.env.HOST + process.env.PORT + check.avatar : check.avatar;
+				check.avatar = check.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + check.avatar : check.avatar;
 				if (friendsInfo.Accepted)
 					return {
 						friendshipId : friendsInfo.FriendshipId,
@@ -292,7 +291,6 @@ export class ProfileService {
 			take : 1,
 		});
 		friend.filter((friend) => friend !== undefined);
-		console.log(friend);
 		return friend;
 	}
     
@@ -448,7 +446,7 @@ export class ProfileService {
 				}
 			});
 
-			if (adv.avatar.search("cdn.intra.42.fr") === -1)
+			if (adv.avatar.search("https://cdn.intra.42.fr/users/") === -1)
 				adv.avatar = process.env.HOST + process.env.PORT + adv.avatar;
 
 			let Game: GamesDTO = {

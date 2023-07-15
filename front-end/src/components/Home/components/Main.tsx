@@ -15,12 +15,18 @@ import Settings from './Main/Settings/Settings'
 import LeaderBoard from './Main/LeaderBoard/LeaderBoard'
 import axios from '../../../Interceptor/Interceptor'
 import { Link } from 'react-router-dom'
+import defaultAvatar from '../../../assets/img/avatar.png'
+import Error404 from './404'
 
 function ActivityContent(props: any) {
 	return (
 		<div className="activity-x">
 			<div className="part1">
-				<Link to={'/profile/' + props.p1}><img src={props.avatar1} alt="" /></Link>
+				<Link to={'/profile/' + props.p1}><img src={props.avatar1} onError={(e) => {
+                            console.log(e.target);
+                            e.target.src = defaultAvatar;
+                        }
+                        } alt="" /></Link>
 
 				<p>{props.p1}<span>{' ' + (props.isDraw === false ? 'won against ' : 'had a draw with ')}</span>{props.p2}</p>
 				{/* <img src={props.avatar2} alt="" /> */}
@@ -149,6 +155,8 @@ function Side2(props: any) {
 	)
 }
 
+
+
 function Main() {
 	const [invit, setInvit] = useState(false)
 	return (
@@ -166,6 +174,9 @@ function Main() {
 						<Route path="profile/:login" element={<><Profile /></>} />
 						<Route path="settings/" element={<><Settings /></>} />
 						<Route path="/leaderBoard" element={<LeaderBoard />} />
+						<Route path="/404" element={<Error404 />} />
+						<Route path="*" element={<Error404 />} />
+
 
 					</Routes>
 				</div>
@@ -176,6 +187,8 @@ function Main() {
 					<Route path="chat" element={<Side2 isN={1} />} />
 					<Route path="chat/:login" element={<Side2 isN={1} />} />
 					<Route path="/profile/:login" element={<Side2 isN={0} />} />
+					<Route path="/404" element={<Side2 isN={1} />} />
+					<Route path="*" element={<Side2 isN={1} />} />
 				</Routes>
 				{invit && <Invitation state={setInvit} />}
 			</div>

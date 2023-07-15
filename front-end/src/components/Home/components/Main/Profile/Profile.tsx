@@ -10,7 +10,8 @@ import { useEffect, useState } from 'react'
 import axios from '../../../../../Interceptor/Interceptor'
 import { Link, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import PlayBtn from './playBtn.svg'
+import defaultAvatar from '../../../../../assets/img/avatar.png'
+import { useNavigate } from 'react-router-dom';
 
 
 const Playbtn = () => (
@@ -32,7 +33,7 @@ const Chatbtn = () => (
 const Addbtn = () => (
     <div>
         <svg style={{ transform: 'translateX(' + (2 / 16) + 'rem)' }} width={(20 / 16) + 'rem'} height={(20 / 16) + 'rem'} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clipRule="evenodd" d="M7.50016 1.04163C5.31404 1.04163 3.54183 2.81383 3.54183 4.99996C3.54183 7.18609 5.31404 8.95829 7.50016 8.95829C9.68629 8.95829 11.4585 7.18609 11.4585 4.99996C11.4585 2.81383 9.68629 1.04163 7.50016 1.04163ZM0.208496 15.7916C0.208496 13.1683 2.33514 11.0416 4.9585 11.0416H10.0418C12.6652 11.0416 14.7918 13.1683 14.7918 15.7916C14.7918 17.5405 13.3741 18.9583 11.6252 18.9583H3.37516C1.62626 18.9583 0.208496 17.5405 0.208496 15.7916ZM17.4168 5.83329C17.4168 5.41908 17.081 5.08329 16.6668 5.08329C16.2526 5.08329 15.9168 5.41908 15.9168 5.83329V7.58329H14.1668C13.7526 7.58329 13.4168 7.91908 13.4168 8.33329C13.4168 8.74751 13.7526 9.08329 14.1668 9.08329H15.9168V10.8333C15.9168 11.2475 16.2526 11.5833 16.6668 11.5833C17.081 11.5833 17.4168 11.2475 17.4168 10.8333V9.08329H19.1668C19.581 9.08329 19.9168 8.74751 19.9168 8.33329C19.9168 7.91908 19.581 7.58329 19.1668 7.58329H17.4168V5.83329Z" fill="white" />
+            <path fillRule="evenodd" clipRule="evenodd" d="M7.50016 1.04163C5.31404 1.04163 3.54183 2.81383 3.54183 4.99996C3.54183 7.18609 5.31404 8.95829 7.50016 8.95829C9.68629 8.95829 11.4585 7.18609 11.4585 4.99996C11.4585 2.81383 9.68629 1.04163 7.50016 1.04163ZM0.208496 15.7916C0.208496 13.1683 2.33514 11.0416 4.9585 11.0416H10.0418C12.6652 11.0416 14.7918 13.1683 14.7918 15.7916C14.7918 17.5405 13.3741 18.9583 11.6252 18.9583H3.37516C1.62626 18.9583 0.208496 17.5405 0.208496 15.7916ZM17.4168 5.83329C17.4168 5.41908 17.081 5.08329 16.6668 5.08329C16.2526 5.08329 15.9168 5.41908 15.9168 5.83329V7.58329H14.1668C13.7526 7.58329 13.4168 7.91908 13.4168 8.33329C13.4168 8.74751 13.7526 9.08329 14.1668 9.08329H15.9168V10.8333C15.9168 11.2475 16.2526 11.5833 16.6668 11.5833C17.081 11.5833 17.4168 11.2475 17.4168 10.8333V9.08329H19.1668C19.581 9.08329 19.9168 8.74751 19.9168 8.33329C19.9168 7.91908 19.581 7.58329 19.1668 7.58329H17.4168V5.83329Z" fill="white" />
         </svg>
 
     </div>
@@ -106,6 +107,9 @@ type ProfileRightType = {
     isFriend: boolean;
     friendshipId: number;
     isSent: boolean;
+    rank: number;
+    rating: string | undefined;
+
 }
 
 
@@ -140,7 +144,6 @@ function Profile(props: any) {
             </button>
         );
     };
-    console.log('myFriend', myFriends)
     useEffect(() => {
         const Fetch = async () => {
             await axios.get('/Profile/' + login + '/Friends').then((response) => setFriends(response.data));
@@ -174,7 +177,13 @@ function Profile(props: any) {
                                     return (
                                         <div key={e.UserId + 'fr'} className="friend-Profile">
                                             <div className="friend-info">
-                                                <Link to={'/profile/' + e.username}><img src={e.avatar} alt="" /></Link>
+                                                <Link to={'/profile/' + e.username}>
+                                                    <img src={e.avatar} onError={(e) => {
+                                                        console.log(e.target);
+                                                        e.target.src = defaultAvatar;
+                                                    }
+                                                    } alt="" />
+                                                </Link>
                                                 <p>{e.username}</p>
                                             </div>
                                             {/* <div className="buttons-f">
@@ -221,18 +230,23 @@ export function ProfileProfile() {
         isFriend: false,
         friendshipId: 0,
         isSent: false,
+        rank: 0,
+        rating: undefined,
     });
     const [update, setUpdate] = useState(false);
     const dispatch: AppDispatch = useDispatch()
-
-
+    const navigate = useNavigate();
     useEffect(() => {
         dispatch(setTrue());
         const Fetch = async () => {
             await axios.get('/Profile/' + login + '/profile').then((response) => {
                 setPR(response.data)
                 dispatch(setFalse());
-            });
+            }).catch((e) => {
+                navigate('/404');
+                dispatch(setFalse());
+                console.log()
+            })
             setwidthPro(((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
             setOpacity(1);
         }
@@ -242,7 +256,6 @@ export function ProfileProfile() {
         setwidthPro(((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
         setOpacity(1);
     }, [, , ProfileRight])
-    console.log('proo', ProfileRight);
     const AddFriend = async () => {
         await axios.post("/SendRequest", { receiverId: ProfileRight.UserId }).then(resp => {
             console.log(resp);
@@ -261,16 +274,21 @@ export function ProfileProfile() {
             setUpdate(!update);
         })
     }
+    console.log('heeeey', ProfileRight.status);
     return (
         <div className="profileRE">
             <GradienBox mywidth={window.innerWidth > 770 ? '397px' : '1200px'} myheight={'526px'} myborder={'40px'}>
                 <div className="container-Profile-profile">
                     <h1>Profile</h1>
                     <div className='imgS'>
-                        <img src={ProfileRight.avatar} alt="" />
+                        <img src={ProfileRight.avatar} onError={(e) => {
+                            console.log(e.target);
+                            e.target.src = defaultAvatar;
+                        }
+                        } alt="" />
                     </div>
                     <h2>{ProfileRight.username}</h2>
-                    <div className="status"><span className={(ProfileRight.status ? 'dotss' : 'dotss greenDotss')}></span><span className={(ProfileRight.status ? 'txt-status' : 'txt-status greenStatus')}>{(ProfileRight.status ? 'Offline' : 'Online')}</span></div>
+                    <div className="status"><span className={(!ProfileRight.status ? 'dotss' : 'dotss greenDotss')}></span><span className={(!ProfileRight.status ? 'txt-status' : 'txt-status greenStatus')}>{(!ProfileRight.status ? 'Offline' : 'Online')}</span></div>
                     <div className="buttons-f">
                         {
                             ProfileRight.isOwner === false ?
@@ -287,7 +305,7 @@ export function ProfileProfile() {
                                             <>
                                                 <button onClick={BlockUser}><Blockbtn /></button>
                                                 {
-                                                    (ProfileRight.isSent === false ?  <button onClick={AddFriend}><Addbtn /></button> : <button onClick={CancelFriend}><UnFriendbtn /></button>)
+                                                    (ProfileRight.isSent === false ? <button onClick={AddFriend}><Addbtn /></button> : <button onClick={CancelFriend}><UnFriendbtn /></button>)
                                                 }
                                             </>
 
@@ -310,12 +328,12 @@ export function ProfileProfile() {
                         <div className="footerCon">
                             <div className="footedge">
                                 <h4>Rank</h4>
-                                <h4 className='green'>2</h4>
+                                <h4 className='green'>{ProfileRight.rank}</h4>
                             </div>
                             <div className="footCenter"></div>
                             <div className="footedge gaping-edge">
                                 <h4>Ratings</h4>
-                                <h4 className='green'>8.9</h4>
+                                <h4 className='green'>{ProfileRight.rating !== 'NaN' ? ProfileRight.rating : '--'}</h4>
                             </div>
                         </div>
                     </div>
@@ -332,7 +350,11 @@ function TheGame(props: any) {
                 <div className={props.theGame === 'win' ? "gameSta winGame" :
                     props.theGame === 'lose' ? 'gameSta loseGame' : 'gameSta'}>
                     <div className="infoGame">
-                        <img src={props.avatar} alt="Enemey" />
+                        <img src={props.avatar} onError={(e) => {
+                            console.log(e.target);
+                            e.target.src = defaultAvatar;
+                        }
+                        } alt="Enemey" />
                         <div className="enemyScore">
                             <h1>{props.login}</h1>
                             <div className="score">
@@ -409,7 +431,6 @@ export function ProfileDown() {
             try {
                 const response = await axios.get('/Profile/' + login + '/gamehistory');
                 setAllGams(response.data);
-                console.log('allGame', allGames)
             } catch (error) {
                 // Handle error
             }
@@ -442,7 +463,6 @@ export function ProfileDown() {
             })
         },
     }
-    console.log(window.innerHeight)
     return (
         <div className="profileDown">
             <div className="AchivementsProfile">

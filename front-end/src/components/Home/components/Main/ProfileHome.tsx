@@ -2,16 +2,17 @@ import GradienBox from '../../../../tools/GradienBox'
 import "./ProfileHome.scss"
 import SBadge from "../../../../assets/img/small-badge.svg"
 import BBadge from "../../../../assets/img/big-badge.svg"
-import {getAdmin} from "../../../../features/adminSlice"
+import { getAdmin } from "../../../../features/adminSlice"
 import { useDispatch, useSelector } from 'react-redux';
 // import axios from '../../../../Interceptor/Interceptor'
 import { AppDispatch } from '../../../../store/store'
 import { useEffect, useState } from 'react';
+import defaultAvatar from '../../../../assets/img/avatar.png'
 
 function ProfileHome() {
     const dispatch: AppDispatch = useDispatch();
     // const data: any = useSelector((state: any) => state.admin);
-    
+
     // // const [data, setdata] = useState('')
     // useEffect(() => {
     //     dispatch(getAdmin());
@@ -21,20 +22,20 @@ function ProfileHome() {
     // }, [dispatch])
     // const dispatch: AppDispatch = useDispatch();
     const data: any = useSelector((state: any) => state.admin);
-  
+
     // useEffect(() => {
     //     const fetchData = async () => {
-	// 		await dispatch(getAdmin());
-	// 		// await dispatch(getNotification());
-	// 		// await dispatch(getMessage());
-	// 	};
+    // 		await dispatch(getAdmin());
+    // 		// await dispatch(getNotification());
+    // 		// await dispatch(getMessage());
+    // 	};
     //     fetchData();
     // }, []);
-    
+
     // useEffect(() => {
     //     console.log('data', data);
     // }, [data]);
-   console.log('hello',data)
+    console.log('hello', data)
     return (
         <div className="myProfile">
             <GradienBox mywidth="397px" myheight="284px" myborder="40px">
@@ -43,9 +44,13 @@ function ProfileHome() {
                         <div className="profile-head">My Profile</div>
                         <div className='profile-mid'>
                             <div className='mid1'>
-                                <img className='mid-img1' alt='' src={data.avatar} />
+                                <img className='mid-img1' onError={(e) => {
+                                    console.log(e.target);
+                                    e.target.src = defaultAvatar;
+                                }
+                                } alt='' src={data.avatar} />
                                 <div className='m1-nl'>
-                                    <h1 style={{width: '6.25rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap' ,overflow: 'hidden'}}>{data.username}</h1>
+                                    <h1 style={{ width: '6.25rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{data.username}</h1>
                                     <div className='m1-l'>
                                         <img className='mid-img2' src={SBadge} alt='' />
                                         <h3>Level <span>{data.level}</span></h3>
@@ -65,7 +70,7 @@ function ProfileHome() {
                             <div className="sep-s" />
                             <div className='pr'>
                                 <h1 className='title-f'>Status</h1>
-                                {data.status ? <h3 className='on'>Online</h3> : <h3 className='off'>Offline</h3>}
+                                {!data.status ? <h3 className='on'>Online</h3> : <h3 className='off'>Offline</h3>}
                             </div>
                             <div className="sep-s" />
                             <div className='pr'>

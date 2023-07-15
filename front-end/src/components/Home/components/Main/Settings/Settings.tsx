@@ -2,7 +2,6 @@ import './Settings.scss'
 import GradienBox from '../../../../../tools/GradienBox'
 import axios from '../../../../../Interceptor/Interceptor'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { useEffect, useState, ChangeEvent } from 'react'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../../../store/store'
@@ -10,16 +9,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { setFalse, setTrue } from '../../../../../features/isLoading';
 import { getAdmin, setUsername as setUSer, setStatus as statusSet } from '../../../../../features/adminSlice'
 import Blockedlist from './BlockedList'
+import BackToHome from '../../BackToHome'
 
 
-const BackHome = () => {
-    return (
-        <svg width="0.938rem" height="0.938rem" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fillRule="evenodd" clipRule="evenodd" d="M3.26941 0.309043C4.10711 0 5.15474 0 7.25 0C9.34526 0 10.3929 0 11.2306 0.309043C12.6029 0.815313 13.6847 1.89711 14.191 3.26941C14.5 4.10711 14.5 5.15474 14.5 7.25C14.5 9.34526 14.5 10.3929 14.191 11.2306C13.6847 12.6029 12.6029 13.6847 11.2306 14.191C10.3929 14.5 9.34526 14.5 7.25 14.5C5.15474 14.5 4.10711 14.5 3.26941 14.191C1.89711 13.6847 0.815313 12.6029 0.309044 11.2306C0 10.3929 0 9.34526 0 7.25C0 5.15474 0 4.10711 0.309044 3.26941C0.815313 1.89711 1.89711 0.815313 3.26941 0.309043ZM7.10515 5.08259C7.39804 4.78969 7.39804 4.31482 7.10514 4.02193C6.81225 3.72904 6.33737 3.72904 6.04448 4.02194L3.34681 6.71966C3.05392 7.01255 3.05392 7.48742 3.34681 7.78031L6.04449 10.478C6.33738 10.7709 6.81225 10.7709 7.10515 10.478C7.39804 10.1851 7.39804 9.71022 7.10515 9.41733L5.6878 7.99998H10.6213C11.0355 7.99998 11.3713 7.6642 11.3713 7.24998C11.3713 6.83577 11.0355 6.49998 10.6213 6.49998H5.68778L7.10515 5.08259Z" fill="#F9C690" />
-        </svg>
 
-    )
-}
 const Pen = () => {
     return (<svg width="1.938rem" height="1.938rem" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fillRule="evenodd" clipRule="evenodd" d="M16.642 7.2809C17.7388 6.18414 19.517 6.18414 20.6138 7.2809L22.6467 9.31381C23.7435 10.4106 23.7434 12.1888 22.6467 13.2855L12.7368 23.1954C12.5613 23.3709 12.3232 23.4696 12.0749 23.4696H7.39415C6.87713 23.4696 6.45801 23.0505 6.45801 22.5334V17.8527C6.45801 17.6044 6.55664 17.3663 6.7322 17.1907L16.642 7.2809ZM19.2899 8.60481C18.9243 8.23922 18.3315 8.23922 17.966 8.60481L17.304 7.94286L17.966 8.60481L8.3303 18.2405V21.5973H11.6871L21.3228 11.9616C21.6884 11.596 21.6884 11.0033 21.3228 10.6377L19.2899 8.60481L19.9518 7.94286L19.2899 8.60481Z" fill="white" />
@@ -170,12 +163,7 @@ function Settings() {
         <div className="settings-Container">
             <div className="header-settings">
                 <h1>Settings</h1>
-                <div className='backHome-cont'>
-                    <Link to='/' className="backHome">
-                        <BackHome />
-                        <p>Back to home</p>
-                    </Link>
-                </div>
+                <BackToHome />
             </div>
             <GradienBox mywidth="1201px" myheight="365px" myborder="40px">
                 <div className="AccountSettings">
@@ -233,7 +221,7 @@ function Settings() {
                             {
                                 // isOff === null &&
                                 <div className="button-switch">
-                                    <div className={isOff ? "switch-back offline-active-btn" : 'switch-back online-active-btn'} />
+                                    <div className={!isOff ? "switch-back offline-active-btn" : 'switch-back online-active-btn'} />
                                     <button onClick={handleStatus} className='online-btn'>Offline</button>
                                     <button onClick={handleStatus} className='offline-btn'>Online</button>
                                 </div>

@@ -205,6 +205,7 @@
                 a {
                     z-index: 99999999999999999999999999999999999999999999999999999999;
                     width: toRem(60);
+
                     .avatar {
                         width: toRem(60);
                         // height: toRem(35.82);
@@ -649,4 +650,41 @@ $heighvh : 17.75rem+2.5625rem+1rem+2.8125rem;
 
 .acivity-vh {
     height: calc(100vh - $heighvh);
+}
+
+
+.E404 {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: toRem(20);
+
+    h1 {
+        color: #F9C690;
+        font-family: 'Inter';
+        font-size: toRem(300);
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+    }
+
+    img {
+        width: toRem(200);
+        height: toRem(265);
+        position: absolute;
+        transform: translate(toRem(4), toRem(-54));
+    }
+
+    p {
+        color: #FFF;
+        // text-align: center;
+        // font-family: 'Inter';
+        font-size: toRem(33);
+        // font-style: normal;
+        font-weight: 100;
+        // line-height: 117.523%;
+    }
 }

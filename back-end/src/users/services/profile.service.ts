@@ -27,16 +27,16 @@ export class ProfileService {
 	{
 		var blocked;
 		const user = await this.ReturnOneUserByusername(username);
-		if (user.UserId !== User.UserId)
+		if (user && user.UserId !== User.UserId)
 		    blocked = await this.isBlocked(user, User);
-		// console.log(blocked);
-		// if (blocked || !user)
-		// 	throw new NotFoundException('User profile not found');
+		if (blocked || !user)
+			throw new NotFoundException('User profile not found');
 		const Isowner = user.username === User.username;
 		var isSent = false;
 		var isFriend = false;
 		var friend;
 		var friendshipId = 0;
+
 		if (!Isowner)
 		{
 			friend = await this.checkisfriend(user, User);
@@ -248,15 +248,12 @@ export class ProfileService {
 						OR: [{SenderId : user.UserId, ReceiverId : AuthUser.UserId},
 							{SenderId : AuthUser.UserId, ReceiverId : user.UserId},]
 					},
-					{
-						Accepted : true,
-					}
 				]
 			},
 			take : 1,
 		});
 		friend.filter((friend) => friend !== undefined);
-		// console.log(friend);
+		console.log(friend);
 		return friend;
 	}
     
@@ -280,8 +277,7 @@ export class ProfileService {
 				],
 			}
 		});
-		console.log(isBlocked);
-		return !(isBlocked === undefined);
+		return !(isBlocked === null);
 	}
 
 	async getBlockeduserIds(user : User)

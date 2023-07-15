@@ -33,11 +33,11 @@ export class ProfileService {
 		const rating = (drawCount, lossCount, winCount) => {
 			const totalGames = drawCount + lossCount + winCount;
 			const winPercentage = winCount / totalGames;
-			const rating = (winPercentage * 10).toFixed(2);
+			const rating = (winPercentage * 10).toFixed(1);
 			return rating;
 		  };
 		  
-		const playerRating = rating(count.Draw, count.loose, count.win);
+		const playerRating = await rating(count.Draw, count.loose, count.win);
 
 		return playerRating;
 	}
@@ -79,8 +79,6 @@ export class ProfileService {
 		const playerRating = await this.calculRating(user);
 
 		const rank = await this.playerRank(user);
-
-		console.log(rank);
 
 		return ({
 			rating			: playerRating,

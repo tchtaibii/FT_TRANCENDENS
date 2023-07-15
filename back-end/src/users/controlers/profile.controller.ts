@@ -27,34 +27,20 @@ export class ProfileController {
 
     @Get(':username/profile')
     async getProfile(@Req() req, @Res() res, @Param('username') username : string){
-        // var blocked;
-    //    console.log("hahaha\n");
-        const user = await this.ProfileService.ReturnOneUserByusername(username);
-        // if (user.UserId !== req.user.UserId)
-        //     blocked = await this.ProfileService.isBlocked(user, req.user);
-		// if (blocked || !user)
-		// 	throw new NotFoundException('User profile not found');
-    //    console.log("here\n");
-        const Isowner = user.username === req.user.username;
-        var isSent = false;
-        var isFriend = false;
-        var friend;
-        if (!Isowner)
-        {
-            friend = await this.ProfileService.checkisfriend(user, req.user);
-            isSent = friend.length ? true : false;
-            isFriend = isSent ? friend[0].Accepted : false;
-        }
+       
+        const profile = await this.ProfileService.getProfile(req.user, username);
+
         res.json({
-            UserId   : user.UserId,
-            avatar 	 : user.avatar,
-            status 	 : user.status,
-            level  	 : user.level,
-            xp       : user.XP,
-            username : user.username,
-            Isowner,
-            isSent,
-            isFriend,
+            friendshipId: profile.friendshipId,
+            UserId: profile.UserId,
+            avatar: profile.avatar,
+            status: profile.status,
+            level: profile.level,
+            xp: profile.xp,
+            username: profile.username,
+            isOwner: profile.Isowner,
+            isSent: profile.isSent,
+            isFriend: profile.isFriend,
         });
     }
 
@@ -69,7 +55,6 @@ export class ProfileController {
 	}
 
     @Post('blockUser')
-    @Post('CancelRequest')
     @ApiBody({ 
         schema: {
           type: 'object',

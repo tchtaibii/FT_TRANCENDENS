@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaClient, User, } from '@prisma/client';
 import { GamesDTO, ProfileFriends } from '../dto/dto-classes';
 import { join } from 'path';
@@ -22,6 +22,42 @@ export class ProfileService {
 		}
 		return findUser;
     }
+
+	async getProfile(User : User, username)
+	{
+		var blocked;
+		const user = await this.ReturnOneUserByusername(username);
+		if (user.UserId !== User.UserId)
+		    blocked = await this.isBlocked(user, User);
+		// console.log(blocked);
+		// if (blocked || !user)
+		// 	throw new NotFoundException('User profile not found');
+		const Isowner = user.username === User.username;
+		var isSent = false;
+		var isFriend = false;
+		var friend;
+		var friendshipId = 0;
+		if (!Isowner)
+		{
+			friend = await this.checkisfriend(user, User);
+			isSent = friend.length ? true : false;
+			isFriend = isSent ? friend[0].Accepted : false;
+			friendshipId = isSent || isFriend ? friend[0].FriendshipId : 0;
+		}
+
+		return ({
+			friendshipId	: friendshipId,
+			UserId   		: user.UserId,
+			avatar 	 		: user.avatar,
+			status 	 		: user.status,
+			level  	 		: user.level,
+			xp       		: user.XP,
+			username 		: user.username,
+			Isowner,
+			isSent,
+			isFriend,
+		});
+	}
 
 	async blockUser(user : User, targetUser : User)
 	{
@@ -244,7 +280,8 @@ export class ProfileService {
 				],
 			}
 		});
-		return isBlocked === null;
+		console.log(isBlocked);
+		return !(isBlocked === undefined);
 	}
 
 	async getBlockeduserIds(user : User)

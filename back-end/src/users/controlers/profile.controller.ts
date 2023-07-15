@@ -55,7 +55,6 @@ export class ProfileController {
 	}
 
     @Post('blockUser')
-    @Post('CancelRequest')
     @ApiBody({ 
         schema: {
           type: 'object',

@@ -29,22 +29,24 @@ export class ProfileService {
 		const user = await this.ReturnOneUserByusername(username);
 		if (user.UserId !== User.UserId)
 		    blocked = await this.isBlocked(user, User);
-		console.log(blocked);
+		// console.log(blocked);
 		// if (blocked || !user)
 		// 	throw new NotFoundException('User profile not found');
 		const Isowner = user.username === User.username;
 		var isSent = false;
 		var isFriend = false;
 		var friend;
+		var friendshipId = 0;
 		if (!Isowner)
 		{
 			friend = await this.checkisfriend(user, User);
 			isSent = friend.length ? true : false;
 			isFriend = isSent ? friend[0].Accepted : false;
+			friendshipId = isSent || isFriend ? friend[0].FriendshipId : 0;
 		}
 
 		return ({
-			friendshipId 	: friend[0].FriendshipId,
+			friendshipId	: friendshipId,
 			UserId   		: user.UserId,
 			avatar 	 		: user.avatar,
 			status 	 		: user.status,

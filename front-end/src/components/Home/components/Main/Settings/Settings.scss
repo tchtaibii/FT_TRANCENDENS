@@ -642,6 +642,13 @@ svg {
                     overflow-y: scroll;
                     scrollbar-width: none;
 
+                    p{
+                        width: 100%;
+                        height: 100%;
+                        text-align: center;
+                        color: gray;
+                    }
+
                     &::-webkit-scrollbar {
                         display: none;
                     }
@@ -661,6 +668,7 @@ svg {
                             img {
                                 width: toRem(60.403);
                                 height: toRem(60.403);
+                                border-radius: toRem(20);
                             }
 
                             p {

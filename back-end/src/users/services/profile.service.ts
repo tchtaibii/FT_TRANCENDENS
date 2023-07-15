@@ -198,7 +198,6 @@ export class ProfileService {
 						isOwner : false,
 					}
 			}).filter((frienship) => frienship !== undefined);
-
 			return friends;
 		}
 	}
@@ -221,7 +220,8 @@ export class ProfileService {
 			take : 1,
 		});
 		friend.filter((friend) => friend !== undefined);
-		return friend.length ? true : false;
+		// console.log(friend);
+		return friend;
 	}
     
 	async isBlocked(user : User, AuthUser : User)

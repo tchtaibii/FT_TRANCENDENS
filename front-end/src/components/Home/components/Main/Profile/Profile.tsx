@@ -48,12 +48,12 @@ const Blockbtn = () => (
     </div>
 )
 
-const Friendbtn = () => (
+const UnFriendbtn = () => (
     <div>
-        <svg style={{ transform: 'translateX(' + (2 / 16) + 'rem)' }} width={(20 / 16) + 'rem'} height={(18 / 16) + 'rem'} viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3.54183 3.99996C3.54183 1.81383 5.31404 0.041626 7.50016 0.041626C9.68629 0.041626 11.4585 1.81383 11.4585 3.99996C11.4585 6.18609 9.68629 7.95829 7.50016 7.95829C5.31404 7.95829 3.54183 6.18609 3.54183 3.99996Z" fill="white" />
-            <path d="M4.9585 10.0416C2.33514 10.0416 0.208496 12.1683 0.208496 14.7916C0.208496 16.5405 1.62626 17.9583 3.37516 17.9583H11.6252C13.3741 17.9583 14.7918 16.5405 14.7918 14.7916C14.7918 12.1683 12.6652 10.0416 10.0418 10.0416H4.9585Z" fill="white" />
-            <path d="M19 3L15 7.5L13 5.5" stroke="white" strokeLinecap="round" />
+        <svg style={{ transform: 'translateX(' + (2 / 16) + 'rem)' }} width={(20 / 16) + 'rem'} height={(20 / 16) + 'rem'} viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="13" y="7.5" width="7" height="2" rx="1" fill="white" />
+            <path d="M3.54168 4.99999C3.54168 2.81386 5.31388 1.04166 7.50001 1.04166C9.68614 1.04166 11.4583 2.81386 11.4583 4.99999C11.4583 7.18612 9.68614 8.95832 7.50001 8.95832C5.31388 8.95832 3.54168 7.18612 3.54168 4.99999Z" fill="white" />
+            <path d="M4.95835 11.0417C2.33499 11.0417 0.208344 13.1683 0.208344 15.7917V15.7917C0.208344 17.5406 1.62611 18.9583 3.37501 18.9583H11.625C13.3739 18.9583 14.7917 17.5406 14.7917 15.7917V15.7917C14.7917 13.1683 12.665 11.0417 10.0417 11.0417H4.95835Z" fill="white" />
         </svg>
     </div>
 
@@ -102,6 +102,8 @@ type ProfileRightType = {
     xp: number;
     username: string;
     Isowner: boolean;
+    UserId: string;
+    isFriend: boolean
 }
 
 
@@ -119,7 +121,7 @@ function Profile(props: any) {
         const handleClick = async () => {
             if (props.Sent === false) {
                 await axios.post('/SendRequest', { receiverId: props.userId }).then(response => {
-                   console.log(response);
+                    console.log(response);
                 })
                     .catch(error => {
                         console.log(error);
@@ -165,7 +167,8 @@ function Profile(props: any) {
                     <div className="content-friend">
                         <div className="content-fri">
                             {
-                                myFriends.map((e) => {
+                                myFriends.length > 0 &&
+                                myFriends.map((e: any) => {
                                     return (
                                         <div key={e.UserId + 'fr'} className="friend-Profile">
                                             <div className="friend-info">
@@ -211,7 +214,9 @@ export function ProfileProfile() {
         level: 0,
         xp: 0,
         username: '',
-        Isowner: true
+        Isowner: true,
+        UserId: "",
+        isFriend: false
     });
     const dispatch: AppDispatch = useDispatch()
 
@@ -232,7 +237,22 @@ export function ProfileProfile() {
         setwidthPro(((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
         setOpacity(1);
     }, [login, ProfileRight])
-    console.log(ProfileRight);
+    console.log('proo', ProfileRight);
+    const AddFriend = async () => {
+        await axios.post("/SendRequest", { receiverId: ProfileRight.UserId }).then(resp => {
+            console.log(resp);
+        })
+    }
+    const BlockUser = async () => {
+        await axios.post("/Profile/blockUser", { blockedUser: ProfileRight.username }).then(resp => {
+            console.log(resp);
+        })
+    }
+    const CancelFriend = async () => {
+        await axios.post("/CancelRequest", { blockedUser: ProfileRight.username }).then(resp => {
+            console.log(resp);
+        })
+    }
     return (
         <div className="profileRE">
             <GradienBox mywidth={window.innerWidth > 770 ? '397px' : '1200px'} myheight={'526px'} myborder={'40px'}>
@@ -249,16 +269,16 @@ export function ProfileProfile() {
                                 <>
                                     {/* { */}
                                     {
-                                        ProfileRight.isFriend ?
+                                        !ProfileRight.isFriend ?
                                             <>
-                                                <button><Friendbtn /></button>
-                                                <button><Blockbtn /></button>
+                                                <button><UnFriendbtn /></button>
+                                                <button onClick={BlockUser}><Blockbtn /></button>
                                                 <button><Chatbtn /></button>
                                                 <button><Playbtn /></button>
                                             </> :
                                             <>
-                                                <button><Blockbtn /></button>
-                                                <button><Addbtn /></button>
+                                                <button onClick={BlockUser}><Blockbtn /></button>
+                                                <button onClick={AddFriend}><Addbtn /></button>
                                             </>
 
                                     }
@@ -379,7 +399,7 @@ export function ProfileDown() {
             try {
                 const response = await axios.get('/Profile/' + login + '/gamehistory');
                 setAllGams(response.data);
-               console.log('allGame', allGames)
+                console.log('allGame', allGames)
             } catch (error) {
                 // Handle error
             }
@@ -412,7 +432,7 @@ export function ProfileDown() {
             })
         },
     }
-   console.log(window.innerHeight)
+    console.log(window.innerHeight)
     return (
         <div className="profileDown">
             <div className="AchivementsProfile">

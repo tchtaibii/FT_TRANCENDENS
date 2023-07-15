@@ -78,7 +78,6 @@ model Friendship {
 }
 
 enum notificationType {
-  friendship_request
   Accepted_request
   game_invitation
   Achievement

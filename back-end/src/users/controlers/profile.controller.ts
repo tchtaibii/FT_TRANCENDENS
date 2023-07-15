@@ -36,16 +36,24 @@ export class ProfileController {
 		// 	throw new NotFoundException('User profile not found');
     //    console.log("here\n");
         const Isowner = user.username === req.user.username;
-        let isFriend = false;
+        var isSent = false;
+        var isFriend = false;
+        var friend;
         if (!Isowner)
-            isFriend = await this.ProfileService.checkisfriend(user, req.user);
+        {
+            friend = await this.ProfileService.checkisfriend(user, req.user);
+            isSent = friend.length ? true : false;
+            isFriend = isSent ? friend[0].Accepted : false;
+        }
         res.json({
+            UserId   : user.UserId,
             avatar 	 : user.avatar,
             status 	 : user.status,
             level  	 : user.level,
             xp       : user.XP,
             username : user.username,
             Isowner,
+            isSent,
             isFriend,
         });
     }

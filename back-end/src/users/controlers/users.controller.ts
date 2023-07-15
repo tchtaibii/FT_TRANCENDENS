@@ -36,7 +36,6 @@ export class UsersController {
     })
     async RemoveRequest(@Body('FriendshipId') friendshipId : number)
     {
-        console.log(friendshipId);
         await this.UserService.cancelRequest(friendshipId);
     }
 

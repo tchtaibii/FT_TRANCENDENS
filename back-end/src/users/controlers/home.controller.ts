@@ -28,6 +28,7 @@ export class HomeController {
         var avatar = req.user.avatar;
         if (req.user.avatar.search("https://cdn.intra.42.fr/users/") === -1)
             avatar = process.env.HOST + process.env.PORT + req.user.avatar;
+
         res.json({
             lastGame : lastGame,
             avatar : avatar,

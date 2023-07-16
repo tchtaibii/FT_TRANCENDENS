@@ -203,7 +203,7 @@ function Main() {
 				<div className="side1">
 					<div className='top'>
 						<Search />
-						<MsgNot invi={invitations} noti={notifications} />
+						<MsgNot setInvi={setInvitation} invi={invitations} noti={notifications} />
 					</div>
 					<Routes>
 						<Route path="/" element={<><Hero /><GamesMode /><BestPlayers /></>} />

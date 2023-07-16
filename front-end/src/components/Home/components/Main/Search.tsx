@@ -10,12 +10,12 @@ import axios from '../../../../Interceptor/Interceptor'
 
 function SearchContent(props: any) {
 	const SimpeLoop = () => {
-		console.log('user ound', props.userFound);
+		// console.log('user ound', props.userFound);
 		const elements = props.userFound.map((e: any, i:number) =>
 			<Link onClick={() => {
 				props.set(false);
 			}} to={`/profile/${e.username}`} key={'userFound-' + i} className="found">
-				<div className={'f-part1 ' + (e.status === true ? "user-active-search" : "user-desactive-search")}>
+				<div className={'f-part1 ' + (e.isFriend && (e.status === true ? "user-active-search" : "user-desactive-search"))}>
 					<img onError={(e:any) => {
 					console.log(e.target);
 					e.target.src = defaultAvatar;

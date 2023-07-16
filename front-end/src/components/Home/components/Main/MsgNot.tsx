@@ -32,8 +32,13 @@ function MsgNot(props: any) {
 	const handleClickOutside = () => {
 		setIsVisible(false)
 	}
-	const handleClickOutsideI = () => {
+	const handleClickOutsideI = async () => {
 		setIsVisibleI(false)
+		await axios.get('FriendshipRequest').then(resp => {
+			props.setInvi(resp.data)
+		}).catch((err) => {
+			console.log('had error', err);
+		})
 	}
 	useOnClickOutside(ref, handleClickOutside);
 	useOnClickOutside(refI, handleClickOutsideI);

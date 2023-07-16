@@ -291,7 +291,11 @@ export function ProfileProfile() {
                         } alt="" />
                     </div>
                     <h2>{ProfileRight.username}</h2>
-                    <div className="status"><span className={(!ProfileRight.status ? 'dotss' : 'dotss greenDotss')}></span><span className={(!ProfileRight.status ? 'txt-status' : 'txt-status greenStatus')}>{(!ProfileRight.status ? 'Offline' : 'Online')}</span></div>
+                    {
+                        (ProfileRight.isOwner || ProfileRight.isFriend) &&
+                        <div className="status"><span className={(!ProfileRight.status ? 'dotss' : 'dotss greenDotss')}></span><span className={(!ProfileRight.status ? 'txt-status' : 'txt-status greenStatus')}>{(!ProfileRight.status ? 'Offline' : 'Online')}</span></div>
+
+                    }
                     <div className="buttons-f">
                         {
                             ProfileRight.isOwner === false ?

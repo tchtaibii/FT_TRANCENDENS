@@ -1,4 +1,4 @@
-import { Body, Controller, Get, ParseIntPipe, Patch, Post, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/auth-guard/jwt-guard';
 import { UsersService } from '../services/users.service';
 import {UserDTO, GamesDTO, AllGames, topPlayers} from '../dto/dto-classes'
@@ -28,7 +28,7 @@ export class UsersController {
           },
         },
     })
-	async search(@Req() req, @Body('user') user : string, @Res() res)
+	async search(@Req() req, @Param('user') user : string, @Res() res)
 	{
 		const allusers = await this.UserService.getallUsers(req.user, user);
         res.json(allusers);

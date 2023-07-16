@@ -28,7 +28,7 @@ export class ProfileController {
     async getProfile(@Req() req, @Res() res, @Param('username') username : string){
        
         const profile = await this.ProfileService.getProfile(req.user, username);
-
+        console.log(profile.avatar);
         res.json({
             friendshipId: profile.friendshipId,
             UserId: profile.UserId,

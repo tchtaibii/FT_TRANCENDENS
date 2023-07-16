@@ -17,11 +17,13 @@ import defaultAvatar from "../../../../assets/img/avatar.png";
 import Stream from "../../../../assets/img/stream.svg";
 import LeaderBoard from "../../../../assets/img/leaderBoard.svg";
 import { motion, AnimatePresence } from 'framer-motion'
-
+import { useNavigate } from 'react-router-dom';
 function MsgNot(props: any) {
 	const [isVisible, setIsVisible] = useState(false);
+	const [isVisibleI, setIsVisibleI] = useState(false);
 	const [isNav, setNavMo] = useState(false);
 	const ref = useRef(null)
+	const refI = useRef(null)
 	const [Login, setLogin] = useState('')
 	useEffect(() => {
 		axios.get('/Home/Hero').then((response) => setLogin(response.data))
@@ -30,25 +32,52 @@ function MsgNot(props: any) {
 	const handleClickOutside = () => {
 		setIsVisible(false)
 	}
-	useOnClickOutside(ref, handleClickOutside)
+	const handleClickOutsideI = () => {
+		setIsVisibleI(false)
+	}
+	useOnClickOutside(ref, handleClickOutside);
+	useOnClickOutside(refI, handleClickOutsideI);
 	return (
 		<div className='msgNot-cont' >
-			<GradienBox mywidth="49px" myheight="49px" myborder="10px">
-				<button className='btn-msgnot'><img style={{ width: '1.5rem' }} src={inviFriend} alt='' /></button>
-			</GradienBox>
+			<div ref={refI}>
+				<GradienBox mywidth="49px" myheight="49px" myborder="10px">
+					<button onClick={() => setIsVisibleI(!isVisibleI)} className='btn-msgnot'><img style={{ width: '1.5rem' }} src={inviFriend} alt='' /></button>
+				</GradienBox>
+				<AnimatePresence mode='wait'>
+			{
+				isVisibleI &&
+				<motion.div
+					initial={{ scale: 0, }}
+					animate={{ scale: 1, }}
+					exit={{ scale: 0 }}
+					key={'invitations'}
+					transition={{ ease: "easeInOut", duration: 0.2 }}
+					style={{ position: 'absolute', top: '3.5rem', width: 'fit-content', transform: 'translateX(-15rem)' }}>
+					<NotificationCont data={props.invi} isN={false} />
+				</motion.div>
+			}
+			</AnimatePresence>
+			</div>
+
 			<div ref={ref}>
 				<GradienBox mywidth="49px" myheight="49px" myborder="10px">
 					<button onClick={() => setIsVisible(!isVisible)} className='btn-msgnot'><img style={{ width: '1.5rem' }} alt='' src={BellImg} /></button>
 				</GradienBox>
-			</div>
+				<AnimatePresence mode='wait'>
+				{
+					isVisible &&
+					<motion.div
+						initial={{ scale: 0, }}
+						animate={{ scale: 1, }}
+						exit={{ scale: 0 }}
+						key={'notifi'}
+						transition={{ ease: "easeInOut", duration: 0.2 }}
+						style={{ position: 'absolute', top: '3.5rem', left : '5rem', width: 'fit-content' }}>
+						<NotificationCont data={props.noti} isN={true} />
+					</motion.div>
 
-			{
-				isVisible && <div style={{ position: 'absolute', top: '3.5rem', width: 'fit-content', transform: 'translateX(-9rem)' }}>
-					<NotificationCont data={props.noti} isN={true} />
-				</div>
-			}
-			<div style={{ position: 'absolute', top: '3.5rem', width: 'fit-content', transform: 'translateX(-15rem)' }}>
-				<NotificationCont data={props.invi} isN={false} />
+				}
+			</AnimatePresence>
 			</div>
 
 			<div onClick={() => setNavMo(true)} className='burger'>
@@ -128,48 +157,47 @@ function Notification(props: any) {
 }
 function Invitation(props: any) {
 	const [visible, setvisible] = useState(true);
-	const [side, setSide] = useState('101%');
 
 	const Accept = async () => {
-		// await axios.post('/AcceptRequest', { FriendshipId: props.data.friendshipId }).then((resp) => console.log(resp));
-		setSide('101%');
+		await axios.post('/AcceptRequest', { FriendshipId: props.data.friendshipId }).then((resp) => console.log(resp));
 		setvisible(false);
 	};
 	const Decline = async () => {
-		// await axios.post('/CancelRequest', { FriendshipId: props.data.friendshipId }).then((resp) => console.log(resp));
-		setSide('-101%');
+		await axios.post('/CancelRequest', { FriendshipId: props.data.friendshipId }).then((resp) => console.log(resp));
 		setvisible(false);
 	}
-
+	const navigate = useNavigate();
 	return (
 		<>
-		<AnimatePresence mode='wait'>
-			{
-				visible &&
+			<AnimatePresence mode='wait'>
+				{
+					visible &&
 					<motion.div className="invitation-user"
 						key='invitation-user'
 						initial={{ y: 0 }}
 						animate={{ y: 0 }}
-						exit={{ y: '-100%' }}
-						transition={{ ease: "easeInOut", duration: 0.7}}>
-					
-					<div className="info">
-						<img onError={(e: any) => {
-							console.log(e.target);
-							e.target.src = defaultAvatar;
-						}
-						} src={props.data.avatar} />
-						<div className="who">
-							<h4>{props.data.username}</h4>
-							<p>Send a request to you</p>
+						exit={{ x: '100%' }}
+						transition={{ ease: "easeInOut", duration: 0.7 }}>
+
+						<div onClick={() =>
+							navigate(`/profile/${props.data.username}`)
+						} className="info">
+							<img onError={(e: any) => {
+								console.log(e.target);
+								e.target.src = defaultAvatar;
+							}
+							} src={props.data.avatar} />
+							<div className="who">
+								<h4>{props.data.username}</h4>
+								<p>Sent a request to you</p>
+							</div>
 						</div>
-					</div>
-					<div className="btn">
-						<button onClick={Decline}><div className="text decline">Decline</div></button>
-						<button onClick={Accept}><div className="text ">Accept</div></button>
-					</div>
-				</motion.div>
-			}
+						<div className="btn">
+							<button onClick={Decline}><div className="text decline">Decline</div></button>
+							<button onClick={Accept}><div className="text ">Accept</div></button>
+						</div>
+					</motion.div>
+				}
 			</AnimatePresence>
 		</>
 	)

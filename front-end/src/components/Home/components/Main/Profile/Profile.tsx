@@ -162,7 +162,7 @@ function Profile(props: any) {
                 <div className="graph">
                     <div className="graphN">{elements}</div>
                     <GradienBox over={1} mywidth={'767px'} myheight={'324px'} myborder={'40px'}>
-                        <Charts />
+                        <Charts username={login} />
                     </GradienBox>
                 </div>
             </div>

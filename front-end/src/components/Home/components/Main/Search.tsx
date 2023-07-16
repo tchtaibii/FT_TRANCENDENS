@@ -4,24 +4,25 @@ import GradienBox from '../../../../tools/GradienBox'
 import Awardtest from './testBadge.svg'
 import { useState, useRef } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
-import { useSelector } from "react-redux"
+import { Link } from 'react-router-dom'
+import axios from '../../../../Interceptor/Interceptor'
 
 function SearchContent(props: any) {
 	const SimpeLoop = () => {
 		console.log('user ound', props.userFound);
 		const elements = props.userFound.map((e: any, i:number) =>
-			<a key={'userFound-' + i} href='#' className="found">
+			<Link to={`/profile/${e.username}`} key={'userFound-' + i} href='#' className="found">
 				<div className={'f-part1 ' + (e.status === true ? "user-active-search" : "user-desactive-search")}>
 					<img src={e.avatar} alt="" />
 					<div className="textInfo">
-						<h4>{e.login}</h4>
+						<h4>{e.username}</h4>
 						<p>{'LEVEL ' + e.level}</p>
 					</div>
 				</div>
 				<div className="f-part2">
 					<img src={Awardtest} alt="" />
 				</div>
-			</a>
+			</Link>
 		)
 		return elements
 	}
@@ -37,7 +38,7 @@ function SearchContent(props: any) {
 function Search() {
 	const [isVisible, setIsVisible] = useState(false);
 	const ref = useRef(null)
-	const users: any = useSelector((state: any) => state.users.users);
+	// const users: any = useSelector((state: any) => state.users.users);
 	const [userFound, setUserFound] = useState([]);
 	const handleClickOutside = () => {
 		setIsVisible(false)
@@ -52,14 +53,17 @@ function Search() {
 		}
 		else
 		{
-			const newUsers = users.filter((e: any) => e.login.includes(value));
-			if (newUsers.length == 0)
-				setIsVisible(false)
-			else
-			{
+			const newUsers = async () => {
+				await axios.post('/search', value).then((resp:any) => setUserFound(resp.data))
 				setIsVisible(true)
-				setUserFound(newUsers);
 			}
+			newUsers();
+			// if (newUsers.length == 0)
+			// 	setIsVisible(false)
+			// else
+			// {
+			// 	setUserFound(newUsers);
+			// }
 		}
 	}
 	return (

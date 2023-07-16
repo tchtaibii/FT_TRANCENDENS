@@ -78,6 +78,7 @@ export class ProfileController {
     async getActivity(@Req() req, @Param('username') username : string, @Res() res)
     {
         const user = await this.ProfileService.ReturnOneUserByusername(username);
+        console.log(username);
         if (!user)
             throw new NotFoundException('User profile not found');
         const Activity =  await this.ProfileService.getActivity(user);

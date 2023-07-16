@@ -9,7 +9,9 @@ import {
     Filler,
     Legend
 } from "chart.js";
+import { useEffect,useState } from "react";
 import { Line } from "react-chartjs-2";
+import axios from '../../../../../Interceptor/Interceptor'
 
 ChartJS.register(
     CategoryScale,
@@ -22,8 +24,19 @@ ChartJS.register(
     Legend
 );
 
-const labels = ["First Game", "Second Game", "Third Game", "Fourth Game", "Fifth Game", "Sixth Game", "Seventh Game", "Eighth Game", "Ninth Game", "Tenth Game"];
-var element: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+function Charts(props:any) {
+    const labels = ["First Game", "Second Game", "Third Game", "Fourth Game", "Fifth Game", "Sixth Game", "Seventh Game", "Eighth Game", "Ninth Game", "Tenth Game"];
+    const [element, setElement] = useState<number []>([]);
+    useEffect(()=> {
+        const fetchData = async () => {
+            await axios.get(`/Profile/${props.username}/Activity`).then((resp) => {
+                setElement(resp.data)
+            })
+        }
+        fetchData();
+    },[])
+    
+
 const LastOne = Math.max(...element);
 const colorGraph = {
     Fail: { gradient: 'rgba(237, 81, 82, 0.3)', endColor: 'rgba(237, 81, 82, 0)', border: "#ED5152" },
@@ -94,7 +107,6 @@ const options = {
         }
     }
 };
-function Charts() {
     return (
         <div style={{ width: '48.06rem', height: '20.25rem', overflow: 'hidden' }}>
             <Line

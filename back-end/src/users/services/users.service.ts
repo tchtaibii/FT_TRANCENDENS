@@ -81,6 +81,7 @@ export class UsersService {
 				username : user.username,
 				level : user.level,
 				badge : user.badge,
+				status : user.status,
 			}
 		})
 		return fetchusers;

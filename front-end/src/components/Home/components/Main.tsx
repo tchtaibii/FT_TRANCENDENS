@@ -17,12 +17,19 @@ import axios from '../../../Interceptor/Interceptor'
 import { Link } from 'react-router-dom'
 import defaultAvatar from '../../../assets/img/avatar.png'
 import Error404 from './404'
+import { motion, AnimatePresence } from 'framer-motion';
 
 function ActivityContent(props: any) {
 	return (
-		<div className="activity-x">
+
+		<motion.div
+			initial={{ x: (props.side + '110%') }}
+			animate={{ x: 0 }}
+			exit={{ x: (props.side + '110%') }}
+			transition={{delay: ((props.id / 10) + 0.1), duration: 0.1}}
+			className="activity-x">
 			<div className="part1">
-				<Link to={'/profile/' + props.p1}><img src={props.avatar1} onError={(e) => {
+				<Link to={'/profile/' + props.p1}><img src={props.avatar1} onError={(e:any) => {
 					console.log(e.target);
 					e.target.src = defaultAvatar;
 				}
@@ -32,13 +39,13 @@ function ActivityContent(props: any) {
 				{/* <img src={props.avatar2} alt="" /> */}
 			</div>
 			<div className="time-act">{(props.isDraw === true ? '+60pts' : '+120pts')}</div>
-		</div>
+		</motion.div>
 	)
 }
 function Activity() {
 	const [isAll, setIsALL] = useState({ boolAll: true });
 	const [data, seData] = useState([]);
-	// console.log(data)
+	console.log(data)
 	useEffect(() => {
 		axios.get('Home/RecentActivity').then((response) => seData(response.data));
 	}, [])
@@ -59,19 +66,32 @@ function Activity() {
 
 							</div>
 							<div className="activity-content">
-								{
-									isAll.boolAll ?
-										(data && data.map((e: any, i) => {
-											return (
-												e.IsDraw === false ?
-													<ActivityContent key={'activ-' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
-													: <>
-														<ActivityContent key={'activ-' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
-														<ActivityContent key={'activ-' + i + '2'} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
-													</>
-											)
-										})) : <ActivityContent p1='aaizza' p2='arahmoun' time="10:21 AM" avat={avatar} stat='won' />
-								}
+								<AnimatePresence mode='wait'>
+									{
+										isAll.boolAll ?
+											(data && data.map((e: any, i) => {
+												return (
+													e.IsDraw === false ?
+														<ActivityContent side={'-'} id={i} key={'activ-' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+														: <>
+															<ActivityContent side={'-'} id={i} key={'activ-' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+															<ActivityContent side={'-'} id={i} key={'activ-' + i + '2'} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
+														</>
+												)
+											})) : (data && data.filter((e: any) => e.AreFriends === true)
+												.map((e: any, i) => {
+													return (
+														e.IsDraw === false ?
+															<ActivityContent side={''} id={i} key={'activ-' + 'firends' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+															: <>
+																<ActivityContent side={''} id={i} key={'activ-' + 'firends' + i + 'draw'} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+																<ActivityContent side={''} id={i} key={'activ-' + 'firends' + i + 'draw2'} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
+															</>
+													)
+												}
+												))
+									}
+								</AnimatePresence>
 							</div>
 							<button className="activity-footer">
 								View more activity

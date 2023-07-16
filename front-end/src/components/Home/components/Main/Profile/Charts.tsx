@@ -23,7 +23,7 @@ ChartJS.register(
 );
 
 const labels = ["First Game", "Second Game", "Third Game", "Fourth Game", "Fifth Game", "Sixth Game", "Seventh Game", "Eighth Game", "Ninth Game", "Tenth Game"];
-var element: number[] = [60, 120, 240, 120, 240, 360, 480, 520, 640, 760];
+var element: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 const LastOne = Math.max(...element);
 const colorGraph = {
     Fail: { gradient: 'rgba(237, 81, 82, 0.3)', endColor: 'rgba(237, 81, 82, 0)', border: "#ED5152" },

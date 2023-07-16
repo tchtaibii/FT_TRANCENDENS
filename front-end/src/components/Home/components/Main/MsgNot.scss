@@ -5,6 +5,7 @@
     align-items: center;
     flex-direction: row;
     gap: toRem(48);
+    position: relative;
 }
 
 .btn-msgnot {
@@ -75,6 +76,9 @@
         height: toRem(314);
         overflow-y: auto;
         overflow-x: hidden;
+        -moz-transition: all 300ms ease-in-out;
+        -o-transition: all 300ms ease-in-out;
+        -webkit-transition: all 300ms ease-in-out;
     }
 }
 
@@ -229,7 +233,9 @@
     border-bottom: toRem(1) solid rgba(0, 0, 0, 0.3);
     border-top: toRem(1) solid rgba(0, 0, 0, 0.3);
     cursor: pointer;
-
+    &:hover {
+        background: #272325;
+    }
     .info {
         display: flex;
         flex-direction: row;
@@ -281,6 +287,12 @@
             background: linear-gradient(to bottom, #5699AE, #E15253);
             box-shadow: 0px toRem(4) toRem(40) 0px rgba(0, 0, 0, 0.30);
             padding: toRem(1);
+            -moz-transition: all 100ms ease-in;
+            -o-transition: all 100ms ease-in;
+            -webkit-transition: all 100ms ease-in;
+            &:hover{
+                transform: scale(1.05);
+            }
 
             .text {
                 width: 100%;
@@ -295,6 +307,13 @@
                 font-style: normal;
                 font-weight: 500;
                 line-height: normal;
+                -moz-transition: all 100ms ease-in;
+                -o-transition: all 100ms ease-in;
+                -webkit-transition: all 100ms ease-in;
+                &:hover{
+                    background-color: #282428;
+                }
+
             }
             .decline{
                 color: #ED5152;

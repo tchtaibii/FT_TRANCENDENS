@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-import test from '../../../../assets/img/test.svg'
 import "./MsgNot.scss"
 import inviFriend from "../../../../assets/img/invitation-friend.svg"
 import BellImg from "../../../../assets/img/bell.svg"
@@ -7,9 +6,6 @@ import burger from "../../../../assets/img/burger.svg"
 import GradienBox from '../../../../tools/GradienBox'
 import { NavLink } from 'react-router-dom'
 import { useOnClickOutside } from 'usehooks-ts'
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '../../../../store/store'
-import { getNotification } from '../../../../features/notificationsSlice'
 import { ReactSVG } from 'react-svg';
 import axios from '../../../../Interceptor/Interceptor'
 import LogoutImg from "../../../../assets/img/Logout.svg";
@@ -17,6 +13,7 @@ import HomeImg from "../../../../assets/img/Home.svg";
 import ProfImg from "../../../../assets/img/profile.svg";
 import SetfImg from "../../../../assets/img/Settings.svg";
 import ChatImg from "../../../../assets/img/chat.svg";
+import defaultAvatar from "../../../../assets/img/avatar.png";
 import Stream from "../../../../assets/img/stream.svg";
 import LeaderBoard from "../../../../assets/img/leaderBoard.svg";
 import { motion, AnimatePresence } from 'framer-motion'
@@ -46,11 +43,11 @@ function MsgNot(props: any) {
 			</div>
 
 			{
-				isVisible && <div style={{ position: 'absolute', top: '4.7rem', width: 'fit-content', transform: 'translateX(-9rem)' }}>
+				isVisible && <div style={{ position: 'absolute', top: '3.5rem', width: 'fit-content', transform: 'translateX(-9rem)' }}>
 					<NotificationCont data={props.noti} isN={true} />
 				</div>
 			}
-			<div style={{ position: 'absolute', top: '4.7rem', width: 'fit-content', transform: 'translateX(-15rem)' }}>
+			<div style={{ position: 'absolute', top: '3.5rem', width: 'fit-content', transform: 'translateX(-15rem)' }}>
 				<NotificationCont data={props.invi} isN={false} />
 			</div>
 
@@ -129,21 +126,52 @@ function Notification(props: any) {
 		</div>
 	);
 }
-function Invitation(props:any) {
+function Invitation(props: any) {
+	const [visible, setvisible] = useState(true);
+	const [side, setSide] = useState('101%');
+
+	const Accept = async () => {
+		// await axios.post('/AcceptRequest', { FriendshipId: props.data.friendshipId }).then((resp) => console.log(resp));
+		setSide('101%');
+		setvisible(false);
+	};
+	const Decline = async () => {
+		// await axios.post('/CancelRequest', { FriendshipId: props.data.friendshipId }).then((resp) => console.log(resp));
+		setSide('-101%');
+		setvisible(false);
+	}
+
 	return (
-		<div className='invitation-user'>
-			<div className="info">
-				<img src={props.data.avatar} />
-				<div className="who">
-					<h4>{props.data.username}</h4>
-					<p>Send a request to you</p>
-				</div>
-			</div>
-			<div className="btn">
-				<button><div className="text decline">Decline</div></button>
-				<button><div className="text ">Accept</div></button>
-			</div>
-		</div>
+		<>
+		<AnimatePresence mode='wait'>
+			{
+				visible &&
+					<motion.div className="invitation-user"
+						key='invitation-user'
+						initial={{ y: 0 }}
+						animate={{ y: 0 }}
+						exit={{ y: '-100%' }}
+						transition={{ ease: "easeInOut", duration: 0.7}}>
+					
+					<div className="info">
+						<img onError={(e: any) => {
+							console.log(e.target);
+							e.target.src = defaultAvatar;
+						}
+						} src={props.data.avatar} />
+						<div className="who">
+							<h4>{props.data.username}</h4>
+							<p>Send a request to you</p>
+						</div>
+					</div>
+					<div className="btn">
+						<button onClick={Decline}><div className="text decline">Decline</div></button>
+						<button onClick={Accept}><div className="text ">Accept</div></button>
+					</div>
+				</motion.div>
+			}
+			</AnimatePresence>
+		</>
 	)
 }
 function NotificationCont(props: any) {
@@ -197,21 +225,20 @@ function NotificationCont(props: any) {
 	useEffect(() => {
 
 	}, [])
-	console.log('invi from msg',props.invi);
+	console.log('invi from msg', props.data);
 	return (
-
 		<GradienBox absolute={1} mywidth="316px" myheight="408.98px" myborder="20px">
 			<div className="notification-container">
 				<div className="head-noti-container">
 					<div className="notication-head">{props.isN === true ? 'NOTIFICATIONS' : 'NEW REQUESTS'}</div>
-					<span className='notifi-num'>{4}</span>
+					<span className='notifi-num'>{props.data.length}</span>
 					{/* notifi.filter((not: any) => not.isRead === 0).length */}
 				</div>
 				<div className="main-noti">
 
 					{
-						(props.invi !== undefined || props.noti !== undefined ) && props.isN === false && props.invi.map((e:any, i:number) => <Invitation key={'invi- '+ i} data={e} />) 
-						
+						props.data.map((e: any, i: number) => <Invitation key={'invi- ' + i} data={e} />)
+
 						// :
 						// props.noti.map((e: any, index: number) => {
 						// 		return (<Notification key={'noti-' + index} isRead={e.isRead} img={e.avatar} text={e.text} />);

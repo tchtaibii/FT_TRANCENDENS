@@ -80,12 +80,15 @@ function Activity() {
 												)
 											})) : (data && data.filter((e: any) => e.AreFriends === true)
 												.map((e: any, i) => {
+													var index = i;
+													if (i > 6)
+														index = 6;
 													return (
 														e.IsDraw === false ?
-															<ActivityContent side={''} id={i} key={'activ-' + 'firends' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+															<ActivityContent side={''} id={index} key={'activ-' + 'firends' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
 															: <>
-																<ActivityContent side={''} id={i} key={'activ-' + 'firends' + i + 'draw'} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
-																<ActivityContent side={''} id={i} key={'activ-' + 'firends' + i + 'draw2'} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
+																<ActivityContent side={''} id={index} key={'activ-' + 'firends' + i + 'draw'} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+																<ActivityContent side={''} id={index} key={'activ-' + 'firends' + i + 'draw2'} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
 															</>
 													)
 												}

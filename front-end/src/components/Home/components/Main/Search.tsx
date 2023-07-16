@@ -12,9 +12,11 @@ function SearchContent(props: any) {
 	const SimpeLoop = () => {
 		console.log('user ound', props.userFound);
 		const elements = props.userFound.map((e: any, i:number) =>
-			<Link to={`/profile/${e.username}`} key={'userFound-' + i} className="found">
+			<Link onClick={() => {
+				props.set(false);
+			}} to={`/profile/${e.username}`} key={'userFound-' + i} className="found">
 				<div className={'f-part1 ' + (e.status === true ? "user-active-search" : "user-desactive-search")}>
-					<img onError={(e) => {
+					<img onError={(e:any) => {
 					console.log(e.target);
 					e.target.src = defaultAvatar;
 				}
@@ -76,7 +78,7 @@ function Search() {
 			{
 				isVisible &&
 				<div ref={ref} className="searchC">
-					<SearchContent userFound={userFound} />
+					<SearchContent set={setIsVisible} userFound={userFound} />
 				</div>
 			}
 			<div ref={ref} className="searchI  nput">

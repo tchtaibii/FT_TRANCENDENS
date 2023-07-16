@@ -107,6 +107,7 @@
                     background: #4F5150;
                     border-radius: toRem(19);
                 }
+
                 p {
                     font-family: 'SF';
                     font-style: normal;
@@ -754,4 +755,65 @@ h1 {
             background: linear-gradient(270.22deg, rgba(237, 81, 82, 0.49) -56.75%, rgba(225, 82, 83, 0) 99.81%);
         }
     }
+}
+.pad {
+    padding: toRem(0);
+    transition: padding 0.1s ease-in-out;
+}
+.ActivityInfo {
+    width: 0;
+    height: toRem(25);
+    box-sizing: border-box;
+    border-radius: toRem(15);
+    box-shadow: 0px toRem(4) toRem(40) 0px rgba(0, 0, 0, 0.50);
+    background: linear-gradient(90deg, rgba(86, 153, 174, 1) 0%, rgba(225, 82, 83, 1) 10%, rgba(0, 212, 255, 1) 100%);
+    opacity: 0;
+    transform: translateY(toRem(5));
+    transition: all 0.6s ease-in-out;
+    overflow: hidden;
+
+    .textinfo {
+        border-radius: toRem(15);
+        height: 100%;
+        width: 100%;
+        background: #232225;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        p {
+            color: #F9C690;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: toRem(340);
+            height: toRem(25);
+            position: absolute;
+            font-size: toRem(10);
+            font-style: normal;
+            font-weight: 300;
+            line-height: normal;
+            transition-delay: 0.7s;
+            transition-property: opacity;
+            transition-duration: 400ms;
+            // -webkit-transition: opacity 0s;
+            opacity: 1;
+        }
+
+    }
+
+}
+
+body:has(#infoBtn:hover) .ActivityInfo {
+    opacity: 0.6;
+    width: toRem(340);
+
+}
+body:has(#infoBtn:hover) .pad {
+    padding: toRem(1);
+
+}
+body:has(#infoBtn:hover) .ActivityInfo .textinfo p {
+    opacity: 1;
 }

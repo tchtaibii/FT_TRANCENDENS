@@ -168,6 +168,7 @@ export class HomeService {
 		const top = await Promise.all(topPlayers.map(async (player) => {
 			player.avatar = player.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + player.avatar : player.avatar;
 			const rating = await this.calculRating(player.UserId);
+			
 			return {
 				rating,
 				avatar: player.avatar,

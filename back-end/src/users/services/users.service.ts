@@ -63,4 +63,26 @@ export class UsersService {
 	// 	// const notification 
 	// }
 
+	async getallUsers(User, username)
+	{
+		const users = await this.prisma.user.findMany({
+			where : {
+				username :{
+					startsWith : username,
+				}
+			}
+		})
+
+		const fetchusers = users.map((user) => {
+			user.avatar = user.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
+			return {
+				UserId : user.UserId,
+				avatar : user.avatar,
+				username : user.username,
+				level : user.level,
+				badge : user.badge,
+			}
+		})
+		return fetchusers;
+	}
 }

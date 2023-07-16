@@ -64,6 +64,7 @@ export class FriendshipController {
     async getFriendshipRequest(@Req() req, @Res() res)
     {
         const request = await this.FriendshipService.getFriendshipRequest(req.user);
+        console.log(request);
         res.json(request);
     }
 }

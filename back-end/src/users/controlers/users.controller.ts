@@ -17,6 +17,23 @@ export class UsersController {
 		  // this.UserService.getNotification(req.user);
     }
 
+	@Post('search')
+    @ApiBody({ 
+        schema: {
+          type: 'object',
+          properties: {
+            user: {
+              type: 'string',
+            },
+          },
+        },
+    })
+	async search(@Req() req, @Body('user') user : string, @Res() res)
+	{
+		const allusers = await this.UserService.getallUsers(req.user, user);
+        res.json(allusers);
+	}
+
     // @Get('Get-Notification')
     // getNotification()
     // {

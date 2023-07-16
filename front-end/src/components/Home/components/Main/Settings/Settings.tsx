@@ -55,7 +55,7 @@ type Info = {
 function Settings() {
     const dispatch: AppDispatch = useDispatch()
     const Admin = useSelector((state: any) => state.admin);
-    const [LinkGoogle, setLinkGoogle] = useState(true);
+    const [LinkGoogle, setLinkGoogle] = useState(false);
     const [isDelete, setDeleteTab] = useState(false);
     const [isBlockedList, setBlockedTab] = useState(false);
     const [isPopUp, setPopUp] = useState(false);
@@ -212,7 +212,7 @@ function Settings() {
                         <div className="center-cont-act">
                             <h2>Link Account with Google</h2>
                             <label className="switch" htmlFor="checkbox">
-                                <input onChange={handleChange} className='toogleInput' type="checkbox" id="checkbox" />
+                                <input onChange={handleChange} className='toogleInput' checked={LinkGoogle} type="checkbox" id="checkbox" />
                                 <div className="slider round"></div>
                             </label>
                         </div>

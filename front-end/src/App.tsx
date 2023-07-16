@@ -9,7 +9,7 @@ import { AppDispatch } from "./store/store"
 import {getAdmin} from "./features/adminSlice"
 
 function App() {
-const data:any = useSelector((state:any) => state.admin)
+// const data:any = useSelector((state:any) => state.admin)
 const dispatch: AppDispatch = useDispatch();
 	const [isLogin, setisLogin] = useState(false);
 	useEffect(() => {
@@ -20,7 +20,7 @@ const dispatch: AppDispatch = useDispatch();
 		}
 		const fetchData = async () => {
 			await dispatch(getAdmin());
-			console.log('app', data);
+			// console.log('app', data);
 			// await dispatch(getNotification());
 			// await dispatch(getMessage());
 		};

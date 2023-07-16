@@ -23,10 +23,10 @@ function ActivityContent(props: any) {
 		<div className="activity-x">
 			<div className="part1">
 				<Link to={'/profile/' + props.p1}><img src={props.avatar1} onError={(e) => {
-                            console.log(e.target);
-                            e.target.src = defaultAvatar;
-                        }
-                        } alt="" /></Link>
+					console.log(e.target);
+					e.target.src = defaultAvatar;
+				}
+				} alt="" /></Link>
 
 				<p>{props.p1}<span>{' ' + (props.isDraw === false ? 'won against ' : 'had a draw with ')}</span>{props.p2}</p>
 				{/* <img src={props.avatar2} alt="" /> */}
@@ -159,13 +159,26 @@ function Side2(props: any) {
 
 function Main() {
 	const [invit, setInvit] = useState(false)
+	const [invitations, setInvitation] = useState([]);
+	const [notifications, setNotifications] = useState([]);
+	useEffect(() => {
+
+		axios.get('/FriendshipRequest').then(resp => {
+			setInvitation(resp.data)
+			console.log('invi from msg',resp.data);
+		}).catch((err) => {
+			console.log('had error', err);
+		})
+
+
+	}, [])
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', marginBottom: 'auto' }}>
 			<div className='main'>
 				<div className="side1">
 					<div className='top'>
 						<Search />
-						<MsgNot />
+						<MsgNot invi={invitations} noti={notifications} />
 					</div>
 					<Routes>
 						<Route path="/" element={<><Hero /><GamesMode /><BestPlayers /></>} />

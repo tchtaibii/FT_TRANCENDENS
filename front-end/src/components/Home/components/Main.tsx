@@ -162,16 +162,18 @@ function Main() {
 	const [invitations, setInvitation] = useState([]);
 	const [notifications, setNotifications] = useState([]);
 	useEffect(() => {
+		if (invitations.length < 1) {
+			axios.get('FriendshipRequest').then(resp => {
+				setInvitation(resp.data)
+			}).catch((err) => {
+				console.log('had error', err);
+			})
+		}
 
-		axios.get('/FriendshipRequest').then(resp => {
-			setInvitation(resp.data)
-			console.log('invi from msg',resp.data);
-		}).catch((err) => {
-			console.log('had error', err);
-		})
 
 
 	}, [])
+	console.log('invi from msg', invitations);
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', marginBottom: 'auto' }}>
 			<div className='main'>

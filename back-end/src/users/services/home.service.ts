@@ -269,12 +269,44 @@ export class HomeService {
 			!blockedUserIds.includes(game.PlayerId2)
 		  );
 
+		  const isFriend = await this.prisma.friendship.findMany({
+			where : {
+				OR : [
+					{
+						SenderId : user.UserId,
+					},
+					{
+						ReceiverId : user.UserId,
+					}
+				],
+				Accepted : true,
+			},
+			select : {
+				sender : {
+					select : 
+					{
+						username : true,
+					}
+				},
+				receiver : {
+					select : {
+						username : true,
+					}
+				}
+			},
+		})
+
+		const friends = isFriend.map(friend => {
+			return friend.sender.username !== user.UserId ? friend.sender.username : friend.receiver.username;
+		})
+
 		const recently : RecentActivity[] = [];
 		for (let i = 0; i < allgames.length; i++) {
 			
 			allgames[i].Player2.avatar = allgames[i].Player2.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + allgames[i].Player2.avatar : allgames[i].Player2.avatar;
 			allgames[i].Player1.avatar = allgames[i].Player1.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + allgames[i].Player1.avatar : allgames[i].Player1.avatar;
-			
+			const check = friends.includes(allgames[i].Player2.username) && friends.includes(allgames[i].Player1.username);
+
 			if (allgames[i].isDraw)
 			{
 				recently.push( {
@@ -283,6 +315,7 @@ export class HomeService {
 					Player2 : allgames[i].Player1.username,
 					Player2Avatar : allgames[i].Player1.avatar,
 					IsDraw : true,
+					AreFriends : check,
 				})
 			}
 			else if (allgames[i].WinnerId == allgames[i].PlayerId1)
@@ -293,6 +326,7 @@ export class HomeService {
 					Player2 : allgames[i].Player2.username,
 					Player2Avatar : allgames[i].Player2.avatar,
 					IsDraw : false,
+					AreFriends : check,
 				})
 			}
 			else if (allgames[i].WinnerId == allgames[i].PlayerId2)
@@ -303,6 +337,7 @@ export class HomeService {
 					Player2 : allgames[i].Player1.username,
 					Player2Avatar : allgames[i].Player1.avatar,
 					IsDraw : false,
+					AreFriends : check,
 				})
 			}
 		}

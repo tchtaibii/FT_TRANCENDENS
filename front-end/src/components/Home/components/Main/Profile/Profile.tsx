@@ -527,7 +527,7 @@ export function ProfileDown() {
             </div>
             <div className="HistoryProfile">
                 <h1>Games History</h1>
-                <GradienBox minh={'386px'} vh={630} mywidth={window.innerWidth > 770 ? '885px' : '1200px'} myheight={'388px'} myborder={'40px'}>
+                <GradienBox minh={'386px'} vh={870} mywidth={window.innerWidth > 770 ? '885px' : '1200px'} myheight={'388px'} myborder={'40px'}>
                     <div className="gameHistory">
                         <div className="headerHistory">
                             <div className="game-h wins">{(allGames != undefined ? allGames.win : 0) + ' WINS'}</div>

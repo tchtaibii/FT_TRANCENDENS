@@ -42,7 +42,7 @@ function Activity() {
 	useEffect(() => {
 		axios.get('Home/RecentActivity').then((response) => seData(response.data));
 	}, [])
-	const calc = 430;
+	const calc = 555;
 	return (
 		<div className="recentActivity">
 			<div className='box-box-cont'>

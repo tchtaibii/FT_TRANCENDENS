@@ -35,7 +35,7 @@ function  	RankTable() {
 		award: Iaward
 	}
 	var newObject: any[] = [];
-	for (let index = 0; index < 100; index++) {
+	for (let index = 0; index < 10; index++) {
 		if (rankData[index] === undefined)
 			newObject.push(noPlayer);
 		else {

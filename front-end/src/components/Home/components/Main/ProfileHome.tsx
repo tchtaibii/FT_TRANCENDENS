@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../../../store/store'
 import { useEffect, useState } from 'react';
 import defaultAvatar from '../../../../assets/img/avatar.png'
+import { Link } from 'react-router-dom'
 
 function ProfileHome() {
     const dispatch: AppDispatch = useDispatch();
@@ -44,11 +45,13 @@ function ProfileHome() {
                         <div className="profile-head">My Profile</div>
                         <div className='profile-mid'>
                             <div className='mid1'>
-                                <img className='mid-img1' onError={(e) => {
-                                    console.log(e.target);
-                                    e.target.src = defaultAvatar;
-                                }
-                                } alt='' src={data.avatar} />
+                                <Link to={`/profile/${data.username}`} >
+                                    <img className='mid-img1' onError={(e:any) => {
+                                        console.log(e.target);
+                                        e.target.src = defaultAvatar;
+                                    }
+                                    } alt='' src={data.avatar} />
+                                </Link>
                                 <div className='m1-nl'>
                                     <h1 style={{ width: '6.25rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{data.username}</h1>
                                     <div className='m1-l'>

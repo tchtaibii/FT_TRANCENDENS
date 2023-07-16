@@ -51,6 +51,7 @@ export class RecentActivity
 	Player2 		: string;
 	Player2Avatar	: string;
 	IsDraw  		: boolean;
+	AreFriends        : boolean;
 }
 
 export class ProfileFriends

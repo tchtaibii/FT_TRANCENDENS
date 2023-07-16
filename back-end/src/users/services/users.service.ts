@@ -63,18 +63,63 @@ export class UsersService {
 	// 	// const notification 
 	// }
 
-	async getallUsers(User, username)
+	async getallUsers(User : User, username)
 	{
 		const users = await this.prisma.user.findMany({
 			where : {
-				username :{
-					startsWith : username,
-				}
+				OR : 
+				[
+					{
+						username :{
+							startsWith : username,
+							mode : 'insensitive',
+						}
+					},
+					{
+						FullName : {
+							startsWith : username,
+							mode : 'insensitive',
+						}
+					}
+				]
 			}
 		})
 
+		const isFriend = await this.prisma.friendship.findMany({
+			where : {
+				OR : [
+					{
+						SenderId : User.UserId,
+					},
+					{
+						ReceiverId : User.UserId,
+					}
+				],
+				Accepted : true,
+			},
+			select : {
+				sender : {
+					select : 
+					{
+						UserId : true,
+					}
+				},
+				receiver : {
+					select : {
+						UserId : true,
+					}
+				}
+			},
+		})
+
+		const friends = isFriend.map(friend => {
+			return friend.sender.UserId !== User.UserId ? friend.sender.UserId : friend.receiver.UserId;
+		})
+
+	
 		const fetchusers = users.map((user) => {
 			user.avatar = user.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
+			const check = friends.includes(user.UserId);
 			return {
 				UserId : user.UserId,
 				avatar : user.avatar,
@@ -82,6 +127,7 @@ export class UsersService {
 				level : user.level,
 				badge : user.badge,
 				status : user.status,
+				isFriend : check,
 			}
 		})
 		return fetchusers;

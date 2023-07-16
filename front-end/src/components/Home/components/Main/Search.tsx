@@ -1,5 +1,6 @@
 import "./Search.scss"
 import SearImg from "../../../../assets/img/search.svg"
+import defaultAvatar from "../../../../assets/img/avatar.png"
 import GradienBox from '../../../../tools/GradienBox'
 import Awardtest from './testBadge.svg'
 import { useState, useRef } from 'react'
@@ -11,9 +12,13 @@ function SearchContent(props: any) {
 	const SimpeLoop = () => {
 		console.log('user ound', props.userFound);
 		const elements = props.userFound.map((e: any, i:number) =>
-			<Link to={`/profile/${e.username}`} key={'userFound-' + i} href='#' className="found">
+			<Link to={`/profile/${e.username}`} key={'userFound-' + i} className="found">
 				<div className={'f-part1 ' + (e.status === true ? "user-active-search" : "user-desactive-search")}>
-					<img src={e.avatar} alt="" />
+					<img onError={(e) => {
+					console.log(e.target);
+					e.target.src = defaultAvatar;
+				}
+				}  src={e.avatar} alt="" />
 					<div className="textInfo">
 						<h4>{e.username}</h4>
 						<p>{'LEVEL ' + e.level}</p>

@@ -762,18 +762,18 @@ h1 {
 }
 .ActivityInfo {
     width: 0;
-    height: toRem(25);
+    height: 0;
     box-sizing: border-box;
-    border-radius: toRem(15);
+    border-radius: toRem(8);
     box-shadow: 0px toRem(4) toRem(40) 0px rgba(0, 0, 0, 0.50);
-    background: linear-gradient(90deg, rgba(86, 153, 174, 1) 0%, rgba(225, 82, 83, 1) 10%, rgba(0, 212, 255, 1) 100%);
+    background: linear-gradient(90deg, rgba(86,153,174,1) 0%, rgba(225,82,83,1) 12%);
     opacity: 0;
-    transform: translateY(toRem(5));
+    transform: translate(toRem(-10),toRem(7));
     transition: all 0.6s ease-in-out;
     overflow: hidden;
 
     .textinfo {
-        border-radius: toRem(15);
+        border-radius: toRem(8);
         height: 100%;
         width: 100%;
         background: #232225;
@@ -806,8 +806,9 @@ h1 {
 }
 
 body:has(#infoBtn:hover) .ActivityInfo {
-    opacity: 0.6;
-    width: toRem(340);
+    opacity: 0.5;
+    width: toRem(250);
+    height: toRem(25);
 
 }
 body:has(#infoBtn:hover) .pad {

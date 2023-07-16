@@ -159,7 +159,7 @@ function Profile(props: any) {
                     <h1>Activity</h1>
                     <Infobtn />
                     <div className="ActivityInfo pad">
-                        <div className="textinfo"><p>Track your rank's impact on the game. Dynamic chart updates as you climb.</p></div>
+                        <div className="textinfo"><p>{`Graphs of Recent 10 Gameplay ${login?.toUpperCase()} played!`}</p></div>
                     </div>
                 </div>
                 <div className="graph">

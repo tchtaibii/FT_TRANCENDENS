@@ -168,12 +168,14 @@ export class HomeService {
 		const top = await Promise.all(topPlayers.map(async (player) => {
 			player.avatar = player.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + player.avatar : player.avatar;
 			const rating = await this.calculRating(player.UserId);
-			
+			var XP = player.XP;
+			for (let i : number = 1; i < player.level + 1; i++)
+				XP += (200 * i);
 			return {
 				rating,
 				avatar: player.avatar,
 				username: player.username,
-				XP: player.XP,
+				XP: XP,
 				level: player.level,
 			};
 		}));

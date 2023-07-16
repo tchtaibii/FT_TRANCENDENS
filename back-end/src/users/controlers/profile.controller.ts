@@ -17,7 +17,6 @@ export class ProfileController {
     @Get(':username/gamehistory')
     async getGameHistory(@Req() req, @Res() res, @Param('username') username : string)
 	{	
-    //    console.log(username);
 		const user = await this.ProfileService.ReturnOneUserByusername(username);
 		if (!user)
 			throw new NotFoundException('User profile not found');
@@ -73,6 +72,16 @@ export class ProfileController {
         if (!user)
             throw new NotFoundException('User profile not found');
         const blocked = await this.ProfileService.blockUser(req.user, user);
+    }
+
+    @Get(":username/Activity")
+    async getActivity(@Req() req, @Param('username') username : string, @Res() res)
+    {
+        const user = await this.ProfileService.ReturnOneUserByusername(username);
+        if (!user)
+            throw new NotFoundException('User profile not found');
+        const Activity =  await this.ProfileService.getActivity(user);
+        res.json(Activity);
     }
 }
  

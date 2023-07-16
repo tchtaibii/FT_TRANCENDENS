@@ -74,7 +74,7 @@ export class ProfileService {
 			friendshipId = isSent || isFriend ? friend[0].FriendshipId : 0;
 		}
 
-		user.avatar =  user.avatar.search("https://cdn.intra.42.fr/users/") == -1 ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
+		user.avatar =  user.avatar.search("https://cdn.intra.42.fr/users/") == -1 ? process.env.BackIp + user.avatar : user.avatar;
 
 		const playerRating = await this.calculRating(user);
 
@@ -221,7 +221,7 @@ export class ProfileService {
 			var accepted = false;
 			const afriends = friendsInfo.map((friendship) => {
 				const friend = friendship.sender.username === user.username ? friendship.receiver : friendship.sender;
-					friend.avatar = friend.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + friend.avatar : friend.avatar;
+					friend.avatar = friend.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.BackIp + friend.avatar : friend.avatar;
 					if (friend.username !== authUser.username)
 					{
 						const isMutual = friendsInfo2.some((friendship) => {
@@ -260,7 +260,7 @@ export class ProfileService {
 		{
 			const friends : ProfileFriends[] = friendsInfo.map((friendsInfo) => {
 				const check = friendsInfo.sender.UserId === user.UserId ? friendsInfo.receiver : friendsInfo.sender;
-				check.avatar = check.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + check.avatar : check.avatar;
+				check.avatar = check.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.BackIp + check.avatar : check.avatar;
 				if (friendsInfo.Accepted)
 					return {
 						friendshipId : friendsInfo.FriendshipId,
@@ -447,7 +447,7 @@ export class ProfileService {
 			});
 
 			if (adv.avatar.search("https://cdn.intra.42.fr/users/") === -1)
-				adv.avatar = process.env.HOST + process.env.PORT + adv.avatar;
+				adv.avatar = process.env.BackIp + adv.avatar;
 
 			let Game: GamesDTO = {
 				GameId: GameId.toString(),
@@ -469,6 +469,43 @@ export class ProfileService {
 			Draw : (await count).Draw,
 			AllGames
 		};
+	}
+
+	async getActivity(user : User)
+	{
+		const blockedUserIds = await this.getBlockeduserIds(user);
+	
+		const lastGames = await this.prisma.game.findMany({
+			where: {
+				OR: [
+					{ 
+					  PlayerId1: user.UserId, 
+					  PlayerId2: { not: { in: blockedUserIds } },
+					},
+					{ 
+					  PlayerId2: user.UserId, 
+					  PlayerId1: { not: { in: blockedUserIds } },
+					},
+				  ],
+			},
+			orderBy:{
+				CreationTime : "desc"
+			},
+			take : 10,
+		});
+
+		var count = 0;
+		var arr = [];
+
+		for (let i : number = 0; i < lastGames.length; i++)
+		{
+			count -= count > 0 && lastGames[i].WinnerId !== user.UserId ? 120 : 0;
+			count = count < 0 ? 0 : count;
+			count += lastGames[i].isDraw ? 60 : 0;
+			count += lastGames[i].WinnerId === user.UserId ? 120 : 0;
+			arr[i] = count;
+		}
+		return arr;
 	}
 
 }

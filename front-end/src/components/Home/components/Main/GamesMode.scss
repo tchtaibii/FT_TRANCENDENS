@@ -108,20 +108,20 @@
 }
 
 
-body:has(#classicA:hover) #classicIMG {
-    // filter: saturate(0);
-    transform: scale(2);
-}
+// body:has(#classicA:hover) #classicIMG {
+//     // filter: saturate(0);
+//     transform: scale(2);
+// }
 
-body:has(#aiA:hover) #aiIMG {
-    // filter: saturate(0);
-    transform: scale(2);
-}
+// body:has(#aiA:hover) #aiIMG {
+//     // filter: saturate(0);
+//     transform: scale(2);
+// }
 
-body:has(#friendA:hover) #friendIMG {
-    // filter: saturate(0);
-    transform: scale(2.1);
-}
+// body:has(#friendA:hover) #friendIMG {
+//     // filter: saturate(0);
+//     transform: scale(2.1);
+// }
 
 .owl-item.active.center {
     transform: scale(1.1);

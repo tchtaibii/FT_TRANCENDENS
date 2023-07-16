@@ -4,6 +4,7 @@ import classicI from '../../../../assets/img/classicM.svg'
 import aiI from '../../../../assets/img/aiM.svg'
 import friendI from '../../../../assets/img/friendM.svg'
 import { useState } from 'react'
+import { VFXImg } from 'react-vfx';
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
@@ -23,7 +24,7 @@ function BOxGameMob(props: any) {
 						</a>
 					</div>
 					<div className={props.classB + ' photoMode'}>
-						<img style={{width: '23rem', fontStyle: '200'}} id={props.imgID} src={props.imgB} alt="" />
+						<VFXImg shader="rgbGlitch" style={{width: '23rem', fontStyle: '200'}} id={props.imgID} src={props.imgB} alt="" />
 					</div>
 				</div>
 			</GradienBox>

@@ -221,7 +221,9 @@ function Settings() {
                             {
                                 // isOff === null &&
                                 <div className="button-switch">
-                                    <div className={!isOff ? "switch-back offline-active-btn" : 'switch-back online-active-btn'} />
+                                    {
+                                        isOff !== null && <div className={!isOff ? "switch-back offline-active-btn" : 'switch-back online-active-btn'} />
+                                    }
                                     <button onClick={handleStatus} className='online-btn'>Offline</button>
                                     <button onClick={handleStatus} className='offline-btn'>Online</button>
                                 </div>

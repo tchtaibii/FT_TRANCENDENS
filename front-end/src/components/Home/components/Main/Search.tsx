@@ -54,7 +54,7 @@ function Search() {
 		else
 		{
 			const newUsers = async () => {
-				await axios.post('/search', value).then((resp:any) => setUserFound(resp.data))
+				await axios.post('/search', {user: value}).then((resp:any) => setUserFound(resp.data))
 				setIsVisible(true)
 			}
 			newUsers();

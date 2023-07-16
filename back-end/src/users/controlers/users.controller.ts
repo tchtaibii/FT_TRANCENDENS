@@ -28,10 +28,11 @@ export class UsersController {
           },
         },
     })
-	async search(@Req() req, @Param('user') user : string, @Res() res)
+	async search(@Req() req, @Body("user") user : string, @Res() res)
 	{
 		const allusers = await this.UserService.getallUsers(req.user, user);
-        res.json(allusers);
+    console.log(user);
+    res.json(allusers);
 	}
 
     // @Get('Get-Notification')

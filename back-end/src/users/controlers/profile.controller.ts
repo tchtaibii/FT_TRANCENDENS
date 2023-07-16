@@ -28,7 +28,7 @@ export class ProfileController {
     async getProfile(@Req() req, @Res() res, @Param('username') username : string){
        
         const profile = await this.ProfileService.getProfile(req.user, username);
-        console.log(profile.avatar);
+        // console.log(profile.avatar);
         res.json({
             friendshipId: profile.friendshipId,
             UserId: profile.UserId,
@@ -78,7 +78,6 @@ export class ProfileController {
     async getActivity(@Req() req, @Param('username') username : string, @Res() res)
     {
         const user = await this.ProfileService.ReturnOneUserByusername(username);
-        console.log(username);
         if (!user)
             throw new NotFoundException('User profile not found');
         const Activity =  await this.ProfileService.getActivity(user);

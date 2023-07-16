@@ -31,7 +31,6 @@ export class UsersController {
 	async search(@Req() req, @Body("user") user : string, @Res() res)
 	{
 		const allusers = await this.UserService.getallUsers(req.user, user);
-    console.log(user);
     res.json(allusers);
 	}
 

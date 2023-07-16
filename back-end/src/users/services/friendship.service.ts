@@ -89,7 +89,7 @@ export class FriendshipService {
             }
         });
 
-        console.log(request);
+        // console.log(request);
 
         const friendshipRequest  = request.map((user) => {
             user.sender.avatar = user.sender.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + user.sender.avatar : user.sender.avatar;

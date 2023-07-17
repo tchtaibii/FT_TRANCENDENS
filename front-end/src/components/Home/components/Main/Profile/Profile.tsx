@@ -240,7 +240,7 @@ export function ProfileProfile() {
     const dispatch: AppDispatch = useDispatch()
     const navigate = useNavigate();
     useEffect(() => {
-        dispatch(setTrue());
+
         const Fetch = async () => {
             await axios.get('/Profile/' + login + '/profile').then((response) => {
                 setPR(response.data)
@@ -250,15 +250,24 @@ export function ProfileProfile() {
                 dispatch(setFalse());
                 console.log()
             })
-            setwidthPro(((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
+            // if (ProfileRight.xp > 0)
+            //     setwidthPro(((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
             setOpacity(1);
         }
-        Fetch();
-    }, [login, update])
+        // if (ProfileRight.username === login)
+        {
+            dispatch(setTrue());
+            Fetch();
+        }
+
+    }, [login, update]);
+
     useEffect(() => {
+        console.log('hilo', ((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
         setwidthPro(((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
         setOpacity(1);
-    }, [, , ProfileRight])
+    }, [ProfileRight])
+
     const AddFriend = async () => {
         await axios.post("/SendRequest", { receiverId: ProfileRight.UserId }).then(resp => {
             console.log(resp);
@@ -277,14 +286,13 @@ export function ProfileProfile() {
             setUpdate(!update);
         })
     }
-    console.log('heeeey', ProfileRight.status);
     return (
         <div className="profileRE">
             <GradienBox mywidth={window.innerWidth > 770 ? '397px' : '1200px'} myheight={'526px'} myborder={'40px'}>
                 <div className="container-Profile-profile">
                     <h1>Profile</h1>
                     <div className='imgS'>
-                        <img src={ProfileRight.avatar} onError={(e) => {
+                        <img src={ProfileRight.avatar} onError={(e: any) => {
                             console.log(e.target);
                             e.target.src = defaultAvatar;
                         }
@@ -317,9 +325,7 @@ export function ProfileProfile() {
                                             </>
 
                                     }
-
-                                    {/* } */}
-                                </> : ''
+                                </> : <></>
                         }
                     </div>
                     <div className="progress">
@@ -357,7 +363,7 @@ function TheGame(props: any) {
                 <div className={props.theGame === 'win' ? "gameSta winGame" :
                     props.theGame === 'lose' ? 'gameSta loseGame' : 'gameSta'}>
                     <div className="infoGame">
-                        <img src={props.avatar} onError={(e) => {
+                        <img src={props.avatar} onError={(e: any) => {
                             console.log(e.target);
                             e.target.src = defaultAvatar;
                         }
@@ -419,6 +425,15 @@ export function ProfileDown() {
     const [allGames, setAllGams] = useState<AllGames | undefined>(undefined)
 
     useEffect(() => {
+        const fetchData = async () => {
+            await axios.get('/Profile/' + login + '/profile').then((resp) => setPR(resp.data));
+            await axios.get('/Profile/' + login + '/gamehistory').then((resp) => setAllGams(resp.data));
+
+        };
+        fetchData();
+    }, [login]);
+
+    useEffect(() => {
         const calculateWidths = () => {
             if (ProfileRight) {
                 const newWidthPro = (ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100;
@@ -427,25 +442,8 @@ export function ProfileDown() {
                 SetdashArray((newWidthPro / 100) * (138 - 100) + 100);
             }
         };
-
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('/Profile/' + login + '/profile');
-                setPR(response.data);
-            } catch (error) {
-                // Handle error
-            }
-            try {
-                const response = await axios.get('/Profile/' + login + '/gamehistory');
-                setAllGams(response.data);
-            } catch (error) {
-                // Handle error
-            }
-        };
-
-        fetchData();
         calculateWidths();
-    }, [login]);
+    }, [ProfileRight])
 
     const [index, setIndex] = useState<number>(0);
     const [Direction, setDirection] = useState<number>(0);

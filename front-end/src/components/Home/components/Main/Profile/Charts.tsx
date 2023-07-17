@@ -50,7 +50,7 @@ const data = {
             fill: true,
             label: "",
             data: element,
-            borderColor: LastOne >= 1000 ? colorGraph.success.border : colorGraph.Fail.border,
+            borderColor: LastOne >= 480 ? colorGraph.success.border : colorGraph.Fail.border,
             backgroundColor: (ctx: any) => {
                 const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, ctx.chart.height); // Adjust the gradient dimensions for a vertical gradient
                 gradient.addColorStop(0, LastOne >= 1000 ? colorGraph.success.gradient : colorGraph.Fail.gradient); // Starting color with transparency
@@ -97,6 +97,7 @@ const options = {
                     const label = context.chart.data.labels[context.dataIndex];
                     const data = context.parsed.y;
                     return `You have collected in your ${label} a ${data} points`;
+                    
                 },
                 labelColor: () => ({
                     borderColor: 'transparent',

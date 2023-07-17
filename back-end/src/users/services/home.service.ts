@@ -159,7 +159,8 @@ export class HomeService {
 		let topPlayers = await this.prisma.user.findMany({
 			orderBy: [
 				{ level: 'desc' },
-				{ XP: 'desc' }
+				{ XP: 'desc' },
+				{ username : 'asc' }
 			  ]
 		  });
 
@@ -280,6 +281,8 @@ export class HomeService {
 					}
 				],
 				Accepted : true,
+				blockedByReceiver : false,
+				blockedBySender : false,
 			},
 			select : {
 				sender : {
@@ -296,8 +299,9 @@ export class HomeService {
 			},
 		})
 
+
 		const friends = isFriend.map(friend => {
-			return friend.sender.username !== user.UserId ? friend.sender.username : friend.receiver.username;
+			return friend.sender.username !== user.username ? friend.sender.username : friend.receiver.username;
 		})
 
 		const recently : RecentActivity[] = [];
@@ -306,7 +310,6 @@ export class HomeService {
 			allgames[i].Player2.avatar = allgames[i].Player2.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + allgames[i].Player2.avatar : allgames[i].Player2.avatar;
 			allgames[i].Player1.avatar = allgames[i].Player1.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + allgames[i].Player1.avatar : allgames[i].Player1.avatar;
 			const check = friends.includes(allgames[i].Player2.username) && friends.includes(allgames[i].Player1.username);
-
 			if (allgames[i].isDraw)
 			{
 				recently.push( {

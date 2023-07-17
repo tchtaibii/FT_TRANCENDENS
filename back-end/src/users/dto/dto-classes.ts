@@ -86,3 +86,12 @@ export class request
 	username : string;
 	friendshipId : number;	
 }
+
+export class notification
+{
+	avatar : string;
+	username : string;
+	isRead : boolean;
+	notificationId : number;
+	Type : string;
+}

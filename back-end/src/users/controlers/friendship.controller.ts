@@ -39,8 +39,8 @@ export class FriendshipController {
           },
         },
     })
-    async AcceptRequest(@Body('FriendshipId', new ParseIntPipe) FriendshipId : number){
-        await this.FriendshipService.AcceptRequest(FriendshipId);
+    async AcceptRequest(@Body('FriendshipId', new ParseIntPipe) FriendshipId : number, @Req() req){
+        await this.FriendshipService.AcceptRequest(FriendshipId, req.user);
         return true;
     }
 

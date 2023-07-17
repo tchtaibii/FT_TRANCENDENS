@@ -33,9 +33,28 @@ model User {
   Messages            Message[]           @relation("SenderMessages")
   membershipGroups    Membership[]       @relation("MembershipGroupUsers")
   notifications       Notification[]      @relation("UserNotifications")
+  notifications2      Notification[]      @relation("UserNotifications2")
   Player1Relation     Game[]              @relation("Player1Relation")
   Player2Relation     Game[]              @relation("Player2Relation")
-  WinnerRelation     Game[]              @relation("WinnerRelation")
+  WinnerRelation     	Game[]              @relation("WinnerRelation")
+	BadgesRelation			badges?
+}
+
+model badges {
+  
+	badgesId        Int       @id @default(autoincrement())
+	Bronze					Boolean		@default(true)
+	Silver					Boolean		@default(false)
+	Gold						Boolean		@default(false)
+	Platinum				Boolean		@default(false)
+	Diamond					Boolean		@default(false)
+	Master					Boolean		@default(false)
+	Grandmaster			Boolean		@default(false)
+	Legend					Boolean		@default(false)
+	Elite						Boolean		@default(false)
+	Champion				Boolean		@default(false)
+	user						User?			@relation(fields : [UserId], references : [UserId])
+	UserId					String		@unique
 }
 
 model Room {
@@ -86,8 +105,10 @@ enum notificationType {
 
 model Notification {
   NotificationId  Int      @id @default(autoincrement())
-  user            User     @relation(name : "UserNotifications", fields : [UserId], references : [UserId])
-  UserId          String
+  sender          User     @relation(name : "UserNotifications", fields : [senderId], references : [UserId])
+  senderId        String
+  receiver        User     @relation(name : "UserNotifications2", fields : [receiverId], references : [UserId])
+  receiverId      String
   Type            notificationType   
   isRead          Boolean  
   CreationTime    DateTime @default(now())

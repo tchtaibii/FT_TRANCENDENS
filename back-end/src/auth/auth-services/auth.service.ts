@@ -3,11 +3,14 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaClient, User } from '@prisma/client';
 import { JwtPayload } from 'jsonwebtoken';
 import * as jwt from 'jsonwebtoken';
+import * as otplib from 'otplib';
+import * as qrcodeLib from 'qrcode';
 
 
 @Injectable()
 export class AuthService {
-    
+	prisma = new PrismaClient();
+
     constructor(private readonly jwtService: JwtService){}
 
 	async generateJwtToken(user : User){
@@ -34,5 +37,23 @@ export class AuthService {
 		res.clearCookie('refresh_token');
 		res.clearCookie('isAuthenticated');
 		res.redirect(process.env.FrontIp + '/login');
+	}
+
+	async GenerateQrCode(user : User)
+	{
+		const secret = otplib.authenticator.generateSecret();
+		const otpAuth = otplib.authenticator.keyuri(user.username, "Trancendence", secret);
+		const update = await this.prisma.user.update({
+			where : {UserId : user.UserId},
+			data : {FA_On : true, FAsecret : secret},
+		});
+		const qrcode = await qrcodeLib.toDataURL(otpAuth);
+		return qrcode;
+	}
+
+	async checkvaliditionof2fa(user : User, code)
+	{
+		const verify = otplib.authenticator.check(code, user.FAsecret);
+		return verify;
 	}
 }

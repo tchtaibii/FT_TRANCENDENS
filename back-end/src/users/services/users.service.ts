@@ -1,9 +1,10 @@
 import { All, Injectable } from '@nestjs/common';
-import { PrismaClient, User, Game, notificationType } from '@prisma/client';
-import { GamesDTO, AllGames, topPlayers, RecentActivity, ProfileFriends, blockedlist } from '../dto/dto-classes';
+import { PrismaClient, User, Game, notificationType, Prisma } from '@prisma/client';
+import { GamesDTO, AllGames, topPlayers, RecentActivity, ProfileFriends, blockedlist, notification } from '../dto/dto-classes';
 import { create } from 'domain';
 import { type } from 'os';
 import { NotificationGateway } from 'src/events/notification/notification.gateway';
+
 
 @Injectable()
 export class UsersService {
@@ -58,14 +59,84 @@ export class UsersService {
 		}
 	}
 
-	// async getNotification(User : User)
-	// {
-	// 	// const notification 
-	// }
+	async getNotification(User : User)
+	{
+		const blocks = await this.getBlockeduserIds(User);
+
+		const notification = await this.prisma.notification.findMany({
+			where : {
+				receiverId : User.UserId,
+			},
+			select : 
+			{
+				NotificationId : true,
+				senderId : true,
+				Type : true,
+				isRead : true,
+				sender : {
+					select : {
+						username : true,
+						avatar : true,
+						UserId : true,
+					}
+				}
+			}
+		});
+
+		const notifications = notification.filter(user => !blocks.includes(user.senderId));
+
+		const final : notification[] = notifications.map(user => {
+			return {
+				avatar : user.sender.avatar,
+				username : user.sender.username,
+				isRead : user.isRead,
+				notificationId : user.NotificationId,
+				Type : user.Type,
+			}
+		})
+		return final;
+	}
+
+	async getBlockeduserIds(user : User)
+	{
+		const blockedUser = await this.prisma.friendship.findMany({
+			where : {
+				OR : [
+					{
+						SenderId : user.UserId,
+						OR : [
+								{blockedBySender : true},
+								{blockedByReceiver : true},
+						]
+					},
+					{
+						ReceiverId : user.UserId,
+						OR : [
+							{blockedBySender : true},
+							{blockedByReceiver : true},
+						]
+					},	
+				]
+			},
+			select : {
+				SenderId : true,
+				ReceiverId : true,
+			}
+		});
+
+		const blockedUserIds = blockedUser.map(friendship =>
+			friendship.SenderId === user.UserId ? friendship.ReceiverId : friendship.SenderId
+		);
+	
+		return blockedUserIds;
+	}
+
 
 	async getallUsers(User : User, username)
 	{
-		const users = await this.prisma.user.findMany({
+		const blocked = await this.getBlockeduserIds(User);
+
+		const user = await this.prisma.user.findMany({
 			where : {
 				OR : 
 				[
@@ -85,6 +156,8 @@ export class UsersService {
 			}
 		})
 
+		const users = user.filter(filter => !blocked.includes(filter.UserId));
+
 		const isFriend = await this.prisma.friendship.findMany({
 			where : {
 				OR : [
@@ -96,6 +169,8 @@ export class UsersService {
 					}
 				],
 				Accepted : true,
+				blockedByReceiver : false,
+				blockedBySender : false,
 			},
 			select : {
 				sender : {
@@ -116,7 +191,6 @@ export class UsersService {
 			return friend.sender.UserId !== User.UserId ? friend.sender.UserId : friend.receiver.UserId;
 		})
 
-	
 		const fetchusers = users.map((user) => {
 			user.avatar = user.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
 			const check = friends.includes(user.UserId);
@@ -131,5 +205,22 @@ export class UsersService {
 			}
 		})
 		return fetchusers;
+	}
+
+	async ReadNotification(notificationId : number, User : User)
+	{
+		await this.prisma.notification.update({
+			where : {NotificationId : notificationId},
+			data : {isRead : true,}
+		})
+	}
+
+	async ReadallNotification(User : User)
+	{
+		await this.prisma.notification.updateMany({
+			where : {receiverId : User.UserId},
+			data : {isRead : true},
+		})
+		return true;
 	}
 }

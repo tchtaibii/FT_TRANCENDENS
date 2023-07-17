@@ -9,7 +9,7 @@ import { UsersService } from 'src/users/services/users.service';
 import { AccessTokenMiddleware } from '../access-token-middleware/access-token.middleware'
 import * as jwt from 'jsonwebtoken';
 import { GoogleAuthGuard } from './auth-guard/Google-Guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -90,8 +90,27 @@ export class AuthControlers {
     }
 
     @Get('enable-2fa')
-    enable2FA()
+    @UseGuards(JwtAuthGuard)
+    async enable2FA(@Req() req, @Res() res)
     {
+        const qrcode = await this.AuthService.GenerateQrCode(req.user);
+        res.send(`<img src="${qrcode}">`);
+    }
 
+    @Post("verify-2fa")
+    @ApiBody({ 
+        schema: {
+          type: 'object',
+          properties: {
+            Code: {
+              type: 'string',
+            },
+          },
+        },
+    })
+    @UseGuards(JwtAuthGuard)
+    async verify2fa(@Body("Code") FaCode : string, @Req() req)
+    {
+        return await this.AuthService.checkvaliditionof2fa(req.user, FaCode);
     }
 }

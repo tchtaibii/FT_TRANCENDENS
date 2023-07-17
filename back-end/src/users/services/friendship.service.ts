@@ -43,7 +43,7 @@ export class FriendshipService {
         // NotificationGateway
 	}
 
-	async AcceptRequest(FriendshipId : number)
+	async AcceptRequest(FriendshipId : number, User : User)
 	{
 		const friend = await this.prisma.friendship.update({
 			where: { FriendshipId : FriendshipId,  },
@@ -52,7 +52,8 @@ export class FriendshipService {
 
 		const notification =  await this.prisma.notification.create({
 			data: {
-				UserId: friend.SenderId,
+                senderId : User.UserId,
+				receiverId : friend.SenderId,
 				Type: notificationType.Accepted_request, 
 				isRead: false,
 			  },
@@ -89,7 +90,6 @@ export class FriendshipService {
             }
         });
 
-        // console.log(request);
 
         const friendshipRequest  = request.map((user) => {
             user.sender.avatar = user.sender.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + user.sender.avatar : user.sender.avatar;

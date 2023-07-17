@@ -111,8 +111,11 @@ export class SettingService {
                 }
             }),
             await this.prisma.notification.deleteMany({
-                where :{
-                    UserId : User.UserId,
+                where : {
+                    OR : [
+                        {senderId : User.UserId},
+                        {receiverId : User.UserId},
+                    ]
                 }
             })
             await this.prisma.membership.deleteMany({

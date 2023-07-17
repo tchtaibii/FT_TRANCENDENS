@@ -66,7 +66,7 @@ function Activity() {
 
 							</div>
 							<div className="activity-content">
-								<AnimatePresence mode='wait'>
+								<AnimatePresence mode='sync'>
 									{
 										isAll.boolAll ?
 											(data && data.map((e: any, i) => {

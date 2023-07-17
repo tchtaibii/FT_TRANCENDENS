@@ -33,12 +33,15 @@ function MsgNot(props: any) {
 		setIsVisible(false)
 	}
 	const handleClickOutsideI = async () => {
+		if (isVisibleI) {
+			await axios.get('FriendshipRequest').then(resp => {
+				props.setInvi(resp.data)
+			}).catch((err) => {
+				console.log('had error', err);
+			})
+		}
 		setIsVisibleI(false)
-		await axios.get('FriendshipRequest').then(resp => {
-			props.setInvi(resp.data)
-		}).catch((err) => {
-			console.log('had error', err);
-		})
+
 	}
 	useOnClickOutside(ref, handleClickOutside);
 	useOnClickOutside(refI, handleClickOutsideI);
@@ -49,19 +52,19 @@ function MsgNot(props: any) {
 					<button onClick={() => setIsVisibleI(!isVisibleI)} className='btn-msgnot'><img style={{ width: '1.5rem' }} src={inviFriend} alt='' /></button>
 				</GradienBox>
 				<AnimatePresence mode='wait'>
-			{
-				isVisibleI &&
-				<motion.div
-					initial={{ scale: 0, }}
-					animate={{ scale: 1, }}
-					exit={{ scale: 0 }}
-					key={'invitations'}
-					transition={{ ease: "easeInOut", duration: 0.2 }}
-					style={{ position: 'absolute', top: '3.5rem', width: 'fit-content', transform: 'translateX(-15rem)' }}>
-					<NotificationCont data={props.invi} isN={false} />
-				</motion.div>
-			}
-			</AnimatePresence>
+					{
+						isVisibleI &&
+						<motion.div
+							initial={{ scale: 0, }}
+							animate={{ scale: 1, }}
+							exit={{ scale: 0 }}
+							key={'invitations'}
+							transition={{ ease: "easeInOut", duration: 0.2 }}
+							style={{ position: 'absolute', top: '3.5rem', width: 'fit-content', transform: 'translateX(-15rem)' }}>
+							<NotificationCont data={props.invi} isN={false} />
+						</motion.div>
+					}
+				</AnimatePresence>
 			</div>
 
 			<div ref={ref}>
@@ -69,20 +72,20 @@ function MsgNot(props: any) {
 					<button onClick={() => setIsVisible(!isVisible)} className='btn-msgnot'><img style={{ width: '1.5rem' }} alt='' src={BellImg} /></button>
 				</GradienBox>
 				<AnimatePresence mode='wait'>
-				{
-					isVisible &&
-					<motion.div
-						initial={{ scale: 0, }}
-						animate={{ scale: 1, }}
-						exit={{ scale: 0 }}
-						key={'notifi'}
-						transition={{ ease: "easeInOut", duration: 0.2 }}
-						style={{ position: 'absolute', top: '3.5rem', left : '5rem', width: 'fit-content' }}>
-						<NotificationCont data={props.noti} isN={true} />
-					</motion.div>
+					{
+						isVisible &&
+						<motion.div
+							initial={{ scale: 0, }}
+							animate={{ scale: 1, }}
+							exit={{ scale: 0 }}
+							key={'notifi'}
+							transition={{ ease: "easeInOut", duration: 0.2 }}
+							style={{ position: 'absolute', top: '3.5rem', left: '5rem', width: 'fit-content' }}>
+							<NotificationCont data={props.noti} isN={true} />
+						</motion.div>
 
-				}
-			</AnimatePresence>
+					}
+				</AnimatePresence>
 			</div>
 
 			<div onClick={() => setNavMo(true)} className='burger'>

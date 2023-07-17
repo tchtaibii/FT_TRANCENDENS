@@ -445,7 +445,7 @@ export function ProfileDown() {
 
         fetchData();
         calculateWidths();
-    }, [login, ProfileRight]);
+    }, [login]);
 
     const [index, setIndex] = useState<number>(0);
     const [Direction, setDirection] = useState<number>(0);

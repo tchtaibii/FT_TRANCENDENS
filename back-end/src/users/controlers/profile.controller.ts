@@ -18,6 +18,7 @@ export class ProfileController {
     async getGameHistory(@Req() req, @Res() res, @Param('username') username : string)
 	{	
 		const user = await this.ProfileService.ReturnOneUserByusername(username);
+        console.log(username);
 		if (!user)
 			throw new NotFoundException('User profile not found');
         let game : AllGames = await this.ProfileService.fetchgame(user, req.user);

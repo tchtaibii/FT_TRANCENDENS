@@ -7,22 +7,14 @@ COPY ./*.json ./
 RUN npm install
 
 
-COPY ./src ./src
-
-COPY ./prisma ./prisma
-
-COPY ./uploads ./uploads
-
-COPY ./.env ./
-
-RUN npm i @nestjs/swagger
-
 RUN apt-get update && apt-get install coreutils
 
 RUN apt-get install xdg-utils -y
+
+RUN npm install -g concurrently
 
 EXPOSE 3000
 
 EXPOSE 5555
 
-CMD npx prisma generate && npm run start:dev
+ENTRYPOINT ["sh", "-c", "trap 'exit' INT TERM; concurrently 'npm run start:dev' 'npx prisma studio'"]

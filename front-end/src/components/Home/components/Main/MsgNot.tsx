@@ -48,8 +48,11 @@ function MsgNot(props: any) {
 	return (
 		<div className='msgNot-cont' >
 			<div ref={refI}>
-				<GradienBox mywidth="49px" myheight="49px" myborder="10px">
-					<button onClick={() => setIsVisibleI(!isVisibleI)} className='btn-msgnot'><img style={{ width: '1.5rem' }} src={inviFriend} alt='' /></button>
+				<GradienBox over={0} mywidth="49px" myheight="49px" myborder="10px">
+					<button onClick={() => setIsVisibleI(!isVisibleI)} className='btn-msgnot'>
+						<img style={{ width: '1.5rem', fill: 'red', transform: 'translateX(2.5px)' }} src={inviFriend} alt='' />
+						<div className="isFull"></div>
+					</button>
 				</GradienBox>
 				<AnimatePresence mode='wait'>
 					{

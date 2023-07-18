@@ -195,6 +195,7 @@ function Main() {
 		if (notifications.length < 1) {
 			axios.get('/getNotification').then(resp => {
 				setNotifications(resp.data)
+				console.log(resp.data);
 			}).catch((err) => {
 				console.log('had error', err);
 			})

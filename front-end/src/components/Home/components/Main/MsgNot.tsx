@@ -9,6 +9,7 @@ import { useOnClickOutside } from 'usehooks-ts'
 import { ReactSVG } from 'react-svg';
 import axios from '../../../../Interceptor/Interceptor'
 import LogoutImg from "../../../../assets/img/Logout.svg";
+import badge from "../../../../assets/img/badge-noti.svg";
 import HomeImg from "../../../../assets/img/Home.svg";
 import ProfImg from "../../../../assets/img/profile.svg";
 import SetfImg from "../../../../assets/img/Settings.svg";
@@ -33,6 +34,7 @@ function MsgNot(props: any) {
 		if (isVisible) {
 			await axios.get('/getNotification').then(resp => {
 				props.setNoti(resp.data);
+				console.log(resp.data);
 			}).catch((err) => {
 				console.log('had error', err);
 			})
@@ -83,7 +85,7 @@ function MsgNot(props: any) {
 				</GradienBox>
 				<AnimatePresence mode='wait'>
 					{
-						// isVisible &&
+						isVisible &&
 						<motion.div
 							initial={{ scale: 0, }}
 							animate={{ scale: 1, }}
@@ -160,16 +162,40 @@ function MsgNot(props: any) {
 	)
 }
 function Notification(props: any) {
-	const handleClick = () => {
-		props.onClick();
-	};
+	// const handleClick = () => {
+	// 	props.onClick();
+	// };
+	const [textNotifi, setText] = useState('')
 
+	useEffect(() => {
+		setText(text());
+	}, [])
+	console.log(props.type);
+	const text = () => {
+		switch (props.type) {
+			case "Accepted_request":
+				return `${props.username} has accept your request. You are friends now!`;
+				break;
+			case "game_invitation":
+				return `${props.username} has invited you to a game of Ping Pong! Accept or decline the invitation now.`
+				break;
+			case "GroupInvitation":
+				return `Check your Inbox Chat, ${props.username} has invited you in a Group!`;
+				break;
+			case "Achievement":
+				return `Congratulations! You have been awarded a new Archievement.`
+				break;
+			default:
+				return '';
+		}
+	}
+	text();
 	return (
-		<div id={props.id} className="notification" onClick={handleClick}>
+		<div id={props.key} className="notification">
 			<div className={!props.isRead ? "no-read" : ""}>
-				<img src={props.img} alt="" />
+				<img src={props.img !== null ? props.img : badge} alt="" />
 			</div>
-			<div className="noti-text">{props.text}</div>
+			<div className="noti-text">{textNotifi}</div>
 		</div>
 	);
 }
@@ -283,12 +309,12 @@ function NotificationCont(props: any) {
 				<div className="main-noti">
 
 					{
-						props.data.map((e: any, i: number) => <Invitation key={'invi- ' + i} data={e} />)
-
-						// :
-						// props.noti.map((e: any, index: number) => {
-						// 		return (<Notification key={'noti-' + index} isRead={e.isRead} img={e.avatar} text={e.text} />);
-						// })
+						!props.isN ?
+							props.data.map((e: any, i: number) => <Invitation key={'invi- ' + i} data={e} />)
+							:
+							props.data.map((e: any) => {
+								return (<Notification key={e.notificationId} username={e.username} type={e.Type} isRead={e.isRead} img={e.avatar ? e.avatar : null} />);
+							})
 						// onClick={() => handleNotificationClick(index + 1)}
 						// props.isN === true ? notifi.map((e: any, index: number) => {
 						// 	return (<Notification onClick={() => handleNotificationClick(index + 1)} key={'noti-' + index} isRead={e.isRead} img={test} text={e.text} />);

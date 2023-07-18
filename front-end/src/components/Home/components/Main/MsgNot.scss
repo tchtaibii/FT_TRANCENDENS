@@ -327,8 +327,9 @@
 
 .isFull{
     position: absolute;
-    width: toRem(10);
-    height: toRem(10);
+    width: toRem(5);
+    height: toRem(5);
     border-radius: 50%;
     background-color: #ED5152;
+    transform: translate(toRem(12), toRem(-12));
 }

@@ -50,8 +50,8 @@ function MsgNot(props: any) {
 			<div ref={refI}>
 				<GradienBox over={0} mywidth="49px" myheight="49px" myborder="10px">
 					<button onClick={() => setIsVisibleI(!isVisibleI)} className='btn-msgnot'>
-						<img style={{ width: '1.5rem', fill: 'red', transform: 'translateX(2.5px)' }} src={inviFriend} alt='' />
-						<div className="isFull"></div>
+						<img style={{ width: '1.5rem', fill: 'red', transform: 'translateX(0.156rem)' }} src={inviFriend} alt='' />
+						{props.invi.length > 0 && <div className="isFull"></div>}
 					</button>
 				</GradienBox>
 				<AnimatePresence mode='wait'>
@@ -170,12 +170,12 @@ function Invitation(props: any) {
 	const [visible, setvisible] = useState(true);
 
 	const Accept = async () => {
-		await axios.post('/AcceptRequest', { FriendshipId: props.data.friendshipId }).then((resp) => console.log(resp));
 		setvisible(false);
+		await axios.post('/AcceptRequest', { FriendshipId: props.data.friendshipId });
 	};
 	const Decline = async () => {
-		await axios.post('/CancelRequest', { FriendshipId: props.data.friendshipId }).then((resp) => console.log(resp));
 		setvisible(false);
+		await axios.post('/CancelRequest', { FriendshipId: props.data.friendshipId });
 	}
 	const navigate = useNavigate();
 	return (

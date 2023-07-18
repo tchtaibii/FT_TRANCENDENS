@@ -176,12 +176,12 @@ function Profile(props: any) {
                         <div className="content-fri">
                             {
                                 myFriends.length > 0 &&
-                                myFriends.map((e: any) => {
+                                myFriends.map((e: any, i:number) => {
                                     return (
-                                        <div key={e.UserId + 'fr'} className="friend-Profile">
+                                        <div key={e.UserId + 'fr-' + i} className="friend-Profile">
                                             <div className="friend-info">
                                                 <Link to={'/profile/' + e.username}>
-                                                    <img src={e.avatar} onError={(e) => {
+                                                    <img src={e.avatar} onError={(e:any) => {
                                                         console.log(e.target);
                                                         e.target.src = defaultAvatar;
                                                     }
@@ -543,7 +543,7 @@ export function ProfileDown() {
                         </div>
                         <div className="gameHistoryC">
                             {
-                                allGames?.AllGames.map((e) => <TheGame loser={e.looserxp} winner={e.Winnerxp} key={e.GameId}
+                                allGames?.AllGames.map((e, i) => <TheGame loser={e.looserxp} winner={e.Winnerxp} key={e.GameId + i}
                                     login={e.AdvName} mode={e.Mode} avatar={e.advPic}
                                     theGame={e.isDraw ? 'draw' : e.won ? 'win' : 'lose'
                                     }

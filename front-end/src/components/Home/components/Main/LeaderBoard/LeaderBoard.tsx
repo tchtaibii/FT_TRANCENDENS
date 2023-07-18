@@ -2,14 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import './LeaderBoard.scss'
 import { useOnClickOutside } from 'usehooks-ts';
 import GradienBox from '../../../../../tools/GradienBox'
-import trophet from './trophet.svg';
+import { useDispatch } from 'react-redux';
+// import trophet from './trophet.svg';
 import medaille from './medaille.svg'
 import defaultAvatar from '../../../../../assets/img/avatar.png'
 import axios from '../../../../../Interceptor/Interceptor'
+import { AppDispatch } from '../../../../../store/store'
+import { setFalse, setTrue } from '../../../../../features/isLoading';
 import Iaward from "../../../../../assets/img/award.svg"
-import gold from "../../../../../assets/img/Gold.svg"
+// import gold from "../../../../../assets/img/Gold.svg"
 import Silver from "../../../../../assets/img/silver.svg"
 import Bronze from "../../../../../assets/img/bronze.svg"
+
 
 const Down = () => (
     <svg width="1.188rem" height="0.813rem" viewBox="0 0 19 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -47,23 +51,23 @@ function LeaderBoard() {
         )
     }
 
-    function SelectOptions() {
-        return (
-            <div className='divZ' ref={ref}>
-                <button onClick={() => {
-                    setisfilter(!isfilter);
-                }} className="filterC">
+    // function SelectOptions() {
+    //     return (
+    //         <div className='divZ' ref={ref}>
+    //             <button onClick={() => {
+    //                 setisfilter(!isfilter);
+    //             }} className="filterC">
 
-                    <div className="filterIn">
-                        Filter by
-                        <Down />
-                    </div>
-                </button>
-                {isfilter && <FiltredC />}
-            </div>
+    //                 <div className="filterIn">
+    //                     Filter by
+    //                     <Down />
+    //                 </div>
+    //             </button>
+    //             {isfilter && <FiltredC />}
+    //         </div>
 
-        )
-    }
+    //     )
+    // }
     const RankC = (props:any)  => {
 
         return (
@@ -81,13 +85,17 @@ function LeaderBoard() {
             </div>
         );
     }
+    const dispatch: AppDispatch = useDispatch()
     const [Data, setData] = useState([]);
     useEffect(()=>{
+        dispatch(setTrue());
         const fetchData = () => {
             axios.get('/Home/Best6Players').then((resp:any) => {
                 setData(resp.data);
+                dispatch(setFalse());
             })
         }
+
         fetchData();
     },[])
     return (

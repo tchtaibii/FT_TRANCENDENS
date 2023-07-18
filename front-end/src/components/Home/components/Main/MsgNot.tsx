@@ -29,7 +29,14 @@ function MsgNot(props: any) {
 		axios.get('/Home/Hero').then((response) => setLogin(response.data))
 		// console.log('hey', Login)
 	}, [])
-	const handleClickOutside = () => {
+	const handleClickOutside = async () => {
+		if (isVisible) {
+			await axios.get('/getNotification').then(resp => {
+				props.setNoti(resp.data);
+			}).catch((err) => {
+				console.log('had error', err);
+			})
+		}
 		setIsVisible(false)
 	}
 	const handleClickOutsideI = async () => {
@@ -48,8 +55,11 @@ function MsgNot(props: any) {
 	return (
 		<div className='msgNot-cont' >
 			<div ref={refI}>
-				<GradienBox mywidth="49px" myheight="49px" myborder="10px">
-					<button onClick={() => setIsVisibleI(!isVisibleI)} className='btn-msgnot'><img style={{ width: '1.5rem' }} src={inviFriend} alt='' /></button>
+				<GradienBox over={0} mywidth="49px" myheight="49px" myborder="10px">
+					<button onClick={() => setIsVisibleI(!isVisibleI)} className='btn-msgnot'>
+						<img style={{ width: '1.5rem', fill: 'red', transform: 'translateX(0.156rem)' }} src={inviFriend} alt='' />
+						{props.invi.length > 0 && <div className="isFull"></div>}
+					</button>
 				</GradienBox>
 				<AnimatePresence mode='wait'>
 					{
@@ -73,7 +83,7 @@ function MsgNot(props: any) {
 				</GradienBox>
 				<AnimatePresence mode='wait'>
 					{
-						isVisible &&
+						// isVisible &&
 						<motion.div
 							initial={{ scale: 0, }}
 							animate={{ scale: 1, }}
@@ -167,12 +177,12 @@ function Invitation(props: any) {
 	const [visible, setvisible] = useState(true);
 
 	const Accept = async () => {
-		await axios.post('/AcceptRequest', { FriendshipId: props.data.friendshipId }).then((resp) => console.log(resp));
 		setvisible(false);
+		await axios.post('/AcceptRequest', { FriendshipId: props.data.friendshipId });
 	};
 	const Decline = async () => {
-		await axios.post('/CancelRequest', { FriendshipId: props.data.friendshipId }).then((resp) => console.log(resp));
 		setvisible(false);
+		await axios.post('/CancelRequest', { FriendshipId: props.data.friendshipId });
 	}
 	const navigate = useNavigate();
 	return (

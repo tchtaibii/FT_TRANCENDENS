@@ -192,9 +192,13 @@ function Main() {
 				console.log('had error', err);
 			})
 		}
-
-
-
+		if (notifications.length < 1) {
+			axios.get('/getNotification').then(resp => {
+				setNotifications(resp.data)
+			}).catch((err) => {
+				console.log('had error', err);
+			})
+		}
 	}, [])
 	console.log('invi from msg', invitations);
 	return (
@@ -203,7 +207,7 @@ function Main() {
 				<div className="side1">
 					<div className='top'>
 						<Search />
-						<MsgNot setInvi={setInvitation} invi={invitations} noti={notifications} />
+						<MsgNot setInvi={setInvitation} setNoti={setNotifications} invi={invitations} noti={notifications} />
 					</div>
 					<Routes>
 						<Route path="/" element={<><Hero /><GamesMode /><BestPlayers /></>} />

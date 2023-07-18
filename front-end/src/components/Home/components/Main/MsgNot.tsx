@@ -29,7 +29,14 @@ function MsgNot(props: any) {
 		axios.get('/Home/Hero').then((response) => setLogin(response.data))
 		// console.log('hey', Login)
 	}, [])
-	const handleClickOutside = () => {
+	const handleClickOutside = async () => {
+		if (isVisible) {
+			await axios.get('/getNotification').then(resp => {
+				props.setNoti(resp.data);
+			}).catch((err) => {
+				console.log('had error', err);
+			})
+		}
 		setIsVisible(false)
 	}
 	const handleClickOutsideI = async () => {
@@ -76,7 +83,7 @@ function MsgNot(props: any) {
 				</GradienBox>
 				<AnimatePresence mode='wait'>
 					{
-						isVisible &&
+						// isVisible &&
 						<motion.div
 							initial={{ scale: 0, }}
 							animate={{ scale: 1, }}

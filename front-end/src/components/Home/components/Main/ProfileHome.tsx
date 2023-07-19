@@ -11,7 +11,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 function ProfileHome() {
 
     var data: any = useSelector((state: any) => state.admin);
-    console.log('hello', data.isLoader);
+    console.log('hello', data);
     return (
         <div className="myProfile">
             <GradienBox mywidth="397px" myheight="284px" myborder="40px">

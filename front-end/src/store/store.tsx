@@ -6,6 +6,7 @@ import adminReducer from "../features/adminSlice"
 import isLoading from "../features/isLoading"
 import isDown from "../features/ServerDown"
 import TwoFa from "../features/2FA"
+import token from "../features/SocketToken"
 
 const store = configureStore({
     reducer:{
@@ -15,7 +16,8 @@ const store = configureStore({
         admin : adminReducer,
         isLoading,
         TwoFa,
-        isDown
+        isDown,
+        token
     },
 })
 export default  store;

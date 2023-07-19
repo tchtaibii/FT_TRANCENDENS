@@ -6,12 +6,13 @@ import Particle from './tools/ParticalComponent';
 import Cookies from 'js-cookie';
 import axios from './Interceptor/Interceptor'
 import { seIsDown } from './features/ServerDown'
+import { getToken } from './features/SocketToken'
 import { useSelector } from 'react-redux';
 import Loading from './components/Loading';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from './store/store'
 import Secure from './Secure';
-
+import io from 'socket.io-client';
 
 function App() {
 	// const data:any = useSelector((state:any) => state.admin)
@@ -20,7 +21,10 @@ function App() {
 	const [isSecure, setSecure] = useState(false);
 	const [isDown, setIsDown] = useState(false);
 	const isDownState = useSelector((state: any) => state.isDown);
-	console.log(isDownState.isDown);
+	const tokenTest = useSelector((state: any) => state.token).token;
+	const [token, setToken] = useState(tokenTest);
+	const [socket, setSocket] = useState(null);
+
 	useEffect(() => {
 		const tesServer = async () => {
 			if (isDownState.isDown === true) {
@@ -46,13 +50,49 @@ function App() {
 		setIsDown(isDownState.isDown);
 	}, [isDownState.isDown])
 
+	useEffect(() => {
 
+	})
 	useEffect(() => {
 		const CheckFa = async () => {
 			await axios.get('/auth/isFA-enabled').then((rsp) => setSecure(rsp.data.FA_ON))
 		}
 		CheckFa();
-	},[isLogin])
+		const GetToken = async () => {
+			if (isLogin) {
+				dispatch(getToken());
+			}
+		}
+		GetToken();
+	}, [isLogin])
+
+	useEffect(() => {
+		if (token) {
+			const socket = io('ws://localhost:3001', {
+				query: { token },
+			});
+
+			socket.on('connect', () => {
+				console.log('Socket.IO connected.');
+			});
+
+			socket.on('notifications', (data:any) => {
+				console.log('Received message:', data);
+			});
+
+			socket.on('disconnect', () => {
+				console.log('Socket.IO disconnected.');
+			});
+			setSocket(socket);
+
+			return () => {
+				socket.disconnect();
+			};
+		}
+	}, [token]);
+
+
+
 	console.log(isDown)
 	return (
 		<div className="App">

@@ -142,7 +142,21 @@ function Settings() {
 
     }
     const HandleImg = async (event: any) => {
-
+        if (username !== myInfo.username && username != '') {
+            dispatch(setTrue());
+            await axios
+                .post("/setting/updateUsername", { username })
+                .then((resp) => {
+                    setStatus(true);
+                    setInfo((prev: Info) => ({ ...prev, username }));
+                    setUpdate(!updateS);
+                })
+                .catch((err) => {
+                    setImgChange(null);
+                    setStatus(false);
+                });
+                dispatch(setFalse());
+        }
         if (imgChange !== null) {
             event.preventDefault();
             const data = new FormData();
@@ -161,7 +175,7 @@ function Settings() {
     }
     const handleSave = async (event: any) => {
         dispatch(setTrue());
-        if (username !== myInfo.username) {
+        if (username !== myInfo.username && username != '') {
             await axios
                 .post("/setting/updateUsername", { username })
                 .then((resp) => {
@@ -199,7 +213,7 @@ function Settings() {
                         <div style={divStyle} className="image-pro-settings">
                             <div className="editAv">EDIT<br />AVATAR</div>
                             <input onChange={handleFileChange} accept=".png, .jpg, .jpeg" type="file" name="" id="" style={{ width: "100%", height: "10.375rem", cursor: 'pointer', zIndex: "9999999999999", opacity: 0, position: "relative", transform: "translateY(-10.2rem)" }} />
-                            <button onClick={HandleImg} style={{ zIndex: "999999999999999999999999999999" }} className='Pen'><div className="penC"><Pen /></div></button>
+                            <button onClick={HandleImg} style={{ zIndex: "999999999999999999999999999999" }} className='Pen'><div className="penC">Save</div></button>
                         </div>
                         <div className="edit-NEP">
                             <div className="input-settings">
@@ -224,7 +238,7 @@ function Settings() {
                                     <div className="inputContent"><input style={{ color: "gray", cursor: "not-allowed" }} value={myInfo.email} type="text" disabled /><button style={{ cursor: "not-allowed" }}><Edit /></button></div>
                                 </GradienBox>
                             </div>
-                            <button className='saveBtn' style={{}} onClick={handleSave}>Save</button>
+                            {/* <button className='saveBtn' style={{}} onClick={handleSave}>Save</button> */}
                             {
                                 (UsernameStatus !== undefined && (UsernameStatus === false ? <p className='Error statusInput'>Something Wrong!</p> : <p className='validate statusInput'>Update Success!</p>))
                             }

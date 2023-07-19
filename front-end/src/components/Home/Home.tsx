@@ -10,7 +10,7 @@ import { getAdmin } from "../../features/adminSlice"
 import { get2FA } from "../../features/2FA"
 import { useEffect } from 'react'
 function Home() {
-
+  
   const dispatch: AppDispatch = useDispatch();
   const DataLoader = useSelector((state:any)=> state.admin).isLoader;
   useEffect(() => {

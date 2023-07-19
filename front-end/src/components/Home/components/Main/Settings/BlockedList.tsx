@@ -34,7 +34,6 @@ function Blockedlist() {
     }, [update])
     return (
         <div className='BlockedList'>
-
             <div className="Blocked-cont">
                 <h1>Blocked Account</h1>
                 <div className="blockedListC">

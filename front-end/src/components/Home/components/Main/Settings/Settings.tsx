@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { setFalse, setTrue } from '../../../../../features/isLoading';
 import { getAdmin, setUsername as setUSer, setStatus as statusSet } from '../../../../../features/adminSlice'
 import Blockedlist from './BlockedList'
+import TwoFa from './TwoFa'
 import BackToHome from '../../BackToHome'
 
 
@@ -58,6 +59,7 @@ function Settings() {
     const [LinkGoogle, setLinkGoogle] = useState(false);
     const [isDelete, setDeleteTab] = useState(false);
     const [isBlockedList, setBlockedTab] = useState(false);
+    const [is2fa, set2fa] = useState(true);
     const [isPopUp, setPopUp] = useState(false);
     const [imgChange, setImgChange] = useState<File | null>(null);
     const [UsernameStatus, setStatus] = useState<boolean | undefined>(undefined);
@@ -297,12 +299,29 @@ function Settings() {
                                 <button onClick={() => {
                                     setPopUp(false);
                                     setBlockedTab(false);
-                                }} className='exitblocke'>
+                                }} style={{ transform: 'translate(24.5rem, -0.2rem)' }} className='exitblocke'>
                                     <Exit />
                                 </button>
                                 <Blockedlist />
                             </motion.div>
-
+                        }
+                        {
+                            is2fa &&
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                exit={{ scale: 0 }}
+                                key={'Block-Side'}
+                                transition={{ ease: "easeInOut", duration: 0.2 }}
+                            >
+                                <button onClick={() => {
+                                    setPopUp(false);
+                                    setBlockedTab(false);
+                                }} style={{ transform: 'translate(26.4rem, -0.2rem)' }} className='exitblocke'>
+                                    <Exit />
+                                </button>
+                                <TwoFa set2FA={set2fa} setPop={setPopUp} firstTime={true}/>
+                            </motion.div>   
                         }
 
                     </motion.div>

@@ -8,6 +8,7 @@ import { AppDispatch } from '../../../../../store/store'
 import { motion, AnimatePresence } from 'framer-motion'
 import { setFalse, setTrue } from '../../../../../features/isLoading';
 import { getAdmin, setUsername as setUSer, setStatus as statusSet } from '../../../../../features/adminSlice'
+import { get2FA } from '../../../../../features/2FA'
 import Blockedlist from './BlockedList'
 import TwoFa from './TwoFa'
 import BackToHome from '../../BackToHome'
@@ -55,11 +56,10 @@ type Info = {
 }
 function Settings() {
     const dispatch: AppDispatch = useDispatch()
-    const Admin = useSelector((state: any) => state.admin);
-    const [LinkGoogle, setLinkGoogle] = useState(false);
+    // const Admin = useSelector((state: any) => state.admin);
     const [isDelete, setDeleteTab] = useState(false);
     const [isBlockedList, setBlockedTab] = useState(false);
-    const [is2fa, set2fa] = useState(true);
+    const [is2fa, set2fa] = useState(false);
     const [isPopUp, setPopUp] = useState(false);
     const [imgChange, setImgChange] = useState<File | null>(null);
     const [UsernameStatus, setStatus] = useState<boolean | undefined>(undefined);
@@ -68,12 +68,36 @@ function Settings() {
     const [myInfo, setInfo] = useState<Info>({ avatar: "", username: "", email: "" });
     const [updateS, setUpdate] = useState(false);
     const Athenti = useSelector((state:any) => state.TwoFa);
+    const [LinkGoogle, setLinkGoogle] = useState(Athenti.FA_ON);
+    console.log(Athenti.FA_ON)
     const handleChange = (event: any) => {
+        if (!LinkGoogle)
+        {
+            setPopUp(true)
+            set2fa(true);
+            console.log('!LinkGoogle')
+        }
+        else{
+            const SendData = async () => {
+                setLinkGoogle(false);
+                await axios.post("/auth/isFA-enabled", false);
+                dispatch(get2FA());
+            }
+            SendData();
+            console.log('LinkGoogle')
+        }
+        
+        // dispatch(get2FA());
         // setLinkGoogle(current => !current);
     };
     useEffect(() => {
+        setLinkGoogle(Athenti.FA_ON);
+    },[Athenti])
+    useEffect(() => {
         dispatch(setTrue());
         dispatch(getAdmin());
+        dispatch(get2FA());
+        console.log('hello',Athenti);
         const FetchData = async () => {
             await axios.get("/setting/account").then((resp) => {
                 setInfo(resp.data);
@@ -91,12 +115,11 @@ function Settings() {
             // setTimeout(() => {},2000)
         }
         FetchData();
-
     }, [])
     const deleteAccount = () => {
         axios.post("/setting/DeleteAccount").catch((resp) => {
         }).then(() => {
-            window.location.reload(false);
+            window.location.reload();
         })
     }
     const divStyle = {
@@ -216,7 +239,7 @@ function Settings() {
                         <div className="center-cont-act">
                             <h2>Link Account with Google</h2>
                             <label className="switch" htmlFor="checkbox">
-                                <input onChange={handleChange} className='toogleInput' checked={Athenti.FA_ON} type="checkbox" id="checkbox" />
+                                <input onChange={handleChange} className='toogleInput' checked={LinkGoogle} type="checkbox" id="checkbox" />
                                 <div className="slider round"></div>
                             </label>
                         </div>
@@ -318,11 +341,11 @@ function Settings() {
                             >
                                 <button onClick={() => {
                                     setPopUp(false);
-                                    setBlockedTab(false);
+                                    set2fa(false);
                                 }} style={{ transform: 'translate(26.4rem, -0.2rem)' }} className='exitblocke'>
                                     <Exit />
                                 </button>
-                                <TwoFa set2FA={set2fa} setPop={setPopUp} firstTime={true}/>
+                                <TwoFa set2FA={set2fa} setPop={setPopUp} firstTime={Athenti.isFirst}/>
                             </motion.div>   
                         }
 

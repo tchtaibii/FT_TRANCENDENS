@@ -45,7 +45,7 @@ export class AuthService {
 		const otpAuth = otplib.authenticator.keyuri(user.username, "Trancendence", secret);
 		const update = await this.prisma.user.update({
 			where : {UserId : user.UserId},
-			data : {FA_On : true, FAsecret : secret},
+			data : {FAsecret : secret},
 		});
 		const qrcode = await qrcodeLib.toDataURL(otpAuth);
 		return qrcode;
@@ -54,6 +54,21 @@ export class AuthService {
 	async checkvaliditionof2fa(user : User, code)
 	{
 		const verify = otplib.authenticator.check(code, user.FAsecret);
+		await this.prisma.user.update({
+			where : {UserId : user.UserId},
+			data : {FA_On : verify},
+		});
 		return verify;
+	}
+
+	async disableFA(User : User)
+	{
+		const change = await this.prisma.user.update({
+			where : { UserId : User.UserId},
+			data : {
+				FA_On : false,
+			}
+		})
+		console.log(change.FA_On);
 	}
 }

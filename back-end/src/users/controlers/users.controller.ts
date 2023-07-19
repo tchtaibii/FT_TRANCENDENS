@@ -7,11 +7,11 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('')
 @ApiTags('user')
-@UseGuards(JwtAuthGuard)
 export class UsersController {
     constructor(private readonly UserService : UsersService){}
 
 	@Get('getNotification')
+	@UseGuards(JwtAuthGuard)
 	async getNotification(@Req() req)
 	{
 		return await this.UserService.getNotification(req.user);
@@ -28,6 +28,7 @@ export class UsersController {
 			},
 		},
 	})
+	@UseGuards(JwtAuthGuard)
 	async search(@Req() req, @Body("user") user : string, @Res() res)
 	{
 		const allusers = await this.UserService.getallUsers(req.user, user);
@@ -45,15 +46,24 @@ export class UsersController {
 			},
 		},
 	})
+	@UseGuards(JwtAuthGuard)
 	async ReadNotification(@Body("notificationId") notificationId : number, @Req() req, )
 	{
 		await this.UserService.ReadNotification(notificationId, req.user);
 	}
 
 	@Post("readallnotification")
+	@UseGuards(JwtAuthGuard)
 	async ReadAllNotification(@Req() req)
 	{
 		return await this.UserService.ReadallNotification(req.user);
 	}
+
+	
+    @Get('')
+    async wsToken()
+    {
+        return true;
+    }
 
 }

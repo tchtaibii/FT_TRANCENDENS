@@ -1,8 +1,11 @@
-import QrCde from '../../../../../assets/img/qrCodde.png'
 import { useEffect, useState, useRef } from 'react'
 import axios from '../../../../../Interceptor/Interceptor'
+import { get2FA } from '../../../../../features/2FA';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../../../store/store';
 
 function TwoFa(props: any) {
+    const disptach : AppDispatch = useDispatch();
     const [Code, setCode] = useState<number[]>([-1, -1, -1, -1, -1, -1]);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
     const [Steps, setSteps] = useState({ first: (props.firstTime === true ? true : false), second: (props.firstTime === false ? true : false), third: false });
@@ -14,6 +17,18 @@ function TwoFa(props: any) {
         }
     }, []);
     
+    useEffect(() => {
+        if (Steps.second === true)
+        {
+            const FetchData =  async () => {
+                await axios.get('/auth/enable-2fa').then((resp) => {
+                    console.log('qrcodeeee', resp.data);
+                    setQrcode(resp.data)
+                });
+            }
+            FetchData();
+        }
+    }, [Steps])
     const RenderInputs = () => {
         const inputs = [];
 
@@ -90,17 +105,7 @@ function TwoFa(props: any) {
                 <div className="footer-2fa">
                     <button onClick={() => {
                         if(Steps.first)
-                        {
-
-                            const FetchData =  async () => {
-                                await axios.get('/auth/enable-2fa').then((resp) => {
-                                    console.log('qrcodeeee', resp.data);
-                                    setQrcode(resp.data)
-                                });
-                            }
-                            FetchData();
                             setSteps({first: false, second: true, third: false})
-                        }
                         else if (Steps.second)
                             setSteps({first: false, second: false, third: true})
                         else if (Steps.third)
@@ -119,6 +124,8 @@ function TwoFa(props: any) {
                                     });
                                 }
                                 SendData();
+                                disptach(get2FA()); 
+                                // console.log()
                             }
                         }
                     }}>{Steps.third ? 'Submit' : 'Next'}</button>

@@ -36,16 +36,11 @@ export class AuthControlers {
         res.cookie('refresh_token', RefreshToken, { httpOnly: true, secure : true});
         res.cookie('isAuthenticated', true, {secure : true});
         if (found)
+        {
             res.redirect(process.env.FrontIp);
+        }
         else 
             res.redirect(process.env.FrontIp + '/settings');
-    }
-
-    @Get('wsToken')
-    async wsToken(@Req() req)
-    {
-        const wsToken = this.AuthService.generateJwtToken(req.user);
-        return wsToken;
     }
 
     @Get('google/callback')
@@ -119,5 +114,12 @@ export class AuthControlers {
     async isFa_enabled(@Req() req)
     {
        return await this.UsersService.checkFaIsEnabled(req.user);
+    }
+
+    @Post('isFA-enabled')
+    @UseGuards(JwtAuthGuard)
+    async isFAenabled(@Req() req)
+    {
+        await this.AuthService.disableFA(req.user);
     }
 }

@@ -67,8 +67,9 @@ function Settings() {
     const [username, setUsername] = useState("");
     const [myInfo, setInfo] = useState<Info>({ avatar: "", username: "", email: "" });
     const [updateS, setUpdate] = useState(false);
+    const Athenti = useSelector((state:any) => state.TwoFa);
     const handleChange = (event: any) => {
-        setLinkGoogle(current => !current);
+        // setLinkGoogle(current => !current);
     };
     useEffect(() => {
         dispatch(setTrue());
@@ -86,10 +87,11 @@ function Settings() {
                 })
             }
             dispatch(setFalse());
-            // setTimeout(() => {},2000)
 
+            // setTimeout(() => {},2000)
         }
-        FetchData()
+        FetchData();
+
     }, [])
     const deleteAccount = () => {
         axios.post("/setting/DeleteAccount").catch((resp) => {
@@ -214,7 +216,7 @@ function Settings() {
                         <div className="center-cont-act">
                             <h2>Link Account with Google</h2>
                             <label className="switch" htmlFor="checkbox">
-                                <input onChange={handleChange} className='toogleInput' checked={LinkGoogle} type="checkbox" id="checkbox" />
+                                <input onChange={handleChange} className='toogleInput' checked={Athenti.FA_ON} type="checkbox" id="checkbox" />
                                 <div className="slider round"></div>
                             </label>
                         </div>

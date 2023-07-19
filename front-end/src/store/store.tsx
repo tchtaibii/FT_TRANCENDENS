@@ -4,6 +4,7 @@ import notificationReducer from "../features/notificationsSlice"
 import messageReducer from "../features/messageSlice"
 import adminReducer from "../features/adminSlice"
 import isLoading from "../features/isLoading"
+import TwoFa from "../features/2FA"
 
 const store = configureStore({
     reducer:{
@@ -11,7 +12,9 @@ const store = configureStore({
         notification: notificationReducer,
         messages: messageReducer,
         admin : adminReducer,
-        isLoading
+        isLoading,
+        TwoFa,
+        
     },
 })
 export default  store;

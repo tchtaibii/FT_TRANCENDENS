@@ -94,7 +94,7 @@ export class AuthControlers {
     async enable2FA(@Req() req, @Res() res)
     {
         const qrcode = await this.AuthService.GenerateQrCode(req.user);
-        res.send(`<img src="${qrcode}">`);
+        res.send(qrcode);
     }
 
     @Post("verify-2fa")
@@ -115,6 +115,7 @@ export class AuthControlers {
     }
 
     @Get("isFA-enabled")
+    @UseGuards(JwtAuthGuard)
     async isFa_enabled(@Req() req)
     {
        return await this.UsersService.checkFaIsEnabled(req.user);

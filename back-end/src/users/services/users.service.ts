@@ -232,9 +232,11 @@ export class UsersService {
 			select :
 			{
 				FA_On : true,
+				FAsecret : true,
 			},
 			take : 1,
 		})
-		return FA[0].FA_On;
+		const isFirst = FA[0].FAsecret ? false : true;
+		return {isFirst, FA_ON : FA[0].FA_On};
 	}
 }

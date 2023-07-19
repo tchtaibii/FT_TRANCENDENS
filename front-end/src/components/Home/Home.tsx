@@ -7,6 +7,7 @@ import Loading from '../../components/Loading'
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from "../../store/store"
 import { getAdmin } from "../../features/adminSlice"
+import { get2FA } from "../../features/2FA"
 import { useEffect } from 'react'
 function Home() {
 
@@ -15,6 +16,7 @@ function Home() {
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(getAdmin());
+      await dispatch(get2FA());
       if (!DataLoader)
         fetchData();
     };

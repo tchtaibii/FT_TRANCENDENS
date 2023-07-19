@@ -8,7 +8,7 @@ import { NotificationGateway } from 'src/events/notification/notification.gatewa
 @Injectable()
 export class FriendshipService {
     prisma = new PrismaClient();
-	constructor(){}
+	constructor(private readonly NotificationGateway : NotificationGateway){}
 
     async sendRequest(User : User, receiverId : string)
     {
@@ -22,7 +22,7 @@ export class FriendshipService {
         if (existingRequest)
             return true;
 
-        await this.prisma.friendship.create ({
+        const invite = await this.prisma.friendship.create ({
             data: {
                 sender: {
                 connect: { UserId: User.UserId }
@@ -32,32 +32,52 @@ export class FriendshipService {
                 },
             }
         });
-
-        // const notification =  await this.prisma.notification.create({
-        // 	data: {
-        // 		UserId: receiverId,
-        // 		Type: notificationType.friendship_request, 
-        // 		isRead: false,
-        // 	  },
-        // })
-        // NotificationGateway
+        this.NotificationGateway.handleInvitation(invite.ReceiverId, invite);
 	}
 
 	async AcceptRequest(FriendshipId : number, User : User)
 	{
+        console.log(FriendshipId);
+
 		const friend = await this.prisma.friendship.update({
-			where: { FriendshipId : FriendshipId,  },
+			where: { FriendshipId : FriendshipId},
 			data: { Accepted : true},
 		});
 
 		const notification =  await this.prisma.notification.create({
-			data: {
+            data: {
                 senderId : User.UserId,
-				receiverId : friend.SenderId,
-				Type: notificationType.Accepted_request, 
-				isRead: false,
-			  },
+                receiverId : friend.SenderId,
+                Type: notificationType.Accepted_request, 
+                isRead: false,
+                },
+                select : 
+                {
+                    NotificationId : true,
+                    senderId : true,
+                    receiverId : true,
+                    Type : true,
+                    isRead : true,
+                    sender : {
+                        select : {
+                            username : true,
+                            avatar : true,
+                            UserId : true,
+                        }
+                    }
+                }
+
 		})
+
+        const websocketNotifiation = {
+            avatar : notification.sender.avatar,
+            username : notification.sender.username,
+            isRead : notification.isRead,
+            Type : notification.Type,
+            notificationId : notification.NotificationId,
+        };
+
+        this.NotificationGateway.handleNotification(notification.receiverId, websocketNotifiation);
 	}
 
 

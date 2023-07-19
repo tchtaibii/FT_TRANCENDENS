@@ -30,24 +30,25 @@ export class EventsService {
 		return false;
     }
   
-    emitToClient(clientId: string, event: string, data: any): void {
+    emitToClient(clientId: string, event: string, data: any): boolean {
 
 		const sockets = this.socketsMap.get(clientId);
+		console.log(clientId);
 		if (sockets) {
 			sockets.forEach(socket => {
 				socket.emit(event, data);
 		});
-			true;
+			return true;
 		}
-		false;
+		return false;
     }
   
     emitToAll(event: string, data: any): void {
 
 		for (const sockets of this.socketsMap.values()) {
-		sockets.forEach(socket => {
-			socket.emit(event, data);
-		});
+			sockets.forEach(socket => {
+				socket.emit(event, data);
+			});
 		}
 	}
 }

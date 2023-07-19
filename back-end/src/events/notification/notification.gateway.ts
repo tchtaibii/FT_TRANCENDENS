@@ -5,13 +5,16 @@ import { EventsService } from '../services/events.service';
 export class NotificationGateway {
   constructor(private readonly socketService : EventsService){}
 
-  @SubscribeMessage('notification')
-  handleNotification(clientId, data)
-  {
-    const socket = this.socketService.getSocket(clientId);
-  }
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
-  }
+	@SubscribeMessage('notification')
+	handleNotification(clientId, data)
+	{
+		this.socketService.emitToClient(clientId, 'notification', data);
+	}
+
+	@SubscribeMessage('request')
+	handleInvitation(clientId, data)
+	{
+		this.socketService.emitToClient(clientId, 'request', data);
+	}
+
 }

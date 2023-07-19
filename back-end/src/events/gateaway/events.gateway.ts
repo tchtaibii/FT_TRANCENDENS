@@ -22,57 +22,28 @@ export class EventsGateway {
   @WebSocketServer()
   server : Server
 
-  afterInit(client : Socket)
-  {
-    client.use(SocketIOMIDDELWARE() as any);
-  }
+  	afterInit(client : Socket)
+	{
+		client.use(SocketIOMIDDELWARE() as any);
+	}
 
-  async handleConnection(client: Socket) {
+	async handleConnection(client: Socket) {
+		
+		console.log('connected');
 
-    const user = await this.prisma.user.findUnique({
-      where : {
-        UserId : client.data.playload.userId, 
-      }
-    })
+		await this.prisma.user.update({
+			where : { UserId : client.data.playload.userId },
+			data : { status : true},
+		})
+		this.socketService.storeSocket(client.data.playload.userId, client);
+	}
 
-	if (!user)
-		throw new UnauthorizedException('no user has been found');
+	async handleDisconnect(client :Socket) {
+		await this.prisma.user.update({
+			where : { UserId : client.data.playload.userId },
+			data : { status : false},
+		})
+		this.socketService.removeSocket(client.data.playload.userId, client);
+	}
 
-	await this.prisma.user.update({
-		where : { UserId : user.UserId },
-		data : { status : true},
-	})
-    this.socketService.storeSocket(client.data.playload, client);
-  }
-
-  async handleDisconnect(client :Socket) {
-
-	const user = await this.prisma.user.findUnique({
-		where : {
-		  UserId : client.data.playload.userId, 
-		}
-	})
-
-	if (!user)
-	  throw new UnauthorizedException('no user has been found');
-
-	await this.prisma.user.update({
-		where : { UserId : user.UserId },
-		data : { status : false},
-	})
-
-  }
-
-//   @SubscribeMessage('message')
-//   handleMessage(client: any): string {
-//     console.log('m here');
-//     this.socketService.emitToAll("message", "hello from emiit");
-//     return 'Hello world!';
-//   }
-
-//   @SubscribeMessage('notification')
-//   a(client: any): string {
-//     console.log('m');
-//     return 'notification! a zeby';
-//   }
 }

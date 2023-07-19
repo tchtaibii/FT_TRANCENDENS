@@ -223,4 +223,18 @@ export class UsersService {
 		})
 		return true;
 	}
+
+	async checkFaIsEnabled(User : User){
+		const FA = await this.prisma.user.findMany({
+			where : {
+				UserId : User.UserId,
+			},
+			select :
+			{
+				FA_On : true,
+			},
+			take : 1,
+		})
+		return FA[0].FA_On;
+	}
 }

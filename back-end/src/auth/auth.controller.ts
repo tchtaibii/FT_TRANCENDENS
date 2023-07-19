@@ -113,4 +113,10 @@ export class AuthControlers {
     {
         return await this.AuthService.checkvaliditionof2fa(req.user, FaCode);
     }
+
+    @Get("isFA-enabled")
+    async isFa_enabled(@Req() req)
+    {
+       return await this.UsersService.checkFaIsEnabled(req.user);
+    }
 }

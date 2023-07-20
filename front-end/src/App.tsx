@@ -21,9 +21,8 @@ function App() {
 	const [isSecure, setSecure] = useState(false);
 	const [isDown, setIsDown] = useState(false);
 	const isDownState = useSelector((state: any) => state.isDown);
-	const tokenTest = useSelector((state: any) => state.token).token;
+	const tokenTest = useSelector((state: any) => state.token);
 	const [token, setToken] = useState(tokenTest);
-	const [socket, setSocket] = useState<Socket | null>(null);
 
 	useEffect(() => {
 		const tesServer = async () => {
@@ -53,6 +52,7 @@ function App() {
 	useEffect(() => {
 		setToken(tokenTest.token)
 	},[tokenTest])
+	 
 	useEffect(() => {
 		const CheckFa = async () => {
 			await axios.get('/auth/isFA-enabled').then((rsp) => setSecure(rsp.data.FA_ON))
@@ -67,13 +67,13 @@ function App() {
 	}, [isLogin])
 
 	useEffect(() => {
+		console.log('hshshs');
 		if (token) {
-			const socket = io('http://localhost:3001', {
+			const socket = io('http://localhost:3001/', {
 				extraHeaders : {
 					Authorization : `Bearer ${token}`,
 				}
 			});
-
 			socket.on('connect', () => {
 				console.log('Socket.IO connected.');
 			});
@@ -85,7 +85,6 @@ function App() {
 			socket.on('disconnect', () => {
 				console.log('Socket.IO disconnected.');
 			});
-			setSocket(socket);
 
 			return () => {
 				socket.disconnect();
@@ -93,6 +92,7 @@ function App() {
 		}
 	}, [token]);
 
+	console.log(token);
 	return (
 		<div className="App">
 			<Particle />

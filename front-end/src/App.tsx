@@ -51,8 +51,8 @@ function App() {
 	}, [isDownState.isDown])
 
 	useEffect(() => {
-
-	})
+		setToken(tokenTest.token)
+	},[tokenTest])
 	useEffect(() => {
 		const CheckFa = async () => {
 			await axios.get('/auth/isFA-enabled').then((rsp) => setSecure(rsp.data.FA_ON))
@@ -93,7 +93,7 @@ function App() {
 
 
 
-	console.log(isDown)
+	console.log('sizbiiii',tokenTest)
 	return (
 		<div className="App">
 			<Particle />

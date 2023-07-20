@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "../Interceptor/Interceptor"
 
-export const getToken = createAsyncThunk('message/Message', async () => {
-    const response = await axios.get("/auth/WsToken");
+export const getToken = createAsyncThunk('TokenSocket/getToken', async () => {
+    const response = await axios.get("/auth/WsToken");  
     return response.data;
 });
 

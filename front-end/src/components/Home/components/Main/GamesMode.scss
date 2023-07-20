@@ -55,6 +55,7 @@
     justify-content: center;
     align-items: center;
     z-index: 98;
+    overflow: visible;
 
     // height: 100%;
     // position: absolute;
@@ -97,6 +98,17 @@
         // width: toRem(198);
         position: relative;
         transform: scale(1.8);
+        width: toRem(139);
+        height: toRem(166);
+    }
+}
+.BLACKHOLE {
+    overflow: visible;
+    img {
+        // width: toRem(198);
+        mix-blend-mode: lighten;
+        position: relative;
+        transform: scale(1.5);
         width: toRem(139);
         height: toRem(166);
     }
@@ -225,5 +237,10 @@
             // width: 50rem;
 
         }
+    }
+}
+.FOOT{
+    img{
+        transform: scale(1.3);
     }
 }

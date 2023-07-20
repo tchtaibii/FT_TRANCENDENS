@@ -1,7 +1,7 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { EventsService } from '../services/events.service';
 
-@WebSocketGateway()
+@WebSocketGateway({cors : true})
 export class NotificationGateway {
   constructor(private readonly socketService : EventsService){}
 

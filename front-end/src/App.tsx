@@ -12,7 +12,7 @@ import Loading from './components/Loading';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from './store/store'
 import Secure from './Secure';
-import io from 'socket.io-client';
+import {io, Socket } from 'socket.io-client';
 
 function App() {
 	// const data:any = useSelector((state:any) => state.admin)
@@ -23,7 +23,7 @@ function App() {
 	const isDownState = useSelector((state: any) => state.isDown);
 	const tokenTest = useSelector((state: any) => state.token).token;
 	const [token, setToken] = useState(tokenTest);
-	const [socket, setSocket] = useState(null);
+	const [socket, setSocket] = useState<Socket | null>(null);
 
 	useEffect(() => {
 		const tesServer = async () => {
@@ -68,15 +68,17 @@ function App() {
 
 	useEffect(() => {
 		if (token) {
-			const socket = io('ws://localhost:3001', {
-				query: { token },
+			const socket = io('http://localhost:3001', {
+				extraHeaders : {
+					Authorization : `Bearer ${token}`,
+				}
 			});
 
 			socket.on('connect', () => {
 				console.log('Socket.IO connected.');
 			});
 
-			socket.on('notifications', (data:any) => {
+			socket.on('notification', (data:any) => {
 				console.log('Received message:', data);
 			});
 
@@ -91,9 +93,6 @@ function App() {
 		}
 	}, [token]);
 
-
-
-	console.log('sizbiiii',tokenTest)
 	return (
 		<div className="App">
 			<Particle />

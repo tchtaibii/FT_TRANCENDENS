@@ -1,6 +1,8 @@
 import GradienBox from '../../../../tools/GradienBox'
 import "./GamesMode.scss"
 import classicI from '../../../../assets/img/classicM.svg'
+import blackHole from '../../../../assets/img/BlackHole.svg'
+import footBall from '../../../../assets/img/Football.svg'
 import aiI from '../../../../assets/img/aiM.svg'
 import friendI from '../../../../assets/img/friendM.svg'
 import OwlCarousel from "react-owl-carousel";
@@ -32,7 +34,7 @@ function BOxGameMob(props: any) {
 function BOxGame(props: any) {
 	return (
 		<div>
-			<GradienBox games={true} mywidth="335px" myheight="195px" myborder="40px">
+			<GradienBox over={1} games={true}  mywidth="335px" myheight="195px" myborder="40px">
 				<div className="ModePlay">
 					<div className='Mode1'>
 						<h2>{props.titleB}</h2>
@@ -57,7 +59,8 @@ function GamesMode() {
 	const GameModesArr = [
 		<BOxGame key='classicA' idA='classicA' imgID='classicIMG' classB="classic" titleB="Classic" StitleB='Challenge the computer' linkB="#" imgB={classicI} />,
 		<BOxGame key='aiA' idA='aiA' imgID='aiIMG' classB="ai" titleB="AI Mode" StitleB='Traditional gameplay' linkB="#" imgB={aiI} />,
-		<BOxGame key='aiA2' idA='aiA' imgID='friendIMG' classB="friend" titleB="Friends Mode" StitleB='Social play, easy invites' linkB="#" imgB={friendI} />,
+		<BOxGame key='Foot' idA='Foot' imgID='FootIMG' classB="FOOT" titleB="Football Mode" StitleB='Play like a Football Player' linkB="#" imgB={footBall} />,
+		<BOxGame key='BlackHole' idA='BlackHole' imgID='BlackHoleIMG' classB="BLACKHOLE" titleB="Black Hole" StitleB='Play and challenge the blackholes' linkB="#" imgB={blackHole} />,
 		<BOxGame key='friendA' idA='friendA' imgID='friendIMG' classB="friend" titleB="Friends Mode" StitleB='Social play, easy invites' linkB="#" imgB={friendI} />,
 	]
 	const GameModesArrMob = [

@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-// import { WebSocketAuthGuard } from "../auth-guard/Wsjwt-guard";
+import { WebSocketAuthGuard } from "../auth-guard/wsjwt-guard";
 
 type SocketIOMIDDELWARE = {
     (client : Socket, next: (err? : Error ) => void);
@@ -7,11 +7,11 @@ type SocketIOMIDDELWARE = {
 
 export const SocketIOMIDDELWARE = () : SocketIOMIDDELWARE => {
     return (client, next) => {
-        // try {
-        //     WebSocketAuthGuard.validate(client);
-        //     next(); 
-        // } catch (error){
-        //     next (error);
-        // }
+        try {
+            WebSocketAuthGuard.validate(client);
+            next(); 
+        } catch (error){
+            next (error);
+        }
     }
 }

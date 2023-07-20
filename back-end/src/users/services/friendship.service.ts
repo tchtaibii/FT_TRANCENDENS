@@ -30,8 +30,29 @@ export class FriendshipService {
                 receiver: {
                 connect: { UserId: receiverId }
                 },
+            },
+            select : {
+                FriendshipId : true,
+                ReceiverId : true,
+                sender : {
+                    select : {
+                        UserId : true,
+                        avatar : true,
+                        username : true,
+                    }
+                }
             }
         });
+
+        invite.sender.avatar = invite.sender.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + invite.sender.avatar : invite.sender.avatar;
+
+        const final = {
+            friendshipId : invite.FriendshipId,
+            UserId : invite.sender.UserId,
+            avatar : invite.sender.avatar,
+            username : invite.sender.username,
+        };
+
         this.NotificationGateway.handleInvitation(invite.ReceiverId, invite);
 	}
 

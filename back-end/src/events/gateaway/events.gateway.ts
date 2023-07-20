@@ -1,5 +1,5 @@
 import { Logger, UnauthorizedException, UseGuards } from '@nestjs/common';
-import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { verify } from 'jsonwebtoken';
 import { Server, Socket } from "socket.io"
 import { Client } from 'socket.io/dist/client';
@@ -12,7 +12,7 @@ import { threadId } from 'worker_threads';
 
 
 @WebSocketGateway({cors : true})
-export class EventsGateway {
+export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private readonly socketService : EventsService){}
   prisma = new PrismaClient();
 

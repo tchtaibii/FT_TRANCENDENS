@@ -17,7 +17,6 @@ export class WebSocketAuthGuard implements CanActivate {
   static validate(client : Socket)
   {
       const { authorization } = client.handshake.headers;
-      // Logger.log({authorization});
       const token : string = authorization.split(' ')[1];
       client.data.playload = verify(token, process.env.SECRET_KEY);
       return client;

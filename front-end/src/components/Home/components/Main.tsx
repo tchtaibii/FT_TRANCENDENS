@@ -8,7 +8,6 @@ import ProfileHome from './Main/ProfileHome'
 import { Route, Routes } from 'react-router-dom'
 import "./Main.scss"
 import GradienBox from '../../../tools/GradienBox'
-import avatar from '../../../assets/img/avatar-p.svg'
 import Chat from './Main/Chat/Chat'
 import Profile, { ProfileProfile, ProfileDown } from './Main/Profile/Profile'
 import Settings from './Main/Settings/Settings'
@@ -133,7 +132,7 @@ function Main(props:any) {
 				<div className="side1">
 					<div className='top'>
 						<Search />
-						<MsgNot socketInvi={props.socketInvi} setInvi={props.setInvi} setNoti={props.setNoti} invi={props.invitations} noti={props.notifications} />
+						<MsgNot socketInvi={props.socketInvi}/>
 					</div>
 					<Routes>
 						<Route path="/" element={<><Hero /><GamesMode /><BestPlayers /></>} />

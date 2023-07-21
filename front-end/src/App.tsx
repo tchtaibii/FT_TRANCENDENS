@@ -187,33 +187,33 @@ function App() {
 		}
 	}, [token]);
 
-	const [invitations, setInvitation] = useState([]);
-	const [notifications, setNotifications] = useState([]);
-	useEffect(() => {
-		const fetchData = async () => {
-			await axios.get('FriendshipRequest').then(resp => {
-				console.log('tahataatahataa', resp.data);
-				setInvitation(resp.data)
-			}).catch((err) => {
-				console.log('had error', err);
-			})
+	// const [invitations, setInvitation] = useState([]);
+	// const [notifications, setNotifications] = useState([]);
+	// useEffect(() => {
+	// 	const fetchData = async () => {
+	// 		await axios.get('FriendshipRequest').then(resp => {
+	// 			console.log('tahataatahataa', resp.data);
+	// 			setInvitation(resp.data)
+	// 		}).catch((err) => {
+	// 			console.log('had error', err);
+	// 		})
 	
-			await axios.get('/getNotification').then(resp => {
-				setNotifications(resp.data)
-				console.log(resp.data);
-			}).catch((err) => {
-				console.log('had error', err);
-			})
-		}
-		fetchData();
-	}, [invit])
+	// 		await axios.get('/getNotification').then(resp => {
+	// 			setNotifications(resp.data)
+	// 			console.log(resp.data);
+	// 		}).catch((err) => {
+	// 			console.log('had error', err);
+	// 		})
+	// 	}
+	// 	fetchData();
+	// }, [invit])
 	console.log(token);
 	return (
 		<div className="App">
 			<Particle />
 			{
 				isDown ? <Loading /> :
-					!isLogin ? <Login /> : (!isSecure ? <><Home socketInvi={setInvit} setInvi={setInvitation} setNoti={setNotifications} invitations={invitations} notifications={notifications} /><AnimatePresence mode='wait'>{invit && <Invitation data={invitationRequest} state={setInvit} />}</AnimatePresence></> : <Secure setSec={setSecure} />)
+					!isLogin ? <Login /> : (!isSecure ? <><Home socketInvi={setInvit} /><AnimatePresence mode='wait'>{invit && <Invitation data={invitationRequest} state={setInvit} />}</AnimatePresence></> : <Secure setSec={setSecure} />)
 			}
 		</div>
 	);

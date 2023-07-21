@@ -27,32 +27,21 @@ function MsgNot(props: any) {
 	const ref = useRef(null)
 	const refI = useRef(null)
 	const [Login, setLogin] = useState('')
+	const [isFull, setIsfull] = useState(0);
 	useEffect(() => {
 		axios.get('/Home/Hero').then((response) => setLogin(response.data))
 		// console.log('hey', Login)
 	}, [])
 	const handleClickOutside = async () => {
-		if (isVisible) {
-			await axios.get('/getNotification').then(resp => {
-				props.setNoti(resp.data);
-				console.log(resp.data);
-			}).catch((err) => {
-				console.log('had error', err);
-			})
-		}
+		
 		setIsVisible(false)
 	}
 	const handleClickOutsideI = async () => {
-		if (isVisibleI) {
-			await axios.get('/FriendshipRequest').then(resp => {
-				props.setInvi(resp.data);
-			}).catch((err) => {
-				console.log('had error', err);
-			})
-		}
+		
 		setIsVisibleI(false)
 
 	}
+
 	useOnClickOutside(ref, handleClickOutside);
 	useOnClickOutside(refI, handleClickOutsideI);
 	return (
@@ -61,16 +50,11 @@ function MsgNot(props: any) {
 				<GradienBox over={0} mywidth="49px" myheight="49px" myborder="10px">
 					<button onClick={() => {
 						props.socketInvi(false)
-						axios.get('FriendshipRequest').then(resp => {
-							props.setInvi(resp.data);
-						}).catch((err) => {
-							console.log('had error', err);
-						})
 						setIsVisibleI(!isVisibleI)
 					}
 					} className='btn-msgnot'>
 						<img style={{ width: '1.5rem', fill: 'red', transform: 'translateX(0.156rem)' }} src={inviFriend} alt='' />
-						{props.invi.length > 0 && <div className="isFull"></div>}
+						{isFull > 0 && <div className="isFull"></div>}
 					</button>
 				</GradienBox>
 				<AnimatePresence mode='wait'>
@@ -83,12 +67,11 @@ function MsgNot(props: any) {
 							key={'invitations'}
 							transition={{ ease: "easeInOut", duration: 0.2 }}
 							style={{ position: 'absolute', top: '3.5rem', width: 'fit-content', transform: 'translateX(-15rem)' }}>
-							<NotificationCont data={props.invi} isN={false} />
+							<NotificationCont  isN={false} />
 						</motion.div>
 					}
 				</AnimatePresence>
 			</div>
-
 			<div ref={ref}>
 				<GradienBox mywidth="49px" myheight="49px" myborder="10px">
 					<button onClick={() => setIsVisible(!isVisible)} className='btn-msgnot'><img style={{ width: '1.5rem' }} alt='' src={BellImg} /></button>
@@ -112,7 +95,7 @@ function MsgNot(props: any) {
 
 			<div onClick={() => setNavMo(true)} className='burger'>
 				<GradienBox mywidth="49px" myheight="49px" myborder="10px">
-					<button className='btn-msgnot'><img style={{ width: '1.5rem' }} src={burger} alt='' /></button>
+					<button className='btn-msgnot'><img style={{ width: '1.5rem' }} src={burger} alt='' />{isFull > 0 && <div className="isFull"></div>}</button>
 				</GradienBox>
 			</div>
 			<AnimatePresence mode='wait'>
@@ -303,26 +286,36 @@ function NotificationCont(props: any) {
 	// 	dispatch(getNotification());
 	// }, [isEffect]);
 
-
+	const [data, setData] = useState([]);
 	useEffect(() => {
+		const fetchData = async () => {
+		  try {
+			const response = await axios.get(props.isN === true ? '/getNotification' : '/FriendshipRequest');
+			setData(response.data);
 
-	}, [])
-	console.log('invi from msg', props.data);
+		  } catch (err) {
+			console.log('had error', err);
+		  }
+		};
+		fetchData();
+	  }, []);
+
+	console.log('invi from msg', data);
 	return (
 		<GradienBox absolute={1} mywidth="316px" myheight="408.98px" myborder="20px">
 			<div className="notification-container">
 				<div className="head-noti-container">
 					<div className="notication-head">{props.isN === true ? 'NOTIFICATIONS' : 'NEW REQUESTS'}</div>
-					<span className='notifi-num'>{props.data.length}</span>
+					<span className='notifi-num'>{data.length}</span>
 					{/* notifi.filter((not: any) => not.isRead === 0).length */}
 				</div>
 				<div className="main-noti">
 
 					{
 						!props.isN ?
-							props.data.map((e: any, i: number) => <Invitation key={'invi- ' + i} data={e} />)
+							data.map((e: any, i: number) => <Invitation key={'invi- ' + i} data={e} />)
 							:
-							props.data.map((e: any) => {
+							data.map((e: any) => {
 								return (<Notification key={e.notificationId} username={e.username} type={e.Type} isRead={e.isRead} img={e.avatar ? e.avatar : null} />);
 							})
 						// onClick={() => handleNotificationClick(index + 1)}

@@ -1,4 +1,4 @@
-import { All, Injectable } from '@nestjs/common';
+import { All, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaClient, User, Game, notificationType } from '@prisma/client';
 import { GamesDTO, AllGames, topPlayers, RecentActivity, ProfileFriends, blockedlist, request } from '../dto/dto-classes';
 import { create } from 'domain';
@@ -22,27 +22,33 @@ export class FriendshipService {
         if (existingRequest)
             return true;
 
-        const invite = await this.prisma.friendship.create ({
-            data: {
-                sender: {
-                connect: { UserId: User.UserId }
+        try {
+
+            var invite = await this.prisma.friendship.create ({
+                data: {
+                    sender: {
+                    connect: { UserId: User.UserId }
+                    },
+                    receiver: {
+                    connect: { UserId: receiverId }
+                    },
                 },
-                receiver: {
-                connect: { UserId: receiverId }
-                },
-            },
-            select : {
-                FriendshipId : true,
-                ReceiverId : true,
-                sender : {
-                    select : {
-                        UserId : true,
-                        avatar : true,
-                        username : true,
+                select : {
+                    FriendshipId : true,
+                    ReceiverId : true,
+                    sender : {
+                        select : {
+                            UserId : true,
+                            avatar : true,
+                            username : true,
+                        }
                     }
                 }
-            }
-        });
+            });
+        }  catch (error) {
+            if (error)
+                throw new InternalServerErrorException('something went wrong');
+        }
 
         invite.sender.avatar = invite.sender.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + invite.sender.avatar : invite.sender.avatar;
 
@@ -58,12 +64,15 @@ export class FriendshipService {
 
 	async AcceptRequest(FriendshipId : number, User : User)
 	{
-        console.log(FriendshipId);
-
-		const friend = await this.prisma.friendship.update({
-			where: { FriendshipId : FriendshipId},
-			data: { Accepted : true},
-		});
+        try {
+            var friend = await this.prisma.friendship.update({
+                where: { FriendshipId : FriendshipId},
+                data: { Accepted : true},
+            });
+        } catch (error) {
+            if (error)
+                throw new InternalServerErrorException('no friendship request has been found');
+        }
 
 		const notification =  await this.prisma.notification.create({
             data: {
@@ -104,11 +113,16 @@ export class FriendshipService {
 
 	async cancelRequest(FriendshipId : number)
 	{
-		const friendship = await this.prisma.friendship.delete({
-			where: {
-			  FriendshipId: FriendshipId
-			},
-		});
+        try { 
+            const friendship = await this.prisma.friendship.delete({
+                where: {
+                FriendshipId: FriendshipId
+                },
+            });
+        }  catch (error) {
+            if (error)
+                throw new InternalServerErrorException('no friendship request has been found');
+        }
 		return true;
 	}
 

@@ -48,6 +48,7 @@ export class ProfileService {
 		return table.findIndex(player => player.username === user.username) + 1;
 	}
 
+
 	async getProfile(User : User, username)
 	{
 		var blocked;
@@ -80,7 +81,12 @@ export class ProfileService {
 
 		const rank = await this.playerRank(user);
 
+	
 		return ({
+			isOwner : Isowner,
+			isSent : isSent,
+			isFriend : isFriend,
+			rank,
 			rating			: playerRating,
 			friendshipId	: friendshipId,
 			UserId   		: user.UserId,
@@ -89,10 +95,6 @@ export class ProfileService {
 			level  	 		: user.level,
 			xp       		: user.XP,
 			username 		: user.username,
-			Isowner,
-			isSent,
-			isFriend,
-			rank,
 		});
 	}
 	async blockUser(user : User, targetUser : User)

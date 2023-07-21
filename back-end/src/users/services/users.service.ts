@@ -16,6 +16,10 @@ export class UsersService {
 		const newUser = await this.prisma.user.create({
 			data: user,
 		});
+
+		const achievement = await this.prisma.achievement.create({
+			data : {UserId : newUser.UserId}
+		})
 		return newUser;
 	}
 
@@ -131,6 +135,23 @@ export class UsersService {
 		return blockedUserIds;
 	}
 
+	getBadge(level: number) {
+		if (level < 5) {
+		  return "bronze";
+		} else if (level < 10) {
+		  return "silver";
+		} else if (level < 15) {
+		  return "gold";
+		} else if (level < 30) {
+		  return "platinum";
+		} else if (level < 50) {
+		  return "diamond";
+		} else if (level < 80) {
+		  return "master";
+		} else {
+		  return "grandmaster";
+		}
+	  }
 
 	async getallUsers(User : User, username)
 	{
@@ -194,12 +215,13 @@ export class UsersService {
 		const fetchusers = users.map((user) => {
 			user.avatar = user.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
 			const check = friends.includes(user.UserId);
+			const badge = this.getBadge(user.level);
 			return {
 				UserId : user.UserId,
 				avatar : user.avatar,
 				username : user.username,
 				level : user.level,
-				badge : user.badge,
+				badge,
 				status : user.status,
 				isFriend : check,
 			}

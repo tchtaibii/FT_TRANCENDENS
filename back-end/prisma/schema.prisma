@@ -37,24 +37,21 @@ model User {
   Player1Relation     Game[]              @relation("Player1Relation")
   Player2Relation     Game[]              @relation("Player2Relation")
   WinnerRelation     	Game[]              @relation("WinnerRelation")
-	BadgesRelation			badges?
+	BadgesRelation			achievement?
 }
 
-model badges {
+model achievement {
   
 	badgesId        Int       @id @default(autoincrement())
-	Bronze					Boolean		@default(true)
-	Silver					Boolean		@default(false)
-	Gold						Boolean		@default(false)
-	Platinum				Boolean		@default(false)
-	Diamond					Boolean		@default(false)
-	Master					Boolean		@default(false)
-	Grandmaster			Boolean		@default(false)
-	Legend					Boolean		@default(false)
-	Elite						Boolean		@default(false)
-	Champion				Boolean		@default(false)
 	user						User?			@relation(fields : [UserId], references : [UserId])
 	UserId					String		@unique
+  First_Blood			Boolean		@default(false) // win first game
+	Shutout					Boolean		@default(false) // Win a game without the opponent scoring
+	Unstoppable			Boolean		@default(false) // Win 10 games.
+	Invincible			Boolean		@default(false) // Win 20 games
+	Legend					Boolean		@default(false) // Win 50 games.
+	Lets_Play			  Boolean		@default(false) // Invite a friend to play their first game.
+	Rookie			    Boolean		@default(false) // Play 5 games
 }
 
 model Room {
@@ -74,7 +71,7 @@ model Room {
 model Message {
   
   MessageId   Int       @id @default(autoincrement())
-  room       Room       @relation(name : "messages", fields : [RoomId], references : [RoomId])
+  room        Room       @relation(name : "messages", fields : [RoomId], references : [RoomId])
   RoomId      Int
   user        User       @relation(name : "SenderMessages", fields : [UserId], references : [UserId])
   UserId      String

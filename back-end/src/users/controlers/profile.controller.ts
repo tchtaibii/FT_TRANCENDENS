@@ -18,7 +18,7 @@ export class ProfileController {
     async getGameHistory(@Req() req, @Res() res, @Param('username') username : string)
 	{	
 		const user = await this.ProfileService.ReturnOneUserByusername(username);
-        // console.log(username);
+    
 		if (!user)
 			throw new NotFoundException('User profile not found');
         let game : AllGames = await this.ProfileService.fetchgame(user, req.user);
@@ -29,21 +29,7 @@ export class ProfileController {
     async getProfile(@Req() req, @Res() res, @Param('username') username : string){
        
         const profile = await this.ProfileService.getProfile(req.user, username);
-        // console.log(profile.avatar);
-        res.json({
-            friendshipId: profile.friendshipId,
-            UserId: profile.UserId,
-            avatar: profile.avatar,
-            status: profile.status,
-            level: profile.level,
-            xp: profile.xp,
-            username: profile.username,
-            isOwner: profile.Isowner,
-            isSent: profile.isSent,
-            isFriend: profile.isFriend,
-            rating: profile.rating,
-            rank: profile.rank,
-        });
+        res.json(profile);
     }
 
 	@Get(':username/Friends')

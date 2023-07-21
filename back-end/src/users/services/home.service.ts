@@ -10,6 +10,46 @@ export class HomeService {
     prisma = new PrismaClient();
 	constructor(){}
 
+	getBadge(level: number) {
+		if (level < 5) {
+		  return "bronze";
+		} else if (level < 10) {
+		  return "silver";
+		} else if (level < 15) {
+		  return "gold";
+		} else if (level < 25) {
+		  return "platinum";
+		} else if (level < 40) {
+		  return "diamond";
+		} else if (level < 80) {
+		  return "master";
+		} else {
+		  return "grandmaster";
+		}
+	  }
+
+	async getMyProfile(user : User)
+	{
+		const badge = await this.getBadge(user.level);
+		// console.log(badge);
+
+		let lastGame = await this.lastGame(user);
+
+		var avatar = user.avatar;
+
+        if (user.avatar.search("https://cdn.intra.42.fr/users/") === -1)
+            avatar = process.env.HOST + process.env.PORT + user.avatar;
+	
+		return {
+			lastGame : lastGame,
+            avatar : avatar,
+            username : user.username,
+            level : user.level,
+            badge : badge,
+            status : user.status,
+		}
+
+	}
 	async getBlockeduserIds(user)
 	{
 		const blockedUser = await this.prisma.friendship.findMany({

@@ -37,8 +37,15 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	async handleDisconnect(client :Socket) {
+		const user = await this.prisma.user.findUnique({
+			where : {UserId : client.data.playload.userId}
+		})
+
+		if (!user)
+			return ;
+
 		await this.prisma.user.update({
-			where : { UserId : client.data.playload.userId },
+			where : { UserId : user.UserId },
 			data : { status : false},
 		})
 		this.socketService.removeSocket(client.data.playload.userId, client);

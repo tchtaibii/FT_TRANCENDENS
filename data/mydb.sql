@@ -342,32 +342,29 @@ CREATE TABLE myschema._prisma_migrations (
 ALTER TABLE myschema._prisma_migrations OWNER TO myuser;
 
 --
--- Name: badges; Type: TABLE; Schema: myschema; Owner: myuser
+-- Name: achievement; Type: TABLE; Schema: myschema; Owner: myuser
 --
 
-CREATE TABLE myschema.badges (
+CREATE TABLE myschema.achievement (
     "badgesId" integer NOT NULL,
-    "Bronze" boolean DEFAULT true NOT NULL,
-    "Silver" boolean DEFAULT false NOT NULL,
-    "Gold" boolean DEFAULT false NOT NULL,
-    "Platinum" boolean DEFAULT false NOT NULL,
-    "Diamond" boolean DEFAULT false NOT NULL,
-    "Master" boolean DEFAULT false NOT NULL,
-    "Grandmaster" boolean DEFAULT false NOT NULL,
+    "UserId" text NOT NULL,
+    "First_Blood" boolean DEFAULT false NOT NULL,
+    "Shutout" boolean DEFAULT false NOT NULL,
+    "Unstoppable" boolean DEFAULT false NOT NULL,
+    "Invincible" boolean DEFAULT false NOT NULL,
     "Legend" boolean DEFAULT false NOT NULL,
-    "Elite" boolean DEFAULT false NOT NULL,
-    "Champion" boolean DEFAULT false NOT NULL,
-    "UserId" text NOT NULL
+    "Lets_Play" boolean DEFAULT false NOT NULL,
+    "Rookie" boolean DEFAULT false NOT NULL
 );
 
 
-ALTER TABLE myschema.badges OWNER TO myuser;
+ALTER TABLE myschema.achievement OWNER TO myuser;
 
 --
--- Name: badges_badgesId_seq; Type: SEQUENCE; Schema: myschema; Owner: myuser
+-- Name: achievement_badgesId_seq; Type: SEQUENCE; Schema: myschema; Owner: myuser
 --
 
-CREATE SEQUENCE myschema."badges_badgesId_seq"
+CREATE SEQUENCE myschema."achievement_badgesId_seq"
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -376,13 +373,13 @@ CREATE SEQUENCE myschema."badges_badgesId_seq"
     CACHE 1;
 
 
-ALTER TABLE myschema."badges_badgesId_seq" OWNER TO myuser;
+ALTER TABLE myschema."achievement_badgesId_seq" OWNER TO myuser;
 
 --
--- Name: badges_badgesId_seq; Type: SEQUENCE OWNED BY; Schema: myschema; Owner: myuser
+-- Name: achievement_badgesId_seq; Type: SEQUENCE OWNED BY; Schema: myschema; Owner: myuser
 --
 
-ALTER SEQUENCE myschema."badges_badgesId_seq" OWNED BY myschema.badges."badgesId";
+ALTER SEQUENCE myschema."achievement_badgesId_seq" OWNED BY myschema.achievement."badgesId";
 
 
 --
@@ -428,10 +425,10 @@ ALTER TABLE ONLY myschema."Room" ALTER COLUMN "RoomId" SET DEFAULT nextval('mysc
 
 
 --
--- Name: badges badgesId; Type: DEFAULT; Schema: myschema; Owner: myuser
+-- Name: achievement badgesId; Type: DEFAULT; Schema: myschema; Owner: myuser
 --
 
-ALTER TABLE ONLY myschema.badges ALTER COLUMN "badgesId" SET DEFAULT nextval('myschema."badges_badgesId_seq"'::regclass);
+ALTER TABLE ONLY myschema.achievement ALTER COLUMN "badgesId" SET DEFAULT nextval('myschema."achievement_badgesId_seq"'::regclass);
 
 
 --
@@ -439,6 +436,7 @@ ALTER TABLE ONLY myschema.badges ALTER COLUMN "badgesId" SET DEFAULT nextval('my
 --
 
 COPY myschema."Friendship" ("FriendshipId", "SenderId", "ReceiverId", "CreationTime", "Accepted", "blockedByReceiver", "blockedBySender") FROM stdin;
+9	98937	98879	2023-07-21 21:21:14.942	t	f	f
 \.
 
 
@@ -447,8 +445,8 @@ COPY myschema."Friendship" ("FriendshipId", "SenderId", "ReceiverId", "CreationT
 --
 
 COPY myschema."Game" ("GameId", "PlayerId1", "PlayerId2", "isDraw", "Rounds", "Mode", "CreationTime", "WinnerId", "WinnerXP", "looserXP") FROM stdin;
-1	98879	94426	f	0	classic	2023-07-16 23:44:14.171	98879	\N	\N
-2	99046	99045	f	0	classic	2023-07-16 23:45:25.843	99046	\N	\N
+2	99035	98879	t	0	classic	2023-07-21 22:17:51.73	\N	3	3
+1	98879	102109265031908659149	f	0	classic	2023-07-21 22:17:11.467	98879	5	2
 \.
 
 
@@ -473,6 +471,13 @@ COPY myschema."Message" ("MessageId", "RoomId", "UserId", "Content", "SendTime")
 --
 
 COPY myschema."Notification" ("NotificationId", "CreationTime", "isRead", "Type", "receiverId", "senderId") FROM stdin;
+1	2023-07-21 20:54:10.158	f	Accepted_request	99045	98937
+2	2023-07-21 20:56:11.868	f	Accepted_request	99045	98937
+3	2023-07-21 20:58:13.607	f	Accepted_request	99045	98937
+4	2023-07-21 20:58:39.922	f	Accepted_request	99045	98937
+5	2023-07-21 21:26:20.388	f	Accepted_request	99045	98937
+6	2023-07-21 21:53:36.186	f	Accepted_request	99035	98937
+7	2023-07-21 21:54:00.299	f	Accepted_request	99035	98937
 \.
 
 
@@ -489,13 +494,12 @@ COPY myschema."Room" ("RoomId", "RoomNAme", "CreationTime", "updateTime", ischan
 --
 
 COPY myschema."User" ("FA_On", "FAsecret", "FullName", "UserId", "XP", avatar, badge, "createdAt", username, email, level, status) FROM stdin;
-f	\N	Mostapha Moutawakil	99046	0	https://cdn.intra.42.fr/users/6f17239eaa4c09503310349bc50e6328/medium_mmoutawa.jpg	\N	2023-07-16 23:36:30.826	trma7a	mmoutawa@student.1337.ma	0	t
-f	\N	Chaimaa El Mhandez	94426	0	https://cdn.intra.42.fr/users/5ed2e6c1c785228db8440fdc0bf40445/medium_cel-mhan.jpg	\N	2023-07-16 23:38:04.195	cel-mhan	cel-mhan@student.1337.ma	0	t
-f	\N	Taha Chtaibi	98879	0	https://cdn.intra.42.fr/users/6a2c03ee95b681acca46263bcfa2e850/medium_tchtaibi.jpg	\N	2023-07-16 23:38:33.881	tchtaibi	tchtaibi@student.1337.ma	0	t
-f	\N	Hemza Boukili	102109265031908659149	0	https://lh3.googleusercontent.com/a/AAcHTtdNd_EGpv6Wsgbog6OUTj4LGJkSi6SsHnTw6MHqND15=s96-c	\N	2023-07-16 23:39:03.524	HBoukili221	hm.boukiili97@gmail.com	0	t
-f	\N	Saber Choukoukou	99045	0	https://cdn.intra.42.fr/users/16a8917f3a4b43161e770e46b7b1f65f/medium_schoukou.jpg	\N	2023-07-16 23:38:47.961	schoukou	schoukou@student.1337.ma	0	f
-f	\N	Yassine Dahni	98935	0	https://cdn.intra.42.fr/users/6a849842d7abd046f5c5cbe6bee8b934/medium_ydahni.jpg	\N	2023-07-17 02:49:03.896	ydahni	ydahni@student.1337.ma	0	t
-f	\N	Hamza Boukili	98937	0	https://cdn.intra.42.fr/users/505cbe5d91097ae88576c9ad5b38b66b/medium_hboukili.jpg	\N	2023-07-17 03:21:42.287	hboukili	hboukili@student.1337.ma	0	t
+f	\N	Hemza Boukili	102109265031908659149	0	https://lh3.googleusercontent.com/a/AAcHTtdNd_EGpv6Wsgbog6OUTj4LGJkSi6SsHnTw6MHqND15=s96-c	\N	2023-07-21 04:22:46.114	HBoukili102	hm.boukiili97@gmail.com	0	f
+f	\N	Taha Chtaibi	98879	0	https://cdn.intra.42.fr/users/6a2c03ee95b681acca46263bcfa2e850/medium_tchtaibi.jpg	\N	2023-07-21 04:23:28.008	tchtaibi	tchtaibi@student.1337.ma	0	f
+f	LEMVM7SSM45HUJRL	Ali Aizza	99035	0	/uploads/aaizza-255583220_10226316804975754_3750406338831950973_n.jpeg	\N	2023-07-21 21:53:04.547	aaizza	aaizza@student.1337.ma	0	f
+f	\N	Mostapha Moutawakil	99046	0	/uploads/mmoutawa-Image_created_with_a_mobile_phone.png	\N	2023-07-21 22:03:18.831	mmoutawa	mmoutawa@student.1337.ma	0	t
+f	\N	Hamza Boukili	98937	0	https://cdn.intra.42.fr/users/505cbe5d91097ae88576c9ad5b38b66b/medium_hboukili.jpg	\N	2023-07-21 04:45:37.456	hboukili	hboukili@student.1337.ma	0	t
+f	\N	Saber Choukoukou	99045	0	https://cdn.intra.42.fr/users/16a8917f3a4b43161e770e46b7b1f65f/medium_schoukou.jpg	\N	2023-07-21 04:23:59.892	schoukou	schoukou@student.1337.ma	0	f
 \.
 
 
@@ -504,37 +508,40 @@ f	\N	Hamza Boukili	98937	0	https://cdn.intra.42.fr/users/505cbe5d91097ae88576c9a
 --
 
 COPY myschema._prisma_migrations (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count) FROM stdin;
-fa2c47f2-a35c-449f-acf6-c08d16728b63	3de9e0465a22932a5a941f8f9a96591ac8be6d3e3bcbd66871fde9b0902d33c0	2023-07-16 23:21:43.074048+00	20230605014623_init	\N	\N	2023-07-16 23:21:42.786919+00	1
-875217ce-e80a-49de-a59c-bcf3dc2c5b1b	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	2023-07-16 23:21:44.248066+00	20230621005732_	\N	\N	2023-07-16 23:21:44.234214+00	1
-11724e2f-9bb2-4a30-9ee4-124d437d6456	73775d652cbf41bdb0e3f78e17d8384e59e5d6db181ad54fa083f541b794170e	2023-07-16 23:21:43.356384+00	20230606012335_init	\N	\N	2023-07-16 23:21:43.081401+00	1
-1b364d31-0363-4351-ab46-8a9e7f10ddd0	702b130e5eca3759bce1db90771a35c30d93d9e231de0443e412dba02b5625a0	2023-07-16 23:21:43.38216+00	20230607160915_myschema	\N	\N	2023-07-16 23:21:43.360657+00	1
-cca060c2-a8b4-4b13-9ee2-dfebdf274abd	d9ed2071d3fab89fd889844819ce75bfcecd956ee50398f99f3201ae7ee2c6e3	2023-07-16 23:21:43.403558+00	20230612035255_add_refresh_token	\N	\N	2023-07-16 23:21:43.384901+00	1
-db037fb2-1000-41ef-9cee-2c47e30399c4	4d3a7370c271cd0d551d9a189326709d0174d321071c77cf362bd9aa0a7beff5	2023-07-16 23:21:44.26931+00	20230621040514_myschema	\N	\N	2023-07-16 23:21:44.250318+00	1
-4eadcfc6-7d8f-4669-af9e-01911477abde	a80b09589dd758339dcab5acb4ffafe7ebb93cd01305ae778f262e4dd5ffe93b	2023-07-16 23:21:43.4395+00	20230614041123_myschema3	\N	\N	2023-07-16 23:21:43.412643+00	1
-ce8963b2-6b77-4e34-bc8a-ab00d2bf0b8c	e09e80a658298fed832d8739f36b2fc6b93b927537dc1d5e6e380211e5ce0a7c	2023-07-16 23:21:43.450824+00	20230615144243_myschema	\N	\N	2023-07-16 23:21:43.443101+00	1
-53b5e511-d4a4-460c-86a0-7f590634b347	c9639cce7c2f81e619889982e7162f2c880cb0aafbdf2283a8dc1b74f4b39144	2023-07-16 23:21:43.739871+00	20230616025120_myschema	\N	\N	2023-07-16 23:21:43.454109+00	1
-b27f08d7-f9f8-40be-baf6-9be4b16fb2ce	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	2023-07-16 23:21:44.284324+00	20230622162812_	\N	\N	2023-07-16 23:21:44.278017+00	1
-97781c3f-9157-497d-b4b9-92d50f8df042	8f99884738269262fadc163f0f98b49aed7b40e512b2791a36bc4353307044d7	2023-07-16 23:21:44.075987+00	20230616025402_myschema	\N	\N	2023-07-16 23:21:43.742647+00	1
-3ad5a81f-610e-4176-a6b8-7b2285957bd1	787d9b130656e80a016a2b0d5b020f8fe8a77d3704b6d7b5b63c3284f1f16c74	2023-07-16 23:21:44.125474+00	20230616210218_myschema	\N	\N	2023-07-16 23:21:44.082737+00	1
-1c2d2c03-37ea-4f43-a506-7420bf252bbf	5f05f7c56b7c1ffaadd563c52fe7b0428bc9c4e5736b5164498676e56eda61f8	2023-07-16 23:21:44.151703+00	20230616210702_myschema	\N	\N	2023-07-16 23:21:44.127862+00	1
-bffbd54e-b796-469c-8e7c-2ae69611ded8	984121ae2964a396a8983ca248cb7e7c676860426b59baededf38c894953cc3a	2023-07-16 23:21:44.301288+00	20230714024421_upload	\N	\N	2023-07-16 23:21:44.291433+00	1
-4716284b-88b0-43fd-935c-155b094e1007	aafcadbd9f2d10d57bc2329e150a599200073018610830e66beb8fbca1656aa7	2023-07-16 23:21:44.164003+00	20230619212304_myschema	\N	\N	2023-07-16 23:21:44.154779+00	1
-beaa5016-d803-4756-83fe-a7a2a6cbe0cf	d2280109a126d706db9174e4cada49c0b3863d0484e3928bb3c576ada6e12e34	2023-07-16 23:21:44.186767+00	20230620192424_	\N	\N	2023-07-16 23:21:44.175127+00	1
-94da744b-9606-40cf-8ba9-4695b1eec792	c1aa1358ec56c0013ebe7f251f27d499e447d19b7e4b3730ecff983b0b9fa0f6	2023-07-16 23:21:44.215131+00	20230620221832_myschema	\N	\N	2023-07-16 23:21:44.192375+00	1
-d80c9962-0463-4c4f-b2d6-58c880c4c75f	068d005119b4597553418795bb96d617cd6a0f5a9a3fc6b8333841dc300a14a8	2023-07-16 23:21:44.318679+00	20230714201412_no_upload	\N	\N	2023-07-16 23:21:44.308733+00	1
-361cf09a-a38d-4e62-8e8e-4710b348a805	2974e88ad1fc9cc74d81ac94506fc808377daeb0f39795d72d848b9fe2d10908	2023-07-16 23:21:44.2297+00	20230621001326_myschema	\N	\N	2023-07-16 23:21:44.219588+00	1
-946d276a-fcea-4df0-987b-8e6f71ea7b88	01e0b2a14abb44e7c814895475022d7c271f3245d757a60e9ae351a9d93a8db4	2023-07-16 23:21:44.391584+00	20230716231216_asa	\N	\N	2023-07-16 23:21:44.325856+00	1
-6d7a47d5-8f86-498e-b633-e11e36f769b4	e16e0c38310b1497b1b71aee70c72cbb132d2a29ac0bae4456ba9182609a5d1a	2023-07-16 23:21:53.330303+00	20230716232153_myschema	\N	\N	2023-07-16 23:21:53.314961+00	1
-2e1fc152-8d53-42b0-adb8-71655125e14f	ac11624ac44a06ec3c80beecc8e07852227fc150d3a57e8a9adb4c9f3cf61ffd	2023-07-17 03:16:06.966749+00	20230717031606_badges	\N	\N	2023-07-17 03:16:06.726974+00	1
+2848ffc5-f7e5-44e9-8dab-8a527d7f887b	3de9e0465a22932a5a941f8f9a96591ac8be6d3e3bcbd66871fde9b0902d33c0	2023-07-21 04:21:49.642667+00	20230605014623_init	\N	\N	2023-07-21 04:21:49.462473+00	1
+8678d1a4-d045-4b17-a541-97b696ddb357	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	2023-07-21 04:21:50.806508+00	20230621005732_	\N	\N	2023-07-21 04:21:50.801363+00	1
+cd409e15-d78f-4d16-892f-f051e6abecff	73775d652cbf41bdb0e3f78e17d8384e59e5d6db181ad54fa083f541b794170e	2023-07-21 04:21:50.005393+00	20230606012335_init	\N	\N	2023-07-21 04:21:49.646673+00	1
+d936438d-779a-425f-9b48-08c63ca2794a	702b130e5eca3759bce1db90771a35c30d93d9e231de0443e412dba02b5625a0	2023-07-21 04:21:50.029902+00	20230607160915_myschema	\N	\N	2023-07-21 04:21:50.008846+00	1
+e43f12f4-64f2-471b-a3be-1d8eebb5762d	d9ed2071d3fab89fd889844819ce75bfcecd956ee50398f99f3201ae7ee2c6e3	2023-07-21 04:21:50.042088+00	20230612035255_add_refresh_token	\N	\N	2023-07-21 04:21:50.033036+00	1
+8c105cc8-c0a4-4b8f-88af-a5620b5229a9	4d3a7370c271cd0d551d9a189326709d0174d321071c77cf362bd9aa0a7beff5	2023-07-21 04:21:50.817516+00	20230621040514_myschema	\N	\N	2023-07-21 04:21:50.809478+00	1
+650fa35f-eaf2-48e6-9fa1-e0ca900190c1	a80b09589dd758339dcab5acb4ffafe7ebb93cd01305ae778f262e4dd5ffe93b	2023-07-21 04:21:50.060068+00	20230614041123_myschema3	\N	\N	2023-07-21 04:21:50.044403+00	1
+1331b83f-bc48-4303-ac00-685d453a931a	e09e80a658298fed832d8739f36b2fc6b93b927537dc1d5e6e380211e5ce0a7c	2023-07-21 04:21:50.078692+00	20230615144243_myschema	\N	\N	2023-07-21 04:21:50.064057+00	1
+c1b1213e-c6cd-4eb2-a889-941e68f7d9b7	c9639cce7c2f81e619889982e7162f2c880cb0aafbdf2283a8dc1b74f4b39144	2023-07-21 04:21:50.366038+00	20230616025120_myschema	\N	\N	2023-07-21 04:21:50.080593+00	1
+cb3e3cba-d536-4fe4-9674-2e00d166c062	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	2023-07-21 04:21:50.828217+00	20230622162812_	\N	\N	2023-07-21 04:21:50.820463+00	1
+ce104ee5-2ec4-43d4-a787-d0919dd87fcf	8f99884738269262fadc163f0f98b49aed7b40e512b2791a36bc4353307044d7	2023-07-21 04:21:50.7166+00	20230616025402_myschema	\N	\N	2023-07-21 04:21:50.367607+00	1
+2e83c2b2-75be-418e-9af5-ef18ab6b7786	787d9b130656e80a016a2b0d5b020f8fe8a77d3704b6d7b5b63c3284f1f16c74	2023-07-21 04:21:50.734022+00	20230616210218_myschema	\N	\N	2023-07-21 04:21:50.718375+00	1
+e5cea224-e32e-421b-9e01-6c42c67b66a8	5f05f7c56b7c1ffaadd563c52fe7b0428bc9c4e5736b5164498676e56eda61f8	2023-07-21 04:21:50.750063+00	20230616210702_myschema	\N	\N	2023-07-21 04:21:50.736798+00	1
+3a3520d5-d6aa-43fa-a7ea-78f4bf1c2dc6	984121ae2964a396a8983ca248cb7e7c676860426b59baededf38c894953cc3a	2023-07-21 04:21:50.838965+00	20230714024421_upload	\N	\N	2023-07-21 04:21:50.831384+00	1
+5729857c-0f2f-4109-b259-d35f257785a8	aafcadbd9f2d10d57bc2329e150a599200073018610830e66beb8fbca1656aa7	2023-07-21 04:21:50.760647+00	20230619212304_myschema	\N	\N	2023-07-21 04:21:50.751897+00	1
+d13cf01c-1627-43e0-8fe6-007d11a6853f	d2280109a126d706db9174e4cada49c0b3863d0484e3928bb3c576ada6e12e34	2023-07-21 04:21:50.769657+00	20230620192424_	\N	\N	2023-07-21 04:21:50.763101+00	1
+200f28f6-6393-4596-ad1e-cc92d7117bb3	c1aa1358ec56c0013ebe7f251f27d499e447d19b7e4b3730ecff983b0b9fa0f6	2023-07-21 04:21:50.787705+00	20230620221832_myschema	\N	\N	2023-07-21 04:21:50.772706+00	1
+1b562fb0-4a6f-4a45-ae82-6a016431ad90	068d005119b4597553418795bb96d617cd6a0f5a9a3fc6b8333841dc300a14a8	2023-07-21 04:21:50.855003+00	20230714201412_no_upload	\N	\N	2023-07-21 04:21:50.844788+00	1
+5e64c1dc-23f0-4d55-aebf-604eefe65541	2974e88ad1fc9cc74d81ac94506fc808377daeb0f39795d72d848b9fe2d10908	2023-07-21 04:21:50.799447+00	20230621001326_myschema	\N	\N	2023-07-21 04:21:50.789714+00	1
+41ddbf27-000a-4b59-8cf3-86ae991211fa	01e0b2a14abb44e7c814895475022d7c271f3245d757a60e9ae351a9d93a8db4	2023-07-21 04:21:50.936856+00	20230716231216_asa	\N	\N	2023-07-21 04:21:50.857107+00	1
+c717763d-d992-446e-b00f-a5c6663c000c	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	2023-07-21 04:21:50.945629+00	20230716232153_myschema	\N	\N	2023-07-21 04:21:50.940236+00	1
+f200acb8-b83a-4ae5-b980-274dd5bc28be	85c2d05fb5a927488d25a7d4c4bfea85ae8901cef78b08f5b5598c9dff6fd23b	2023-07-21 04:21:51.002661+00	20230718022451_	\N	\N	2023-07-21 04:21:50.948624+00	1
+f702d3f8-5ed1-44d2-b792-37f5fd3d8bf5	d312965018e023d80195b743ea6b9b5a8670d70f8fd9aa3516cc5d83f15e88ca	2023-07-21 04:21:51.09167+00	20230721041423_achievement	\N	\N	2023-07-21 04:21:51.004684+00	1
 \.
 
 
 --
--- Data for Name: badges; Type: TABLE DATA; Schema: myschema; Owner: myuser
+-- Data for Name: achievement; Type: TABLE DATA; Schema: myschema; Owner: myuser
 --
 
-COPY myschema.badges ("badgesId", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Legend", "Elite", "Champion", "UserId") FROM stdin;
-1	t	f	f	f	f	f	f	f	f	f	98937
+COPY myschema.achievement ("badgesId", "UserId", "First_Blood", "Shutout", "Unstoppable", "Invincible", "Legend", "Lets_Play", "Rookie") FROM stdin;
+2	98937	f	f	f	f	f	f	f
+3	99035	f	f	f	f	f	f	f
+4	99046	f	f	f	f	f	f	f
 \.
 
 
@@ -542,7 +549,7 @@ COPY myschema.badges ("badgesId", "Bronze", "Silver", "Gold", "Platinum", "Diamo
 -- Name: Friendship_FriendshipId_seq; Type: SEQUENCE SET; Schema: myschema; Owner: myuser
 --
 
-SELECT pg_catalog.setval('myschema."Friendship_FriendshipId_seq"', 9, true);
+SELECT pg_catalog.setval('myschema."Friendship_FriendshipId_seq"', 12, true);
 
 
 --
@@ -570,7 +577,7 @@ SELECT pg_catalog.setval('myschema."Message_MessageId_seq"', 1, false);
 -- Name: Notification_NotificationId_seq; Type: SEQUENCE SET; Schema: myschema; Owner: myuser
 --
 
-SELECT pg_catalog.setval('myschema."Notification_NotificationId_seq"', 3, true);
+SELECT pg_catalog.setval('myschema."Notification_NotificationId_seq"', 7, true);
 
 
 --
@@ -581,10 +588,10 @@ SELECT pg_catalog.setval('myschema."Room_RoomId_seq"', 1, false);
 
 
 --
--- Name: badges_badgesId_seq; Type: SEQUENCE SET; Schema: myschema; Owner: myuser
+-- Name: achievement_badgesId_seq; Type: SEQUENCE SET; Schema: myschema; Owner: myuser
 --
 
-SELECT pg_catalog.setval('myschema."badges_badgesId_seq"', 1, true);
+SELECT pg_catalog.setval('myschema."achievement_badgesId_seq"', 4, true);
 
 
 --
@@ -652,11 +659,11 @@ ALTER TABLE ONLY myschema._prisma_migrations
 
 
 --
--- Name: badges badges_pkey; Type: CONSTRAINT; Schema: myschema; Owner: myuser
+-- Name: achievement achievement_pkey; Type: CONSTRAINT; Schema: myschema; Owner: myuser
 --
 
-ALTER TABLE ONLY myschema.badges
-    ADD CONSTRAINT badges_pkey PRIMARY KEY ("badgesId");
+ALTER TABLE ONLY myschema.achievement
+    ADD CONSTRAINT achievement_pkey PRIMARY KEY ("badgesId");
 
 
 --
@@ -674,10 +681,10 @@ CREATE UNIQUE INDEX "User_username_key" ON myschema."User" USING btree (username
 
 
 --
--- Name: badges_UserId_key; Type: INDEX; Schema: myschema; Owner: myuser
+-- Name: achievement_UserId_key; Type: INDEX; Schema: myschema; Owner: myuser
 --
 
-CREATE UNIQUE INDEX "badges_UserId_key" ON myschema.badges USING btree ("UserId");
+CREATE UNIQUE INDEX "achievement_UserId_key" ON myschema.achievement USING btree ("UserId");
 
 
 --
@@ -769,11 +776,11 @@ ALTER TABLE ONLY myschema."Notification"
 
 
 --
--- Name: badges badges_UserId_fkey; Type: FK CONSTRAINT; Schema: myschema; Owner: myuser
+-- Name: achievement achievement_UserId_fkey; Type: FK CONSTRAINT; Schema: myschema; Owner: myuser
 --
 
-ALTER TABLE ONLY myschema.badges
-    ADD CONSTRAINT "badges_UserId_fkey" FOREIGN KEY ("UserId") REFERENCES myschema."User"("UserId") ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY myschema.achievement
+    ADD CONSTRAINT "achievement_UserId_fkey" FOREIGN KEY ("UserId") REFERENCES myschema."User"("UserId") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --

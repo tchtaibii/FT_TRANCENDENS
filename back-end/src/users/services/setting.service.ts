@@ -128,6 +128,7 @@ export class SettingService {
                     UserId : User.UserId,
                 }
             })
+			await this.prisma.achievement.delete({where : { UserId : User.UserId}}),
             await this.prisma.user.delete({where : { UserId : User.UserId}})
         });
 		res.clearCookie('access_token');

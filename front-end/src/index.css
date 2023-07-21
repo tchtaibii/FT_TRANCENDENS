@@ -105,13 +105,14 @@ canvas {
   left: initial;
 }
 @media screen and (max-width: 770px) {
-  .main {
+  .main, .profileDown{
     margin-left: 0;
   }
-  .bar-left {
+  .bar-left{
     display: none !important;
 
   }
+
   .login-container{
     width: 100vw;
     height: 100vh;

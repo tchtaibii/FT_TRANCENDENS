@@ -64,6 +64,15 @@ export class FriendshipService {
 
 	async AcceptRequest(FriendshipId : number, User : User)
 	{
+        const exist = await this.prisma.friendship.findFirst({
+            where : {
+                FriendshipId : FriendshipId,
+            }
+        })
+
+        if (!exist)
+            return ;
+
         try {
             var friend = await this.prisma.friendship.update({
                 where: { FriendshipId : FriendshipId},

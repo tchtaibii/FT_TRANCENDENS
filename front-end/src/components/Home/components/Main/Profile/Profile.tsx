@@ -3,9 +3,9 @@ import GradienBox from '../../../../../tools/GradienBox'
 import Charts from './Charts'
 import { AppDispatch } from '../../../../../store/store'
 import { setFalse, setTrue } from '../../../../../features/isLoading';
-import btnSlide from './buttonSlide.svg'
+import btnSlide from '../../../../../assets/img/buttonSlide.svg'
 import { motion, AnimatePresence } from 'framer-motion'
-import ACE from './Ace.svg'
+// import ACE from './Ace.svg'
 import { useEffect, useState } from 'react'
 import axios from '../../../../../Interceptor/Interceptor'
 import { Link, useParams } from 'react-router-dom';
@@ -450,9 +450,9 @@ export function ProfileDown() {
     var arrayArch: Archivement[] = [];
     const AceArchivement = {
         title: 'Ace',
-        img: ACE
+        img: 'ACE'
     };
-    arrayArch.push(AceArchivement, { title: 'Mays', img: ACE }, { title: 'Kays', img: ACE })
+    arrayArch.push(AceArchivement, { title: 'Mays', img: 'ACE' }, { title: 'Kays', img: 'ACE' })
     const variants = {
         initial: (Direction: number) => {
             return ({

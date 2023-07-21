@@ -2,7 +2,8 @@ import "./Search.scss"
 import SearImg from "../../../../assets/img/search.svg"
 import defaultAvatar from "../../../../assets/img/avatar.png"
 import GradienBox from '../../../../tools/GradienBox'
-import Awardtest from './testBadge.svg'
+// should Badge here  remember??
+// import Awardtest from './testBadge.svg'
 import { useState, useRef } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
 import { Link } from 'react-router-dom'
@@ -27,7 +28,8 @@ function SearchContent(props: any) {
 					</div>
 				</div>
 				<div className="f-part2">
-					<img src={Awardtest} alt="" />
+					<img src={''} alt="" />
+					{/* // should Badge here  remember?? */}
 				</div>
 			</Link>
 		)

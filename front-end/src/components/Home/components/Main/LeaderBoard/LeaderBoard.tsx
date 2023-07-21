@@ -4,7 +4,7 @@ import { useOnClickOutside } from 'usehooks-ts';
 import GradienBox from '../../../../../tools/GradienBox'
 import { useDispatch } from 'react-redux';
 // import trophet from './trophet.svg';
-import medaille from './medaille.svg'
+import medaille from '../../../../../assets/img/Gold.svg'
 import defaultAvatar from '../../../../../assets/img/avatar.png'
 import axios from '../../../../../Interceptor/Interceptor'
 import { AppDispatch } from '../../../../../store/store'

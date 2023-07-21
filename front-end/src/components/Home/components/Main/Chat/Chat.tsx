@@ -1,14 +1,14 @@
-import emoji from './emojis.svg'
-import send from './send.svg'
+import emoji from '../../../../../assets/img/emojis.svg'
+import send from '../../../../../assets/img/send.svg'
 import GradienBox from '../../../../../tools/GradienBox'
 import './Chat.scss'
 // import { io, Socket } from 'socket.io-client';
 import { useSelector } from 'react-redux'
-import { userType, adminType, MessageType } from '../../../../../interface/interfaces'
+// import { userType, adminType, MessageType } from '../../../../../interface/interfaces'
 import { Link, useParams } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
-import axios from 'axios'
+// import axios from 'axios'
 
 
 // const socket: Socket = io('http://localhost:3001');

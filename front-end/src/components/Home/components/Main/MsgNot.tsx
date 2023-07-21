@@ -9,7 +9,8 @@ import { useOnClickOutside } from 'usehooks-ts'
 import { ReactSVG } from 'react-svg';
 import axios from '../../../../Interceptor/Interceptor'
 import LogoutImg from "../../../../assets/img/Logout.svg";
-import badge from "../../../../assets/img/badge-noti.svg";
+// import 'badge' from "../../../../assets/img/'badge'-noti.svg";
+// remember??
 import HomeImg from "../../../../assets/img/Home.svg";
 import ProfImg from "../../../../assets/img/profile.svg";
 import SetfImg from "../../../../assets/img/Settings.svg";
@@ -202,7 +203,7 @@ function Notification(props: any) {
 	return (
 		<div id={props.key} className="notification">
 			<div className={!props.isRead ? "no-read" : ""}>
-				<img src={props.img !== null ? props.img : badge} alt="" />
+				<img src={props.img !== null ? props.img : 'badge'} alt="" />
 			</div>
 			<div className="noti-text">{textNotifi}</div>
 		</div>

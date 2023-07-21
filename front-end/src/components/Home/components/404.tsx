@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import guyPong from './Pg.svg'
+import guyPong from '../../../assets/img/Pg.svg'
 import { AppDispatch } from '../../../store/store'
 import { setFalse } from '../../../features/isLoading';
 import { useDispatch } from 'react-redux';

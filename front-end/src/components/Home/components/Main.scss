@@ -8,13 +8,13 @@
     padding-right: toRem(34);
     width: 100%;
     // margin: auto 0;
-    // margin-left: toRem(95);
+    margin-left: toRem(200);
     // gap: 4.5rem;
     height: fit-content;
     justify-content: space-between;
     margin-top: toRem(20);
     width: toRem(1722.2);
-
+    padding-bottom: toRem(30);
 }
 
 .side1 {
@@ -464,30 +464,38 @@
 }
 
 .invitation-container {
-    position: absolute;
+    position: fixed;
     display: flex;
-    width: fit-content;
-    height: fit-content;
-    bottom: 0;
-    z-index: 1001;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    flex-direction: row-reverse;
+    align-items: end;
+    padding-right: toRem(23);
+    padding-bottom: toRem(10);
 
-    &::after {
-        content: '';
-        width: toRem(398);
-        position: absolute;
-        height: toRem(518);
-        background: linear-gradient(179.93deg, rgba(0, 0, 0, 0) 12.51%, #101010 159.13%);
-        z-index: 999;
-        top: toRem(-503);
-    }
+    // display: ;
+
+    // &::after {
+    //     content: '';
+    //     width: toRem(398);
+    //     position: absolute;
+    //     height: toRem(518);
+    //     background: linear-gradient(179.93deg, rgba(0, 0, 0, 0) 12.51%, #101010 159.13%);
+    //     z-index: 999;
+    //     top: toRem(-503);
+    // }
 }
-
 .invitation {
     display: flex;
     flex-direction: column;
     gap: toRem(29);
     padding: toRem(23.6);
     z-index: 100;
+    pointer-events: all;
+    z-index: 9999999999999999999999999999999;
+    
 
     .invitation-content {
         width: 100%;

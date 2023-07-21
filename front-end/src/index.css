@@ -105,6 +105,9 @@ canvas {
   left: initial;
 }
 @media screen and (max-width: 770px) {
+  .main {
+    margin-left: 0;
+  }
   .bar-left {
     display: none !important;
 

@@ -43,8 +43,8 @@ function MsgNot(props: any) {
 	}
 	const handleClickOutsideI = async () => {
 		if (isVisibleI) {
-			await axios.get('FriendshipRequest').then(resp => {
-				props.setInvi(resp.data)
+			await axios.get('/FriendshipRequest').then(resp => {
+				props.setInvi(resp.data);
 			}).catch((err) => {
 				console.log('had error', err);
 			})
@@ -58,7 +58,16 @@ function MsgNot(props: any) {
 		<div className='msgNot-cont' >
 			<div ref={refI}>
 				<GradienBox over={0} mywidth="49px" myheight="49px" myborder="10px">
-					<button onClick={() => setIsVisibleI(!isVisibleI)} className='btn-msgnot'>
+					<button onClick={() => {
+						props.socketInvi(false)
+						axios.get('FriendshipRequest').then(resp => {
+							props.setInvi(resp.data);
+						}).catch((err) => {
+							console.log('had error', err);
+						})
+						setIsVisibleI(!isVisibleI)
+					}
+					} className='btn-msgnot'>
 						<img style={{ width: '1.5rem', fill: 'red', transform: 'translateX(0.156rem)' }} src={inviFriend} alt='' />
 						{props.invi.length > 0 && <div className="isFull"></div>}
 					</button>

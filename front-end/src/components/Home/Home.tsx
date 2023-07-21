@@ -9,7 +9,9 @@ import { AppDispatch } from "../../store/store"
 import { getAdmin } from "../../features/adminSlice"
 import { get2FA } from "../../features/2FA"
 import { useEffect } from 'react'
-function Home() {
+
+
+function Home(props:any) {
   
   const dispatch: AppDispatch = useDispatch();
   const DataLoader = useSelector((state:any)=> state.admin).isLoader;
@@ -29,7 +31,7 @@ function Home() {
         {IsLoading && DataLoader && <Loading />}
         <div className="container-home">
           <LeftBar />
-          <Main />
+          <Main socketInvi={props.socketInvi} setInvi={props.setInv} setNoti={props.setNoti} invitations={props.invitations} notifications={props.notifications}  />
           <Outlet />
         </div>
       </Router>

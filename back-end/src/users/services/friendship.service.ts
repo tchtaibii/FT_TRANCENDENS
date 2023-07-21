@@ -122,6 +122,15 @@ export class FriendshipService {
 
 	async cancelRequest(FriendshipId : number)
 	{
+        const exist = await this.prisma.friendship.findFirst({
+            where : {
+                FriendshipId : FriendshipId,
+            }
+        })
+
+        if (!exist)
+            return ;
+        
         try { 
             const friendship = await this.prisma.friendship.delete({
                 where: {

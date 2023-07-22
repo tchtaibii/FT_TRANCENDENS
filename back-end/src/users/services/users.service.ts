@@ -12,6 +12,19 @@ export class UsersService {
 	constructor(){}
     
 
+	async notificationState(User : User)
+	{
+		const notifications = await this.getNotification(User);
+		if (notifications)
+		{
+			for(let notification of notifications){
+				if (!notification.isRead)
+					return true;
+			}
+		}
+		return false;
+	}
+
     async	createUser(user : User){
 		const newUser = await this.prisma.user.create({
 			data: user,

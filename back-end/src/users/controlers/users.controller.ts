@@ -66,4 +66,10 @@ export class UsersController {
         return true;
     }
 
+	@Get('noticationState')
+	@UseGuards(JwtAuthGuard)
+	async notificationState(@Req() req)
+	{
+		return await this.UserService.notificationState(req.user);
+	}
 }

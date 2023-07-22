@@ -18,7 +18,7 @@ export class HomeService {
 		} else if (level < 15) {
 		  return "gold";
 		} else if (level < 25) {
-		  return "platinum";
+		  return "platinium";
 		} else if (level < 40) {
 		  return "diamond";
 		} else if (level < 80) {

@@ -66,4 +66,11 @@ export class FriendshipController {
         const request = await this.FriendshipService.getFriendshipRequest(req.user);
         res.json(request);
     }
+
+    @Get('isRequest')
+    async isRequest(@Req() req)
+    {
+        const request = await this.FriendshipService.getFriendshipRequest(req.user);
+        return request.length ? true : false;
+    }
 }

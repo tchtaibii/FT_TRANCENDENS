@@ -70,5 +70,11 @@ export class ProfileController {
         const Activity =  await this.ProfileService.getActivity(user);
         res.json(Activity);
     }
+
+    @Get('Achievement')
+    async GetAchievement(@Req() req)
+    {
+        return await this.ProfileService.getAchievement(req.user);
+    }
 }
  

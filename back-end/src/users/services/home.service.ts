@@ -26,7 +26,7 @@ export class HomeService {
 		} else {
 		  return "grandmaster";
 		}
-	  }
+	}
 
 	async getMyProfile(user : User)
 	{

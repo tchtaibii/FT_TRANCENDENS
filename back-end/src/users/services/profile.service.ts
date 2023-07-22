@@ -24,6 +24,16 @@ export class ProfileService {
 		return findUser;
     }
 
+	async getAchievement(User : User)
+	{
+		const achievement = await this.prisma.achievement.findFirst({
+			where : { 
+				UserId : User.UserId,
+			}
+		})
+		return achievement;
+	}
+
 	async calculRating(user)
 	{
 		const block = await this.getBlockeduserIds(user);

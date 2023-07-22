@@ -117,44 +117,22 @@ type ProfileRightType = {
 function Profile(props: any) {
 
     const { login } = useParams();
-    const [isDisable, setDisable] = useState(false);
-    const [invi, setInvi] = useState(false);
-
     const [myFriends, setFriends] = useState([]);
-    const ButtonSent = (props: any) => {
-        const [sendInvitation, setSendInvitation] = useState(props.Sent === false ? 'Add Friend' : 'Cancel');
-
-        const handleClick = async () => {
-            if (props.Sent === false) {
-                await axios.post('/SendRequest', { receiverId: props.userId }).then(response => {
-                    console.log(response);
-                })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            }
-            setSendInvitation(props.Sent === false ? 'Add Friend' : 'Cancel');
-            setInvi(!invi);
-        };
-
-        return (
-            <button onClick={() => {
-                handleClick();
-            }}><div>{sendInvitation}</div>
-            </button>
-        );
-    };
     useEffect(() => {
         const Fetch = async () => {
             await axios.get('/Profile/' + login + '/Friends').then((response) => setFriends(response.data));
-            setDisable(true);
         }
         Fetch();
-    }, [myFriends, login, invi])
+    }, [myFriends, login])
 
     return (
         <div className="ProfileComponent-Activity-Friends">
-            <div className="fa-Profile profile-hol">
+            <motion.div
+                initial={{ y: '100vh' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100vh' }}
+                transition={{ duration: 0.4 }}
+                className="fa-Profile profile-hol">
                 <div className="textActive">
                     <h1>Activity</h1>
                     <Infobtn />
@@ -168,20 +146,25 @@ function Profile(props: any) {
                         <Charts username={login} />
                     </GradienBox>
                 </div>
-            </div>
-            <div className="fa-Profile">
+            </motion.div>
+            <motion.div
+                initial={{ y: '100vh' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100vh' }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+                className="fa-Profile">
                 <h1>Friends</h1>
                 <GradienBox mywidth={window.innerWidth > 770 ? '399px' : '1200px'} myheight={'324px'} myborder={'40px'}>
                     <div className="content-friend">
                         <div className="content-fri">
                             {
                                 myFriends.length > 0 &&
-                                myFriends.map((e: any, i:number) => {
+                                myFriends.map((e: any, i: number) => {
                                     return (
                                         <div key={e.UserId + 'fr-' + i} className="friend-Profile">
                                             <div className="friend-info">
                                                 <Link to={'/profile/' + e.username}>
-                                                    <img src={e.avatar} onError={(e:any) => {
+                                                    <img src={e.avatar} onError={(e: any) => {
                                                         console.log(e.target);
                                                         e.target.src = defaultAvatar;
                                                     }
@@ -189,16 +172,6 @@ function Profile(props: any) {
                                                 </Link>
                                                 <p>{e.username}</p>
                                             </div>
-                                            {/* <div className="buttons-f">
-                                                {
-                                                    e.isOwner === false && (e.Accepted === true ?
-                                                        <button><div>Send Message</div></button> :
-                                                        <ButtonSent Sent={e.sentInvitation} userId={e.UserId} key={e.UserId + '-env'} />)
-                                                }
-                                                {
-                                                    e.isOwner === false && e.Accepted === true && <button className='IP'><div >Invite to Play</div></button>
-                                                }
-                                            </div> */}
                                         </div>
                                     )
                                 })
@@ -210,7 +183,7 @@ function Profile(props: any) {
                         </div>
                     </div>
                 </GradienBox>
-            </div>
+            </motion.div>
         </div>
     )
 }
@@ -250,11 +223,8 @@ export function ProfileProfile() {
                 dispatch(setFalse());
                 console.log()
             })
-            // if (ProfileRight.xp > 0)
-            //     setwidthPro(((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
             setOpacity(1);
         }
-        // if (ProfileRight.username === login)
         {
             dispatch(setTrue());
             Fetch();
@@ -287,7 +257,12 @@ export function ProfileProfile() {
         })
     }
     return (
-        <div className="profileRE">
+        <motion.div
+            initial={{ y: '100vh' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100vh' }}
+            transition={{ duration: 0.4, delay: 0.4 }}
+            className="profileRE">
             <GradienBox mywidth={window.innerWidth > 770 ? '397px' : '1200px'} myheight={'526px'} myborder={'40px'}>
                 <div className="container-Profile-profile">
                     <h1>Profile</h1>
@@ -308,7 +283,6 @@ export function ProfileProfile() {
                         {
                             ProfileRight.isOwner === false ?
                                 <>
-                                    {/* { */}
                                     {
                                         ProfileRight.isFriend ?
                                             <>
@@ -330,7 +304,6 @@ export function ProfileProfile() {
                     </div>
                     <div className="progress">
                         <div className="content-progress">
-                            {/* style={{ width: widthPro }} */}
                             <div style={{ backgroundImage: 'linear-gradient(to right, #00887A ' + (widthPro) + '%, #2C282C ' + (widthPro) + '%)', opacity }} className="absoluteProgress"></div>
                             <h5 className='From'>{'Lv.' + ProfileRight.level}</h5>
                             <h5 className='center'>{ProfileRight.xp + 'XP   /   ' + (200 * (ProfileRight.level + 1)) + 'XP'}</h5>
@@ -352,7 +325,7 @@ export function ProfileProfile() {
                     </div>
                 </div>
             </GradienBox>
-        </div>
+        </motion.div>
     )
 }
 
@@ -438,7 +411,6 @@ export function ProfileDown() {
             if (ProfileRight) {
                 const newWidthPro = (ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100;
                 setwidthPro(newWidthPro);
-                // 100 min -> 138 max
                 SetdashArray((newWidthPro / 100) * (138 - 100) + 100);
             }
         };
@@ -470,7 +442,13 @@ export function ProfileDown() {
     }
     return (
         <div className="profileDown">
-            <div className="AchivementsProfile">
+            <motion.div
+                initial={{ y: '100vh' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100vh' }}
+                transition={{ duration: 0.4, delay: 0.6 }}
+                className="AchivementsProfile">
+
                 <h1>Achievements</h1>
                 <GradienBox mywidth={'380px'} myheight={'388px'} myborder={'40px'}>
                     <div className="archivement-container" style={{ overflow: 'hidden' }}>
@@ -505,8 +483,13 @@ export function ProfileDown() {
                         }} className='button-slide right-btn'><div className="backjack"><img className='imgRight' src={btnSlide} alt="" /></div></button>
                     </div>
                 </GradienBox>
-            </div>
-            <div className="UpgradeProfile">
+            </motion.div>
+            <motion.div
+                initial={{ y: '100vh' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100vh' }}
+                transition={{ duration: 0.4, delay: 0.8 }}
+                className="UpgradeProfile">
                 <h1>Upgrade Progress</h1>
                 <GradienBox mywidth={'344px'} myheight={'388px'} myborder={'40px'}>
                     <div className="container-pro">
@@ -529,8 +512,13 @@ export function ProfileDown() {
                         <p>Track progress with dynamic graph arc. Stay motivated towards next climb.</p>
                     </div>
                 </GradienBox>
-            </div>
-            <div className="HistoryProfile">
+            </motion.div>
+            <motion.div
+                initial={{ y: '100vh' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100vh' }}
+                transition={{ duration: 0.4, delay: 1 }}
+                className="HistoryProfile">
                 <h1>Games History</h1>
                 <GradienBox minh={'386px'} vh={870} mywidth={window.innerWidth > 770 ? '885px' : '1200px'} myheight={'388px'} myborder={'40px'}>
                     <div className="gameHistory">
@@ -552,7 +540,7 @@ export function ProfileDown() {
                         </div>
                     </div>
                 </GradienBox>
-            </div>
+            </motion.div>
         </div>
     )
 }

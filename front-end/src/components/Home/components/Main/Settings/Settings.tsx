@@ -202,11 +202,22 @@ function Settings() {
     }, [updateS, isOff])
     return (
         <div className="settings-Container">
-            <div className="header-settings">
+            <motion.div
+            initial={{ y: '100vh' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100vh' }}
+            transition={{ duration: 0.4 }}
+            className="header-settings">
                 <h1>Settings</h1>
                 <BackToHome />
-            </div>
-            <GradienBox mywidth="1201px" myheight="365px" myborder="40px">
+            </motion.div>
+            <motion.div
+            initial={{ y: '100vh' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100vh' }}
+            transition={{ duration: 0.4 }}
+            >
+                <GradienBox mywidth="1201px" myheight="365px" myborder="40px">
                 <div className="AccountSettings">
                     <h2>Account</h2>
                     <div className="account-set">
@@ -246,7 +257,14 @@ function Settings() {
                     </div>
                 </div>
             </GradienBox>
-            <div className="con-act">
+            </motion.div>
+            
+            <motion.div
+            initial={{ y: '100vh' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100vh' }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="con-act">
                 <GradienBox mywidth="559px" myheight="338px" myborder="40px">
                     <div className="con-act-cont">
                         <h1>Account Connectivity</h1>
@@ -295,7 +313,7 @@ function Settings() {
                         </div>
                     </div>
                 </GradienBox>
-            </div>
+            </motion.div>
             <AnimatePresence mode='wait'>
                 {isPopUp &&
                     <motion.div

@@ -25,10 +25,10 @@ function ActivityContent(props: any) {
 			initial={{ x: (props.side + '110%') }}
 			animate={{ x: 0 }}
 			exit={{ x: (props.side + '110%') }}
-			transition={{delay: ((props.id / 10) + 0.1), duration: 0.1}}
+			transition={{ delay: ((props.id / 10) + 0.1), duration: 0.1 }}
 			className="activity-x">
 			<div className="part1">
-				<Link to={'/profile/' + props.p1}><img src={props.avatar1} onError={(e:any) => {
+				<Link to={'/profile/' + props.p1}><img src={props.avatar1} onError={(e: any) => {
 					console.log(e.target);
 					e.target.src = defaultAvatar;
 				}
@@ -50,7 +50,11 @@ function Activity() {
 	}, [])
 	const calc = 555;
 	return (
-		<div className="recentActivity">
+		<motion.div
+		initial={{ x: '100vw'}}
+		animate={{ x: 0 }}
+		exit={{  x: '100vw'}}
+		transition={{delay: 0.2, duration: 0.5 }} className="recentActivity">
 			<div className='box-box-cont'>
 				<h1 className='title-h1'>Recent activity</h1>
 				<div className='box-cont'>
@@ -105,7 +109,7 @@ function Activity() {
 					</GradienBox>
 				</div>
 			</div>
-		</div>
+		</motion.div>
 	);
 }
 
@@ -113,18 +117,20 @@ function Activity() {
 
 function Side2(props: any) {
 	return (
-		<div className='side2'>
-			{
-				props.isN === 1 ? <> <ProfileHome /><Activity /></> :
-					<ProfileProfile />
-			}
-		</div>
+		<AnimatePresence mode='wait'>
+			<div className='side2'>
+				{
+					props.isN === 1 ? <> <ProfileHome /><Activity /></> :
+						<ProfileProfile />
+				}
+			</div>
+		</AnimatePresence>
 	)
 }
 
 
 
-function Main(props:any) {
+function Main(props: any) {
 
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', marginBottom: 'auto' }}>
@@ -132,10 +138,10 @@ function Main(props:any) {
 				<div className="side1">
 					<div className='top'>
 						<Search />
-						<MsgNot socketInvi={props.socketInvi}/>
+						<MsgNot socketInvi={props.socketInvi} />
 					</div>
 					<Routes>
-						<Route path="/" element={<><Hero /><GamesMode /><BestPlayers /></>} />
+						<Route path="/" element={<AnimatePresence mode='wait'><Hero /><GamesMode /><BestPlayers /></AnimatePresence>} />
 						<Route path="chat" element={<Chat params={false} />} />
 						<Route path="chat/:login" element={<Chat params={true} />} />
 						<Route path="profile/:login" element={<><Profile /></>} />
@@ -157,7 +163,7 @@ function Main(props:any) {
 					<Route path="/404" element={<Side2 isN={1} />} />
 					<Route path="*" element={<Side2 isN={1} />} />
 				</Routes>
-				
+
 			</div>
 			<Routes>
 				<Route path="/profile/:login" element={<ProfileDown />} />

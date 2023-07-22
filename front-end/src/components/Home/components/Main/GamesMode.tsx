@@ -8,23 +8,24 @@ import friendI from '../../../../assets/img/friendM.svg'
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
+import { motion } from 'framer-motion';
 
 function BOxGameMob(props: any) {
 	return (
 		<div>
 			<GradienBox games={true} mywidth="1120px" myheight="300px" myborder="80px">
-				<div style={{paddingLeft: '5rem', gap: '20rem',fontStyle: '200'}} className="ModePlay">
+				<div style={{ paddingLeft: '5rem', gap: '20rem', fontStyle: '200' }} className="ModePlay">
 					<div className='Mode1'>
-						<h2 style={{fontSize: '3rem', fontStyle: '200'}}>{props.titleB}</h2>
-						<p style={{fontSize: '2rem', fontStyle: '200'}}>{props.StitleB}</p>
+						<h2 style={{ fontSize: '3rem', fontStyle: '200' }}>{props.titleB}</h2>
+						<p style={{ fontSize: '2rem', fontStyle: '200' }}>{props.StitleB}</p>
 						<a href={props.linkB} id={props.idA}>
 							<GradienBox mywidth="300px" myheight="100px" myborder="30px">
-								<div style={{fontSize: '2rem', fontStyle: '200'}} className="playnowbtn">Play now</div>
+								<div style={{ fontSize: '2rem', fontStyle: '200' }} className="playnowbtn">Play now</div>
 							</GradienBox>
 						</a>
 					</div>
 					<div className={props.classB + ' photoMode'}>
-						<img style={{width: '23rem', fontStyle: '200'}} id={props.imgID} src={props.imgB} alt="" />
+						<img style={{ width: '23rem', fontStyle: '200' }} id={props.imgID} src={props.imgB} alt="" />
 					</div>
 				</div>
 			</GradienBox>
@@ -34,7 +35,7 @@ function BOxGameMob(props: any) {
 function BOxGame(props: any) {
 	return (
 		<div>
-			<GradienBox over={1} games={true}  mywidth="335px" myheight="195px" myborder="40px">
+			<GradienBox over={1} games={true} mywidth="335px" myheight="195px" myborder="40px">
 				<div className="ModePlay">
 					<div className='Mode1'>
 						<h2>{props.titleB}</h2>
@@ -71,7 +72,12 @@ function GamesMode() {
 	]
 
 	return (
-		<div className='box-box-cont'>
+		<motion.div
+			initial={{ y: '100vh' }}
+			animate={{ y: 0 }}
+			exit={{ y: '100vh' }}
+			transition={{delay: 0.2, duration: 0.4}}
+			className='box-box-cont'>
 			<h1 className='title-h1'>Games mode</h1>
 			<div
 				style={{ marginTop: 0, }}
@@ -96,7 +102,7 @@ function GamesMode() {
 			<div className="gamesmodeCont-mobile">
 				{GameModesArrMob}
 			</div>
-		</div>
+		</motion.div>
 	);
 }
 export default GamesMode;

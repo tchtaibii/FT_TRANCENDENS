@@ -2,33 +2,58 @@ import "./Search.scss"
 import SearImg from "../../../../assets/img/search.svg"
 import defaultAvatar from "../../../../assets/img/avatar.png"
 import GradienBox from '../../../../tools/GradienBox'
-// should Badge here  remember??
-// import Awardtest from './testBadge.svg'
+import SBadge from "../../../../assets/img/small-badge.svg"
+import bronze from '../../../../assets/img/Badges/Bronze.png'
+import silver from '../../../../assets/img/Badges/Silver.png'
+import gold from '../../../../assets/img/Badges/Gold.png'
+import platinium from '../../../../assets/img/Badges/Platinium.png'
+import diamond from '../../../../assets/img/Badges/Diamond.png'
+import master from '../../../../assets/img/Badges/Master.png'
+import grandMaster from '../../../../assets/img/Badges/GrandMaster.png'
 import { useState, useRef } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
 import { Link } from 'react-router-dom'
 import axios from '../../../../Interceptor/Interceptor'
 
 function SearchContent(props: any) {
+	const myBadge = (badge:string): string => {
+		switch (badge) {
+			case 'bronze':
+				return bronze;
+			case 'silver':
+				return silver;
+			case 'gold':
+				return gold;
+			case 'platinium':
+				return platinium;
+			case 'diamond':
+				return diamond;
+			case 'master':
+				return master;
+			case 'grandmaster':
+				return grandMaster;
+		}
+		return ''
+	}
 	const SimpeLoop = () => {
 		// console.log('user ound', props.userFound);
-		const elements = props.userFound.map((e: any, i:number) =>
+		const elements = props.userFound.map((e: any, i: number) =>
 			<Link onClick={() => {
 				props.set(false);
 			}} to={`/profile/${e.username}`} key={'userFound-' + i} className="found">
-				<div className={'f-part1 ' + (e.isFriend && (e.status === true ? "user-active-search" : "user-desactive-search"))}>
-					<img onError={(e:any) => {
-					console.log(e.target);
-					e.target.src = defaultAvatar;
-				}
-				}  src={e.avatar} alt="" />
+				<div className={'f-part1 ' + (e.isFriend ? (e.status === true ? "user-active-search" : "user-desactive-search") : 'user-notFriend-search')}>
+					<img onError={(e: any) => {
+						console.log(e.target);
+						e.target.src = defaultAvatar;
+					}
+					} src={e.avatar} alt="" />
 					<div className="textInfo">
 						<h4>{e.username}</h4>
 						<p>{'LEVEL ' + e.level}</p>
 					</div>
 				</div>
 				<div className="f-part2">
-					<img src={''} alt="" />
+					<img src={myBadge(e.badge)} alt="" />
 					{/* // should Badge here  remember?? */}
 				</div>
 			</Link>
@@ -38,7 +63,7 @@ function SearchContent(props: any) {
 	return (
 		<div className="SearchContent">{
 			props.userFound.length > 0 ? SimpeLoop() :
-			'No User Found!'
+				'No User Found!'
 		}
 		</div>
 	);
@@ -55,15 +80,13 @@ function Search() {
 	useOnClickOutside(ref, handleClickOutside);
 	function handleChange(event: any) {
 		const value = event.target.value;
-		if (value.length == 0)
-		{
+		if (value.length == 0) {
 			setUserFound([]);
 			setIsVisible(false)
 		}
-		else
-		{
+		else {
 			const newUsers = async () => {
-				await axios.post('/search', {user: value}).then((resp:any) => setUserFound(resp.data))
+				await axios.post('/search', { user: value }).then((resp: any) => setUserFound(resp.data))
 				setIsVisible(true)
 			}
 			newUsers();

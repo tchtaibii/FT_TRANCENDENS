@@ -1,19 +1,51 @@
 import GradienBox from '../../../../tools/GradienBox'
 import "./ProfileHome.scss"
 import SBadge from "../../../../assets/img/small-badge.svg"
-import BBadge from "../../../../assets/img/big-badge.svg"
-import { useSelector, useDispatch } from 'react-redux';
+import bronze from '../../../../assets/img/Badges/Bronze.png'
+import silver from '../../../../assets/img/Badges/Silver.png'
+import gold from '../../../../assets/img/Badges/Gold.png'
+import platinium from '../../../../assets/img/Badges/Platinium.png'
+import diamond from '../../../../assets/img/Badges/Diamond.png'
+import master from '../../../../assets/img/Badges/Master.png'
+import grandMaster from '../../../../assets/img/Badges/GrandMaster.png'
+import { useSelector } from 'react-redux';
 import defaultAvatar from '../../../../assets/img/avatar.png'
 import { Link } from 'react-router-dom'
-import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion';
 
 function ProfileHome() {
 
+
     var data: any = useSelector((state: any) => state.admin);
+
+    const myBadge = () :string => {
+        switch (data.badge)
+        {
+            case 'bronze':
+                return bronze;
+            case 'silver':
+                return silver;
+            case 'gold':
+                return gold;
+            case 'platinium':
+                return platinium;
+            case 'diamond':
+                return diamond;
+            case 'master':
+                return master;
+            case 'grandmaster':
+                return grandMaster;
+        }
+        return ''
+    }
     console.log('hello', data);
     return (
-        <div className="myProfile">
+        <motion.div
+			initial={{ x: '100vw'}}
+			animate={{ x: 0 }}
+			exit={{  x: '100vw'}}
+			transition={{ duration: 0.5 }}
+            className="myProfile">
             <GradienBox mywidth="397px" myheight="284px" myborder="40px">
                 {
                     <div className="profile-con">
@@ -45,7 +77,7 @@ function ProfileHome() {
                                             </div>
                                         </div>
                                         <div className='mid2'>
-                                            <img className='mid-img3' alt='' src={BBadge} />
+                                            <img className='mid-img3' alt='' src={myBadge()} />
                                         </div>
                                     </motion.div>
                                     <div className="seperator" />
@@ -83,7 +115,7 @@ function ProfileHome() {
                     </div>
                 }
             </GradienBox>
-        </div>
+        </motion.div>
     )
 }
 

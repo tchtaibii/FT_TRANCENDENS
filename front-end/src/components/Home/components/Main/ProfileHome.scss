@@ -72,7 +72,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-left: toRem(40);
+        margin-left: 1.5rem;
         @include backblur(toRem(81), toRem(86), #ED5152);
     }
 }
@@ -87,7 +87,7 @@
 }
 .mid-img3{
     width: toRem(81);
-    height: toRem(86);
+    // height: toRem(86);
 }
 .seperator{
     width: toRem(300);

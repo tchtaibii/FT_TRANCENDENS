@@ -59,7 +59,7 @@ ul {
 
         &::before {
             content: "";
-            background-image: url("./nav-hov.svg");
+            // background-image: url("./nav-hov.svg");
             background-size: cover;
             width: toRem(5);
             height: toRem(40);

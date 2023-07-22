@@ -17,7 +17,6 @@ function  	RankTable() {
 	useEffect(() => {
 		if (rankData.length === 0) {
 			dispatch(setTrue());
-			console.log('outside')
 			axios.get('/Home/Best6Players').then((response) => {
 				setBestPlayers(response.data);
 				dispatch(setFalse());

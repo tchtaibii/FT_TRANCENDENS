@@ -28,10 +28,12 @@ function MsgNot(props: any) {
 	const refI = useRef(null)
 	const [Login, setLogin] = useState('')
 	const [isFull, setIsfull] = useState(0);
+
 	useEffect(() => {
 		axios.get('/Home/Hero').then((response) => setLogin(response.data))
-		// console.log('hey', Login)
-	}, [])
+		axios.get('/isRequest').then((resp) => setIsfull(resp.data));
+	}, []);
+
 	const handleClickOutside = async () => {
 		
 		setIsVisible(false)
@@ -49,7 +51,7 @@ function MsgNot(props: any) {
 			<div ref={refI}>
 				<GradienBox over={0} mywidth="49px" myheight="49px" myborder="10px">
 					<button onClick={() => {
-						props.socketInvi(false)
+						props.socketInvi(false);
 						setIsVisibleI(!isVisibleI)
 					}
 					} className='btn-msgnot'>
@@ -163,7 +165,6 @@ function Notification(props: any) {
 	useEffect(() => {
 		setText(text());
 	}, [])
-	console.log(props.type);
 	const text = () => {
 		switch (props.type) {
 			case "Accepted_request":
@@ -220,7 +221,6 @@ function Invitation(props: any) {
 							navigate(`/profile/${props.data.username}`)
 						} className="info">
 							<img onError={(e: any) => {
-								console.log(e.target);
 								e.target.src = defaultAvatar;
 							}
 							} src={props.data.avatar} />
@@ -299,8 +299,6 @@ function NotificationCont(props: any) {
 		};
 		fetchData();
 	  }, []);
-
-	console.log('invi from msg', data);
 	return (
 		<GradienBox absolute={1} mywidth="316px" myheight="408.98px" myborder="20px">
 			<div className="notification-container">

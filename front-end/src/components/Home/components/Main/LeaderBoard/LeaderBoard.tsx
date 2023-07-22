@@ -22,7 +22,6 @@ function LeaderBoard() {
                 <div className="index">{props.i + 1}.</div>
                 <img src={(props.i === 0 ? medaille : props.i === 1 ? Silver : props.i === 2 ? Bronze : Iaward)} alt="" className="medaille" />
                 <img className='avatarRank' onError={(e: any) => {
-                    console.log(e.target);
                     e.target.src = defaultAvatar;
                 }
                 } src={props.user.avatar} alt="" />

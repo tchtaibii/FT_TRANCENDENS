@@ -165,7 +165,6 @@ function Profile(props: any) {
                                             <div className="friend-info">
                                                 <Link to={'/profile/' + e.username}>
                                                     <img src={e.avatar} onError={(e: any) => {
-                                                        console.log(e.target);
                                                         e.target.src = defaultAvatar;
                                                     }
                                                     } alt="" />
@@ -221,7 +220,6 @@ export function ProfileProfile() {
             }).catch((e) => {
                 navigate('/404');
                 dispatch(setFalse());
-                console.log()
             })
             setOpacity(1);
         }
@@ -233,26 +231,22 @@ export function ProfileProfile() {
     }, [login, update]);
 
     useEffect(() => {
-        console.log('hilo', ((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
         setwidthPro(((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
         setOpacity(1);
     }, [ProfileRight])
 
     const AddFriend = async () => {
         await axios.post("/SendRequest", { receiverId: ProfileRight.UserId }).then(resp => {
-            console.log(resp);
             setUpdate(!update);
         })
     }
     const BlockUser = async () => {
         await axios.post("/Profile/blockUser", { blockedUser: ProfileRight.username }).then(resp => {
-            console.log(resp);
             setUpdate(!update);
         })
     }
     const CancelFriend = async () => {
         await axios.post("/CancelRequest", { FriendshipId: ProfileRight.friendshipId }).then(resp => {
-            console.log(resp);
             setUpdate(!update);
         })
     }
@@ -268,7 +262,6 @@ export function ProfileProfile() {
                     <h1>Profile</h1>
                     <div className='imgS'>
                         <img src={ProfileRight.avatar} onError={(e: any) => {
-                            console.log(e.target);
                             e.target.src = defaultAvatar;
                         }
                         } alt="" />
@@ -337,7 +330,6 @@ function TheGame(props: any) {
                     props.theGame === 'lose' ? 'gameSta loseGame' : 'gameSta'}>
                     <div className="infoGame">
                         <img src={props.avatar} onError={(e: any) => {
-                            console.log(e.target);
                             e.target.src = defaultAvatar;
                         }
                         } alt="Enemey" />

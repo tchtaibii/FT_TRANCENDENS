@@ -25,11 +25,11 @@ function ActivityContent(props: any) {
 			initial={{ x: (props.side + '110%') }}
 			animate={{ x: 0 }}
 			exit={{ x: (props.side + '110%') }}
+			key={props.id + '-activityy-' + props.p1}
 			transition={{ delay: ((props.id / 10) + 0.1), duration: 0.1 }}
 			className="activity-x">
 			<div className="part1">
 				<Link to={'/profile/' + props.p1}><img src={props.avatar1} onError={(e: any) => {
-					console.log(e.target);
 					e.target.src = defaultAvatar;
 				}
 				} alt="" /></Link>
@@ -44,7 +44,6 @@ function ActivityContent(props: any) {
 function Activity() {
 	const [isAll, setIsALL] = useState({ boolAll: true });
 	const [data, seData] = useState([]);
-	console.log(data)
 	useEffect(() => {
 		axios.get('Home/RecentActivity').then((response) => seData(response.data));
 	}, [])
@@ -72,13 +71,13 @@ function Activity() {
 								<AnimatePresence mode='sync'>
 									{
 										isAll.boolAll ?
-											(data && data.map((e: any, i) => {
+											(data && data.map((e: any, i:number) => {
 												return (
 													e.IsDraw === false ?
-														<ActivityContent side={'-'} id={i} key={'activ-' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+														<ActivityContent side={'-'} id={i + 'activi'} key={'activ-' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
 														: <>
-															<ActivityContent side={'-'} id={i} key={'activ-' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
-															<ActivityContent side={'-'} id={i} key={'activ-' + i + '2'} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
+															<ActivityContent side={'-'} id={i + 'activi-draw'} key={'activ-' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+															<ActivityContent side={'-'} id={i + 'activi-draw2'} key={'activ-' + i + '2'} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
 														</>
 												)
 											})) : (data && data.filter((e: any) => e.AreFriends === true)
@@ -88,10 +87,10 @@ function Activity() {
 														index = 6;
 													return (
 														e.IsDraw === false ?
-															<ActivityContent side={''} id={index} key={'activ-' + 'firends' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+															<ActivityContent side={''} id={index + 'firends'} key={'activ-' + 'firends' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
 															: <>
-																<ActivityContent side={''} id={index} key={'activ-' + 'firends' + i + 'draw'} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
-																<ActivityContent side={''} id={index} key={'activ-' + 'firends' + i + 'draw2'} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
+																<ActivityContent side={''} id={index + 'friends' + '-draw1'} key={'activ-' + 'firends' + i + 'draw'} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+																<ActivityContent side={''} id={index + 'friends' + '-draw'} key={'activ-' + 'firends' + i + 'draw2'} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
 															</>
 													)
 												}
@@ -118,7 +117,7 @@ function Activity() {
 function Side2(props: any) {
 	return (
 		<AnimatePresence mode='wait'>
-			<div className='side2'>
+			<div key={'side-' + props.isN} className='side2'>
 				{
 					props.isN === 1 ? <> <ProfileHome /><Activity /></> :
 						<ProfileProfile />
@@ -141,32 +140,32 @@ function Main(props: any) {
 						<MsgNot socketInvi={props.socketInvi} />
 					</div>
 					<Routes>
-						<Route path="/" element={<AnimatePresence mode='wait'><Hero /><GamesMode /><BestPlayers /></AnimatePresence>} />
-						<Route path="chat" element={<Chat params={false} />} />
-						<Route path="chat/:login" element={<Chat params={true} />} />
-						<Route path="profile/:login" element={<><Profile /></>} />
-						<Route path="settings/" element={<><Settings /></>} />
-						<Route path="/leaderBoard" element={<LeaderBoard />} />
-						<Route path="/404" element={<Error404 />} />
-						<Route path="*" element={<Error404 />} />
+						<Route key={'HomePage'} path="/" element={<AnimatePresence mode='wait'><Hero /><GamesMode /><BestPlayers /></AnimatePresence>} />
+						<Route key={'chatPage'} path="chat" element={<Chat params={false} />} />
+						<Route key={'ChatpageP'} path="chat/:login" element={<Chat params={true} />} />
+						<Route key={'ProfilePage'} path="profile/:login" element={<><Profile /></>} />
+						<Route key={'settingPage'} path="settings/" element={<><Settings /></>} />
+						<Route key={'LeaderBoardPage'} path="/leaderBoard" element={<LeaderBoard />} />
+						<Route key={'404'} path="/404" element={<Error404 />} />
+						<Route key={'errorpage'} path="*" element={<Error404 />} />
 
 
 					</Routes>
 				</div>
 				<Routes>
-					<Route path="/" element={<Side2 isN={1} />} />
+					<Route key={'HomePage2'} path="/" element={<Side2 isN={1} />} />
 					<Route path="/settings" element={<Side2 isN={1} />} />
-					<Route path="/leaderBoard" element={<Side2 isN={1} />} />
-					<Route path="chat" element={<Side2 isN={1} />} />
-					<Route path="chat/:login" element={<Side2 isN={1} />} />
-					<Route path="/profile/:login" element={<Side2 isN={0} />} />
-					<Route path="/404" element={<Side2 isN={1} />} />
-					<Route path="*" element={<Side2 isN={1} />} />
+					<Route key={'LeaderBoardPage'} path="/leaderBoard" element={<Side2 isN={1} />} />
+					<Route key={'chatPage2'} path="chat" element={<Side2 isN={1} />} />
+					<Route key={'chatPageP2'} path="chat/:login" element={<Side2 isN={1} />} />
+					<Route key={'ProfilePage'} path="/profile/:login" element={<Side2 isN={0} />} />
+					<Route key={'404'} path="/404" element={<Side2 isN={1} />} />
+					<Route key={'errorpage'} path="*" element={<Side2 isN={1} />} />
 				</Routes>
 
 			</div>
 			<Routes>
-				<Route path="/profile/:login" element={<ProfileDown />} />
+				<Route key={'profileProfile'} path="/profile/:login" element={<ProfileDown />} />
 			</Routes>
 		</div>
 	)

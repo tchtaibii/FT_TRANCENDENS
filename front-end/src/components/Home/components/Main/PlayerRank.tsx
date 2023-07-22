@@ -7,7 +7,6 @@ function PlayerRank(props: any) {
     <div className='bpplayer'>
       <img src={props.award} alt="badge" className='badgerank' />
       <Link to={'/profile/' + props.login}><img onError={(e) => {
-        console.log(e.target);
         e.target.src = defaultAvatar;
       }}
         src={props.avatar} alt="" className='avatar' /></Link>

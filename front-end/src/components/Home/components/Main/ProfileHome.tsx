@@ -38,13 +38,13 @@ function ProfileHome() {
         }
         return ''
     }
-    console.log('hello', data);
     return (
         <motion.div
 			initial={{ x: '100vw'}}
 			animate={{ x: 0 }}
 			exit={{  x: '100vw'}}
 			transition={{ duration: 0.5 }}
+            key={data.username + '-Home'}
             className="myProfile">
             <GradienBox mywidth="397px" myheight="284px" myborder="40px">
                 {
@@ -63,7 +63,6 @@ function ProfileHome() {
                                         <div className='mid1'>
                                             <Link to={`/profile/${data.username}`} >
                                                 <img className='mid-img1' onError={(e: any) => {
-                                                    console.log(e.target);
                                                     e.target.src = defaultAvatar;
                                                 }
                                                 } alt='' src={data.avatar} />

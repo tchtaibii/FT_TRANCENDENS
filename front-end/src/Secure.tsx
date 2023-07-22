@@ -1,9 +1,6 @@
 // import './Settings.scss'
 import axios from './Interceptor/Interceptor'
-import { useSelector } from 'react-redux'
-import { useEffect, useState, useRef } from 'react'
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from './store/store'
+import {  useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 
@@ -62,7 +59,7 @@ function Secure(props: any) {
         }
     };
     return (
-        <AnimatePresence mode='wait'>
+        <AnimatePresence mode='wait' >
             <motion.div
                 key='secure'
                 animate={{ x: 0 }}

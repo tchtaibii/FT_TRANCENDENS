@@ -17,6 +17,7 @@ function Hero() {
     initial={{ y: '100vh' }}
 			animate={{ y: 0 }}
 			exit={{ y: '100vh' }}
+      key={'HeroHome'}
       transition={{duration : 0.4}}
     >
       <GradienBox mywidth="1201px" myheight="173px" myborder="40px">

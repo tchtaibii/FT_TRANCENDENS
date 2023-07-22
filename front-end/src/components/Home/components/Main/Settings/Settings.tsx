@@ -69,13 +69,11 @@ function Settings() {
     const [updateS, setUpdate] = useState(false);
     const Athenti = useSelector((state:any) => state.TwoFa);
     const [LinkGoogle, setLinkGoogle] = useState(Athenti.FA_ON);
-    console.log(Athenti.FA_ON)
     const handleChange = (event: any) => {
         if (!LinkGoogle)
         {
             setPopUp(true)
             set2fa(true);
-            console.log('!LinkGoogle')
         }
         else{
             const SendData = async () => {
@@ -84,7 +82,6 @@ function Settings() {
                 dispatch(get2FA());
             }
             SendData();
-            console.log('LinkGoogle')
         }
         
         // dispatch(get2FA());
@@ -97,7 +94,6 @@ function Settings() {
         dispatch(setTrue());
         dispatch(getAdmin());
         dispatch(get2FA());
-        console.log('hello',Athenti);
         const FetchData = async () => {
             await axios.get("/setting/account").then((resp) => {
                 setInfo(resp.data);
@@ -107,7 +103,6 @@ function Settings() {
             if (isOff === null) {
                 axios.get("/setting/status").then((resp) => {
                     setisOff(!resp.data.status);
-                    console.log("status", isOff)
                 })
             }
             dispatch(setFalse());
@@ -135,11 +130,7 @@ function Settings() {
         dispatch(setTrue());
         await axios.post("/setting/updateStatus", !isOff).then((resp) => console.log(resp))
         setisOff(!isOff)
-        // setTimeout(() => {
-        // console.log('hello');
         dispatch(setFalse());
-        // }, 200);
-
     }
     const HandleImg = async (event: any) => {
         if (username !== myInfo.username && username != '') {
@@ -161,13 +152,11 @@ function Settings() {
             event.preventDefault();
             const data = new FormData();
             data.append('file', imgChange);
-            console.log(imgChange);
             const headers = {
                 'Content-Type': 'multipart/form-data'
             };
             dispatch(setTrue());
             await axios.post("/setting/UpdatePicture", data, { headers: headers as any }).then((res) => {
-                console.log(res.statusText);
             });
             dispatch(getAdmin());
             dispatch(setFalse());
@@ -191,12 +180,8 @@ function Settings() {
         dispatch(setFalse());
     }
     useEffect(() => {
-        // if (username !== myInfo.username)
-        {
-            // dispatch(setTrue());
             dispatch(setUSer(username));
-            // dispatch(setFalse());
-        }
+
         if (isOff !== null)
             dispatch(statusSet(isOff));
     }, [updateS, isOff])
@@ -236,7 +221,7 @@ function Settings() {
                                 <GradienBox mywidth="480px" myheight="59px" myborder="25px">
                                     <div className="inputContent"><input onChange={(event) => {
                                         setUsername(event.target.value);
-                                    }} placeholder={myInfo.username} type="text" /><button><Edit /></button></div>
+                                    }} placeholder={myInfo.username} type="text" /><Edit /></div>
                                 </GradienBox>
                             </div>
                             <div className="input-settings">
@@ -246,7 +231,7 @@ function Settings() {
                                     </div>
                                 </GradienBox>
                                 <GradienBox mywidth="480px" myheight="59px" myborder="25px">
-                                    <div className="inputContent"><input style={{ color: "gray", cursor: "not-allowed" }} value={myInfo.email} type="text" disabled /><button style={{ cursor: "not-allowed" }}><Edit /></button></div>
+                                    <div className="inputContent"><input style={{ color: "gray", cursor: "not-allowed" }} value={myInfo.email} type="text" disabled /></div>
                                 </GradienBox>
                             </div>
                             {/* <button className='saveBtn' style={{}} onClick={handleSave}>Save</button> */}
@@ -368,7 +353,7 @@ function Settings() {
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 exit={{ scale: 0 }}
-                                key={'Block-Side'}
+                                key={'factory-sidep'}
                                 transition={{ ease: "easeInOut", duration: 0.2 }}
                             >
                                 <button onClick={() => {

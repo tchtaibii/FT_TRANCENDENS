@@ -1,17 +1,16 @@
 import './Settings.scss'
 import GradienBox from '../../../../../tools/GradienBox'
 import axios from '../../../../../Interceptor/Interceptor'
-import { useSelector } from 'react-redux'
-import { useEffect, useState, ChangeEvent } from 'react'
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux'
+import { useEffect, useState, ChangeEvent, lazy } from 'react'
 import { AppDispatch } from '../../../../../store/store'
 import { motion, AnimatePresence } from 'framer-motion'
 import { setFalse, setTrue } from '../../../../../features/isLoading';
 import { getAdmin, setUsername as setUSer, setStatus as statusSet } from '../../../../../features/adminSlice'
 import { get2FA } from '../../../../../features/2FA'
-import Blockedlist from './BlockedList'
-import TwoFa from './TwoFa'
-import BackToHome from '../../BackToHome'
+const TwoFa = lazy((() => import('./TwoFa')));
+const Blockedlist = lazy((() => import('./BlockedList')));
+const BackToHome = lazy((() => import('../../BackToHome')));
 
 
 const IconName = () => {

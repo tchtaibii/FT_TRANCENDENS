@@ -74,6 +74,7 @@ function ChatContent(params: any) {
 			setMessageTyping('');
 		}
 	}
+	// console.log(messageTyping);
 	return (
 		<div className="chatContent">
 			<div className="header">
@@ -155,7 +156,7 @@ function Chat(props: any) {
 	// const messageIds: number[] = reversedMessages.map((msg: any) => msg.id);
 
 	return (
-		<div className="main-core">
+		<div style={{marginTop: '5rem'}} className="main-core">
 			<GradienBox mywidth="1201px" myheight="850px" myborder="40px">
 				<div className="chatContainer">
 					<div className="chatUsers">

@@ -34,10 +34,11 @@
     width: toRem(1201);
     // gap: 42.875rem;
     justify-content: space-between;
-    margin-bottom: 3.875rem;
+    
     /* position: fixed; */
     z-index: 100;
     // height: toRem(49);
+    position: fixed;
 
 }
 
@@ -663,13 +664,14 @@ $heighvh : 17.75rem+2.5625rem+1rem+2.8125rem;
 
 
 .E404 {
-    width: 100%;
-    height: 100%;
+    width: toRem(1201);
+    // height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     gap: toRem(20);
+    position: relative;
 
     h1 {
         color: #F9C690;

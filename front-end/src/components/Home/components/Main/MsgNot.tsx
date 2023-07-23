@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import "./MsgNot.scss"
 import inviFriend from "../../../../assets/img/invitation-friend.svg"
 import BellImg from "../../../../assets/img/bell.svg"
@@ -28,18 +28,16 @@ function MsgNot(props: any) {
 	const refI = useRef(null)
 	const [Login, setLogin] = useState('')
 	const [isFull, setIsfull] = useState(0);
-
 	useEffect(() => {
 		axios.get('/Home/Hero').then((response) => setLogin(response.data))
-		axios.get('/isRequest').then((resp) => setIsfull(resp.data));
-	}, []);
-
+		// console.log('hey', Login)
+	}, [])
 	const handleClickOutside = async () => {
-		
+
 		setIsVisible(false)
 	}
 	const handleClickOutsideI = async () => {
-		
+
 		setIsVisibleI(false)
 
 	}
@@ -51,7 +49,7 @@ function MsgNot(props: any) {
 			<div ref={refI}>
 				<GradienBox over={0} mywidth="49px" myheight="49px" myborder="10px">
 					<button onClick={() => {
-						props.socketInvi(false);
+						props.socketInvi(false)
 						setIsVisibleI(!isVisibleI)
 					}
 					} className='btn-msgnot'>
@@ -67,9 +65,9 @@ function MsgNot(props: any) {
 							animate={{ scale: 1, }}
 							exit={{ scale: 0 }}
 							key={'invitations'}
-							transition={{ ease: "easeInOut", duration: 0.2 }}
+							transition={{ ease: "easeInOut"}}
 							style={{ position: 'absolute', top: '3.5rem', width: 'fit-content', transform: 'translateX(-15rem)' }}>
-							<NotificationCont  isN={false} />
+							<NotificationCont isN={false} />
 						</motion.div>
 					}
 				</AnimatePresence>
@@ -86,7 +84,7 @@ function MsgNot(props: any) {
 							animate={{ scale: 1, }}
 							exit={{ scale: 0 }}
 							key={'notifi'}
-							transition={{ ease: "easeInOut", duration: 0.2 }}
+							transition={{ ease: "easeInOut"}}
 							style={{ position: 'absolute', top: '3.5rem', left: '5rem', width: 'fit-content' }}>
 							<NotificationCont data={props.noti} isN={true} />
 						</motion.div>
@@ -165,6 +163,7 @@ function Notification(props: any) {
 	useEffect(() => {
 		setText(text());
 	}, [])
+	console.log(props.type);
 	const text = () => {
 		switch (props.type) {
 			case "Accepted_request":
@@ -221,6 +220,7 @@ function Invitation(props: any) {
 							navigate(`/profile/${props.data.username}`)
 						} className="info">
 							<img onError={(e: any) => {
+								console.log(e.target);
 								e.target.src = defaultAvatar;
 							}
 							} src={props.data.avatar} />
@@ -240,65 +240,20 @@ function Invitation(props: any) {
 	)
 }
 function NotificationCont(props: any) {
-
-	// const [isEffect, setIsEffect] = useState(false);
-	// const DataNotifications: any = useSelector((state: any) => state.notification);
-	// // console.log('notification :', DataNotifications);
-	// const notifi = DataNotifications.notifications;
-
-	// const dispatch: AppDispatch = useDispatch()
-
-	// const markAllAsRead = async () => {
-	// 	const updatedNotifications = notifi
-	// 		.filter((not: any) => not.isRead === 0)
-	// 		.map((not: any) => ({
-	// 			...not,
-	// 			isRead: 1,
-	// 		}));
-	// 	try {
-	// 		for (const notification of updatedNotifications) {
-	// 			const response = await axios.patch(`http://localhost:3001/notifications/${notification.id}`, {
-	// 				isRead: 1,
-	// 			});
-	// 			// console.log(response.data);
-	// 		}
-	// 		setIsEffect(!isEffect);
-	// 		// console.log('updated notifications:', updatedNotifications);
-	// 	} catch (error) {
-	// 		// console.error(error);
-	// 	}
-	// };
-	// const handleNotificationClick = async (objectId: number) => {
-	// 	try {
-	// 		const updatedData = {
-	// 			isRead: 1,
-	// 		};
-	// 		const response = await axios.patch(`http://localhost:3001/notifications/${objectId}`, updatedData);
-	// 		setIsEffect(!isEffect);
-	// 		// console.log(response.data);
-	// 	} catch (error) {
-	// 		// console.error(error);
-	// 	}
-
-
-	// };
-	// useEffect(() => {
-	// 	dispatch(getNotification());
-	// }, [isEffect]);
-
 	const [data, setData] = useState([]);
 	useEffect(() => {
 		const fetchData = async () => {
-		  try {
-			const response = await axios.get(props.isN === true ? '/getNotification' : '/FriendshipRequest');
-			setData(response.data);
+			try {
+				const response = await axios.get(props.isN === true ? '/getNotification' : '/FriendshipRequest');
+				setData(response.data);
 
-		  } catch (err) {
-			console.log('had error', err);
-		  }
+			} catch (err) {
+				console.log('had error', err);
+			}
 		};
 		fetchData();
-	  }, []);
+	}, []);
+
 	return (
 		<GradienBox absolute={1} mywidth="316px" myheight="408.98px" myborder="20px">
 			<div className="notification-container">
@@ -331,7 +286,6 @@ function NotificationCont(props: any) {
 				</div>
 			</div>
 		</GradienBox>
-
 	)
 }
 

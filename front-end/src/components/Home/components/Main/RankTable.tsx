@@ -5,24 +5,9 @@ import gold from "../../../../assets/img/Gold.svg"
 import Silver from "../../../../assets/img/silver.svg"
 import Bronze from "../../../../assets/img/bronze.svg"
 import intero from "../../../../assets/img/interogation.svg"
-import { useEffect, useState, useRef } from 'react'
-import axios from '../../../../Interceptor/Interceptor'
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../../store/store'
-import { setFalse, setTrue } from '../../../../features/isLoading';
-function  	RankTable() {
 
-	const dispatch: AppDispatch = useDispatch()
-	const [rankData, setBestPlayers] = useState([])
-	useEffect(() => {
-		if (rankData.length === 0) {
-			dispatch(setTrue());
-			axios.get('/Home/Best6Players').then((response) => {
-				setBestPlayers(response.data);
-				dispatch(setFalse());
-			})
-		}
-	}, [])
+function  	RankTable({data}) {
+
 	var noPlayer = {
 		login: "--",
 		level: 0,
@@ -35,16 +20,16 @@ function  	RankTable() {
 	}
 	var newObject: any[] = [];
 	for (let index = 0; index < 10; index++) {
-		if (rankData[index] === undefined)
+		if (data[index] === undefined)
 			newObject.push(noPlayer);
 		else {
 			newObject.push(
 				{
-					login: rankData[index].username,
-					level: rankData[index].level,
+					login: data[index].username,
+					level: data[index].level,
 					lastGame: "--",
-					avatar: rankData[index].avatar,
-					points: rankData[index].XP,
+					avatar: data[index].avatar,
+					points: data[index].XP,
 					award:
 						index === 0 ? gold :
 							index === 1 ? Silver :

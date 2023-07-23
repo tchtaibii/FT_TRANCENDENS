@@ -3,15 +3,23 @@ import GradienBox from '../../../../../tools/GradienBox'
 import Charts from './Charts'
 import { AppDispatch } from '../../../../../store/store'
 import { setFalse, setTrue } from '../../../../../features/isLoading';
-import btnSlide from '../../../../../assets/img/buttonSlide.svg'
-import { motion, AnimatePresence } from 'framer-motion'
-// import ACE from './Ace.svg'
-import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import { useEffect, useState, useMemo } from 'react'
 import axios from '../../../../../Interceptor/Interceptor'
 import { Link, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import defaultAvatar from '../../../../../assets/img/avatar.png'
 import { useNavigate } from 'react-router-dom';
+import batal from '../../../../../assets/img/Achivement/Batal.png'
+import hawking from '../../../../../assets/img/Achivement/Hawking.png'
+import helmchen from '../../../../../assets/img/Achivement/Helmchen.png'
+import worldCup from '../../../../../assets/img/Achivement/World Cup.png'
+import kasparov from '../../../../../assets/img/Achivement/Kasparov.png'
+import extrovert from '../../../../../assets/img/Achivement/EXTROVERT.png'
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/effect-cards';
+import { EffectCards } from 'swiper/modules';
 
 
 const Playbtn = () => (
@@ -114,7 +122,7 @@ type ProfileRightType = {
 
 
 
-function Profile(props: any) {
+function Profile() {
 
     const { login } = useParams();
     const [myFriends, setFriends] = useState([]);
@@ -124,7 +132,6 @@ function Profile(props: any) {
         }
         Fetch();
     }, [myFriends, login])
-
     return (
         <div className="ProfileComponent-Activity-Friends">
             <motion.div
@@ -165,6 +172,7 @@ function Profile(props: any) {
                                             <div className="friend-info">
                                                 <Link to={'/profile/' + e.username}>
                                                     <img src={e.avatar} onError={(e: any) => {
+                                                        console.log(e.target);
                                                         e.target.src = defaultAvatar;
                                                     }
                                                     } alt="" />
@@ -220,6 +228,7 @@ export function ProfileProfile() {
             }).catch((e) => {
                 navigate('/404');
                 dispatch(setFalse());
+                console.log()
             })
             setOpacity(1);
         }
@@ -231,22 +240,26 @@ export function ProfileProfile() {
     }, [login, update]);
 
     useEffect(() => {
+        console.log('hilo', ((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
         setwidthPro(((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
         setOpacity(1);
     }, [ProfileRight])
 
     const AddFriend = async () => {
         await axios.post("/SendRequest", { receiverId: ProfileRight.UserId }).then(resp => {
+            console.log(resp);
             setUpdate(!update);
         })
     }
     const BlockUser = async () => {
         await axios.post("/Profile/blockUser", { blockedUser: ProfileRight.username }).then(resp => {
+            console.log(resp);
             setUpdate(!update);
         })
     }
     const CancelFriend = async () => {
         await axios.post("/CancelRequest", { FriendshipId: ProfileRight.friendshipId }).then(resp => {
+            console.log(resp);
             setUpdate(!update);
         })
     }
@@ -262,6 +275,7 @@ export function ProfileProfile() {
                     <h1>Profile</h1>
                     <div className='imgS'>
                         <img src={ProfileRight.avatar} onError={(e: any) => {
+                            console.log(e.target);
                             e.target.src = defaultAvatar;
                         }
                         } alt="" />
@@ -329,10 +343,13 @@ function TheGame(props: any) {
                 <div className={props.theGame === 'win' ? "gameSta winGame" :
                     props.theGame === 'lose' ? 'gameSta loseGame' : 'gameSta'}>
                     <div className="infoGame">
-                        <img src={props.avatar} onError={(e: any) => {
-                            e.target.src = defaultAvatar;
-                        }
-                        } alt="Enemey" />
+                        <Link to={`/profile/${props.login}`}>
+                            <img src={props.avatar} onError={(e: any) => {
+                                console.log(e.target);
+                                e.target.src = defaultAvatar;
+                            }
+                            } alt="Enemey" />
+                        </Link>
                         <div className="enemyScore">
                             <h1>{props.login}</h1>
                             <div className="score">
@@ -393,7 +410,6 @@ export function ProfileDown() {
         const fetchData = async () => {
             await axios.get('/Profile/' + login + '/profile').then((resp) => setPR(resp.data));
             await axios.get('/Profile/' + login + '/gamehistory').then((resp) => setAllGams(resp.data));
-
         };
         fetchData();
     }, [login]);
@@ -409,29 +425,8 @@ export function ProfileDown() {
         calculateWidths();
     }, [ProfileRight])
 
-    const [index, setIndex] = useState<number>(0);
-    const [Direction, setDirection] = useState<number>(0);
     var arrayArch: Archivement[] = [];
-    const AceArchivement = {
-        title: 'Ace',
-        img: 'ACE'
-    };
-    arrayArch.push(AceArchivement, { title: 'Mays', img: 'ACE' }, { title: 'Kays', img: 'ACE' })
-    const variants = {
-        initial: (Direction: number) => {
-            return ({
-                x: Direction > 0 ? '23rem' : '-23rem'
-            })
-        },
-        animate: {
-            x: 0,
-        },
-        exit: (Direction: number) => {
-            return ({
-                x: Direction > 0 ? '-23rem' : '23rem'
-            })
-        },
-    }
+    arrayArch.push({ title: 'Batal', img: batal }, { title: 'Hawking', img: hawking })
     return (
         <div className="profileDown">
             <motion.div
@@ -440,41 +435,50 @@ export function ProfileDown() {
                 exit={{ y: '100vh' }}
                 transition={{ duration: 0.4, delay: 0.6 }}
                 className="AchivementsProfile">
-
                 <h1>Achievements</h1>
                 <GradienBox mywidth={'380px'} myheight={'388px'} myborder={'40px'}>
-                    <div className="archivement-container" style={{ overflow: 'hidden' }}>
-                        <button onClick={() => {
+            <div className="archivement-container" style={{ overflow: 'hidden' }}>
+                {/* <button onClick={() => {
                             setDirection(1)
                             if (index - 1 < 0)
                                 setIndex(arrayArch.length - 1);
                             else
                                 setIndex(index - 1);
-                        }} className='button-slide'><div className="backjack"><img src={btnSlide} alt="" /></div></button>
-                        <AnimatePresence initial={false} custom={Direction}>
-                            <motion.h1
-                                key={arrayArch[index].title}
-                                variants={variants}
-                                custom={Direction}
-                                initial='initial'
-                                animate='animate'
-                                exit='exit'
-                                transition={{
-                                    x: { duration: 0.6 },
-                                    opacity: { duration: 0.2 }
-                                }}
-                            >{arrayArch[index].title}
-                            </motion.h1>
-                        </AnimatePresence>
-                        <button onClick={() => {
+                        }} className='button-slide'><div className="backjack"><img src={btnSlide} alt="" /></div></button> */}
+                <Swiper
+                    effect={'cards'}
+                    grabCursor={true}
+                    modules={[EffectCards]}
+                    className="mySwiper"
+                >
+                    <SwiperSlide>
+                        <img style={{ width: '100%' }} src={batal} alt="" />
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <img style={{ width: '100%' }} src={hawking} alt="" />
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <img style={{ width: '100%' }} src={worldCup} alt="" />
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <img style={{ width: '100%' }} src={helmchen} alt="" />
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <img style={{ width: '100%' }} src={kasparov} alt="" />
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <img style={{ width: '100%' }} src={extrovert} alt="" />
+                    </SwiperSlide>
+                </Swiper>
+                {/* <button onClick={() => {
                             setDirection(-1)
                             if (index + 1 >= arrayArch.length)
                                 setIndex(0);
                             else
                                 setIndex(index + 1);
-                        }} className='button-slide right-btn'><div className="backjack"><img className='imgRight' src={btnSlide} alt="" /></div></button>
-                    </div>
-                </GradienBox>
+                        }} className='button-slide right-btn'><div className="backjack"><img className='imgRight' src={btnSlide} alt="" /></div></button> */}
+            </div>
+        </GradienBox>
             </motion.div>
             <motion.div
                 initial={{ y: '100vh' }}

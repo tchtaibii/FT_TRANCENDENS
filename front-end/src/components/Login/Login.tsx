@@ -26,18 +26,15 @@ const LoginBtn = (props: any) => {
                 onMouseEnter={handleHover}
                 onMouseLeave={handleHoverEnd}
                 onClick={handleHover}
-                key={'login-a' + props.title}
                 className='btnsLogin' href={props.link}>
                 <div className="btnCon">
 
                     <motion.h4
                         initial={isHover}
                         animate={isHover}
-                        key={'login-h4' + props.title}
                         transition={{ duration: 0.5}}
                     >{props.title}</motion.h4>
                     <motion.img
-                        key={'login-img' + props.title}
                         initial={isHoverIMG}
                         animate={isHoverIMG}
                         transition={{ duration: 0.2, delay: 0.1 }}
@@ -53,6 +50,7 @@ function Login() {
     const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
 
     function handleMouseMove(event: any) {
+        console.log(event);
         setPosition({ x: event.clientX / 20, y: event.clientY / 20 });
     }
     return (

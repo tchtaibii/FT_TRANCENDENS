@@ -16,6 +16,11 @@ import { useSelector } from "react-redux";
 
 function LeftBar() {
   const username = useSelector((state:any) => state.admin).username;
+  // const [Login, setLogin] = useState('')
+  // useEffect(() => {
+  //   axios.get('/Home/Hero').then((response) => setLogin(response.data))
+  //   console.log('hey', Login)
+  // }, [])
   return (
     <div className="bar-left">
       <div className='left-bar-container'>

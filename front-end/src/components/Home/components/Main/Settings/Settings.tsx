@@ -2,7 +2,7 @@ import './Settings.scss'
 import GradienBox from '../../../../../tools/GradienBox'
 import axios from '../../../../../Interceptor/Interceptor'
 import { useSelector } from 'react-redux'
-import { useEffect, useState, ChangeEvent } from 'react'
+import { useEffect, useState, ChangeEvent, useMemo } from 'react'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../../../store/store'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -67,42 +67,45 @@ function Settings() {
     const [username, setUsername] = useState("");
     const [myInfo, setInfo] = useState<Info>({ avatar: "", username: "", email: "" });
     const [updateS, setUpdate] = useState(false);
-    const Athenti = useSelector((state:any) => state.TwoFa);
+    const Athenti = useSelector((state: any) => state.TwoFa);
     const [LinkGoogle, setLinkGoogle] = useState(Athenti.FA_ON);
+    console.log(Athenti.FA_ON)
     const handleChange = (event: any) => {
-        if (!LinkGoogle)
-        {
+        if (!LinkGoogle) {
             setPopUp(true)
             set2fa(true);
+            console.log('!LinkGoogle')
         }
-        else{
+        else {
             const SendData = async () => {
                 setLinkGoogle(false);
                 await axios.post("/auth/isFA-enabled", false);
                 dispatch(get2FA());
             }
             SendData();
+            console.log('LinkGoogle')
         }
-        
+
         // dispatch(get2FA());
         // setLinkGoogle(current => !current);
     };
     useEffect(() => {
         setLinkGoogle(Athenti.FA_ON);
-    },[Athenti])
+    }, [Athenti])
     useEffect(() => {
         dispatch(setTrue());
         dispatch(getAdmin());
         dispatch(get2FA());
+        console.log('hello', Athenti);
         const FetchData = async () => {
             await axios.get("/setting/account").then((resp) => {
                 setInfo(resp.data);
                 setUsername(resp.data.username);
-
             })
             if (isOff === null) {
-                axios.get("/setting/status").then((resp) => {
+                await axios.get("/setting/status").then((resp) => {
                     setisOff(!resp.data.status);
+                    console.log("status", isOff);
                 })
             }
             dispatch(setFalse());
@@ -130,7 +133,11 @@ function Settings() {
         dispatch(setTrue());
         await axios.post("/setting/updateStatus", !isOff).then((resp) => console.log(resp))
         setisOff(!isOff)
+        // setTimeout(() => {
+        // console.log('hello');
         dispatch(setFalse());
+        // }, 200);
+
     }
     const HandleImg = async (event: any) => {
         if (username !== myInfo.username && username != '') {
@@ -146,17 +153,19 @@ function Settings() {
                     setImgChange(null);
                     setStatus(false);
                 });
-                dispatch(setFalse());
+            dispatch(setFalse());
         }
         if (imgChange !== null) {
             event.preventDefault();
             const data = new FormData();
             data.append('file', imgChange);
+            console.log(imgChange);
             const headers = {
                 'Content-Type': 'multipart/form-data'
             };
             dispatch(setTrue());
             await axios.post("/setting/UpdatePicture", data, { headers: headers as any }).then((res) => {
+                console.log(res.statusText);
             });
             dispatch(getAdmin());
             dispatch(setFalse());
@@ -180,76 +189,80 @@ function Settings() {
         dispatch(setFalse());
     }
     useEffect(() => {
+        // if (username !== myInfo.username)
+        {
+            // dispatch(setTrue());
             dispatch(setUSer(username));
-
+            // dispatch(setFalse());
+        }
         if (isOff !== null)
             dispatch(statusSet(isOff));
     }, [updateS, isOff])
     return (
-        <div className="settings-Container">
+        <div style={{marginTop: '5rem'}} className="settings-Container">
             <motion.div
-            initial={{ y: '100vh' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100vh' }}
-            transition={{ duration: 0.4 }}
-            className="header-settings">
+                initial={{ y: '100vh' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100vh' }}
+                transition={{ duration: 0.4 }}
+                className="header-settings">
                 <h1>Settings</h1>
                 <BackToHome />
             </motion.div>
             <motion.div
-            initial={{ y: '100vh' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100vh' }}
-            transition={{ duration: 0.4 }}
+                initial={{ y: '100vh' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100vh' }}
+                transition={{ duration: 0.4 }}
             >
                 <GradienBox mywidth="1201px" myheight="365px" myborder="40px">
-                <div className="AccountSettings">
-                    <h2>Account</h2>
-                    <div className="account-set">
-                        <div style={divStyle} className="image-pro-settings">
-                            <div className="editAv">EDIT<br />AVATAR</div>
-                            <input onChange={handleFileChange} accept=".png, .jpg, .jpeg" type="file" name="" id="" style={{ width: "100%", height: "10.375rem", cursor: 'pointer', zIndex: "9999999999999", opacity: 0, position: "relative", transform: "translateY(-10.2rem)" }} />
-                            <button onClick={HandleImg} style={{ zIndex: "999999999999999999999999999999" }} className='Pen'><div className="penC">Save</div></button>
-                        </div>
-                        <div className="edit-NEP">
-                            <div className="input-settings">
-                                <GradienBox mywidth="59px" myheight="59px" myborder="25px">
-                                    <div className="icon-edit">
-                                        <IconName />
-                                    </div>
-                                </GradienBox>
-                                <GradienBox mywidth="480px" myheight="59px" myborder="25px">
-                                    <div className="inputContent"><input onChange={(event) => {
-                                        setUsername(event.target.value);
-                                    }} placeholder={myInfo.username} type="text" /><Edit /></div>
-                                </GradienBox>
+                    <div className="AccountSettings">
+                        <h2>Account</h2>
+                        <div className="account-set">
+                            <div style={divStyle} className="image-pro-settings">
+                                <div className="editAv">EDIT<br />AVATAR</div>
+                                <input onChange={handleFileChange} accept=".png, .jpg, .jpeg" type="file" name="" id="" style={{ width: "100%", height: "10.375rem", cursor: 'pointer', zIndex: "9999999999999", opacity: 0, position: "relative", transform: "translateY(-10.2rem)" }} />
+                                <button onClick={HandleImg} style={{ zIndex: "999999999999999999999999999999" }} className='Pen'><div className="penC">Save</div></button>
                             </div>
-                            <div className="input-settings">
-                                <GradienBox mywidth="59px" myheight="59px" myborder="25px">
-                                    <div className="icon-edit">
-                                        <Email />
-                                    </div>
-                                </GradienBox>
-                                <GradienBox mywidth="480px" myheight="59px" myborder="25px">
-                                    <div className="inputContent"><input style={{ color: "gray", cursor: "not-allowed" }} value={myInfo.email} type="text" disabled /></div>
-                                </GradienBox>
+                            <div className="edit-NEP">
+                                <div className="input-settings">
+                                    <GradienBox mywidth="59px" myheight="59px" myborder="25px">
+                                        <div className="icon-edit">
+                                            <IconName />
+                                        </div>
+                                    </GradienBox>
+                                    <GradienBox mywidth="480px" myheight="59px" myborder="25px">
+                                        <div className="inputContent"><input onChange={(event) => {
+                                            setUsername(event.target.value);
+                                        }} placeholder={myInfo.username} type="text" /><button><Edit /></button></div>
+                                    </GradienBox>
+                                </div>
+                                <div className="input-settings">
+                                    <GradienBox mywidth="59px" myheight="59px" myborder="25px">
+                                        <div className="icon-edit">
+                                            <Email />
+                                        </div>
+                                    </GradienBox>
+                                    <GradienBox mywidth="480px" myheight="59px" myborder="25px">
+                                        <div className="inputContent"><input style={{ color: "gray", cursor: "not-allowed" }} value={myInfo.email} type="text" disabled /><button style={{ cursor: "not-allowed" }}><Edit /></button></div>
+                                    </GradienBox>
+                                </div>
+                                {/* <button className='saveBtn' style={{}} onClick={handleSave}>Save</button> */}
+                                {
+                                    (UsernameStatus !== undefined && (UsernameStatus === false ? <p className='Error statusInput'>Something Wrong!</p> : <p className='validate statusInput'>Update Success!</p>))
+                                }
                             </div>
-                            {/* <button className='saveBtn' style={{}} onClick={handleSave}>Save</button> */}
-                            {
-                                (UsernameStatus !== undefined && (UsernameStatus === false ? <p className='Error statusInput'>Something Wrong!</p> : <p className='validate statusInput'>Update Success!</p>))
-                            }
                         </div>
                     </div>
-                </div>
-            </GradienBox>
+                </GradienBox>
             </motion.div>
-            
+
             <motion.div
-            initial={{ y: '100vh' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100vh' }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-            className="con-act">
+                initial={{ y: '100vh' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100vh' }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+                className="con-act">
                 <GradienBox mywidth="559px" myheight="338px" myborder="40px">
                     <div className="con-act-cont">
                         <h1>Account Connectivity</h1>
@@ -353,7 +366,7 @@ function Settings() {
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 exit={{ scale: 0 }}
-                                key={'factory-sidep'}
+                                key={'Block-Side'}
                                 transition={{ ease: "easeInOut", duration: 0.2 }}
                             >
                                 <button onClick={() => {
@@ -362,8 +375,8 @@ function Settings() {
                                 }} style={{ transform: 'translate(26.4rem, -0.2rem)' }} className='exitblocke'>
                                     <Exit />
                                 </button>
-                                <TwoFa set2FA={set2fa} setPop={setPopUp} firstTime={Athenti.isFirst}/>
-                            </motion.div>   
+                                <TwoFa set2FA={set2fa} setPop={setPopUp} firstTime={Athenti.isFirst} />
+                            </motion.div>
                         }
 
                     </motion.div>

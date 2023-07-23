@@ -36,12 +36,14 @@ function SearchContent(props: any) {
 		return ''
 	}
 	const SimpeLoop = () => {
+		// console.log('user ound', props.userFound);
 		const elements = props.userFound.map((e: any, i: number) =>
 			<Link onClick={() => {
 				props.set(false);
 			}} to={`/profile/${e.username}`} key={'userFound-' + i} className="found">
 				<div className={'f-part1 ' + (e.isFriend ? (e.status === true ? "user-active-search" : "user-desactive-search") : 'user-notFriend-search')}>
 					<img onError={(e: any) => {
+						console.log(e.target);
 						e.target.src = defaultAvatar;
 					}
 					} src={e.avatar} alt="" />

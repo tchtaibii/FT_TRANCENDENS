@@ -22,6 +22,7 @@ function TwoFa(props: any) {
         {
             const FetchData =  async () => {
                 await axios.get('/auth/enable-2fa').then((resp) => {
+                    console.log('qrcodeeee', resp.data);
                     setQrcode(resp.data)
                 });
             }
@@ -124,6 +125,7 @@ function TwoFa(props: any) {
                                 }
                                 SendData();
                                 disptach(get2FA()); 
+                                // console.log()
                             }
                         }
                     }}>{Steps.third ? 'Submit' : 'Next'}</button>

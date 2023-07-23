@@ -3,9 +3,26 @@ import "../Main.scss"
 import RankTable from './RankTable'
 import trophet from '../../../../assets/img/trophet.svg'
 import { motion } from 'framer-motion';
+import { useEffect, useState, useRef, useMemo } from 'react'
+import axios from '../../../../Interceptor/Interceptor'
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../../store/store'
+import { setFalse, setTrue } from '../../../../features/isLoading';
 
 function BestPlayers() {
 
+  const dispatch: AppDispatch = useDispatch()
+	const [rankData, setBestPlayers] = useState([])
+	useEffect(() => {
+		if (rankData.length === 0) {
+			dispatch(setTrue());
+			console.log('outside')
+			axios.get('/Home/Best6Players').then((response) => {
+				setBestPlayers(response.data);
+				dispatch(setFalse());
+			})
+		}
+	}, [])
 
   return (
     <motion.div
@@ -19,12 +36,12 @@ function BestPlayers() {
         <GradienBox vh={920} minh={'211.2px'} mywidth="1201px" myheight="273px" myborder="40px">
           <img src={trophet} alt="" className='trophet' />
           <div className='bp-cont'>
-            <RankTable />
+            <RankTable data={rankData} />
           </div>
         </GradienBox>
       </div>
     </motion.div>
-  )
+  );
 }
 
 export default BestPlayers

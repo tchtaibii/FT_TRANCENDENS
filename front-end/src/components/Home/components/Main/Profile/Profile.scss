@@ -5,7 +5,7 @@
     width: 100%;
     gap: 2rem;
     position: relative;
-    top: toRem(-10);
+    top: 5rem;
 
     .fa-Profile {
         display: flex;
@@ -414,7 +414,7 @@ h1 {
     padding-right: 2.125rem;
     width: 100%;
     position: relative;
-    top: toRem(-17);
+    top: toRem(-60);
     // gap: 4.5rem;
     margin-left: toRem(200);
 
@@ -757,19 +757,21 @@ h1 {
         }
     }
 }
+
 .pad {
     padding: toRem(0);
     transition: padding 0.1s ease-in-out;
 }
+
 .ActivityInfo {
     width: 0;
     height: 0;
     box-sizing: border-box;
     border-radius: toRem(8);
     box-shadow: 0px toRem(4) toRem(40) 0px rgba(0, 0, 0, 0.50);
-    background: linear-gradient(90deg, rgba(86,153,174,1) 0%, rgba(225,82,83,1) 12%);
+    background: linear-gradient(90deg, rgba(86, 153, 174, 1) 0%, rgba(225, 82, 83, 1) 12%);
     opacity: 0;
-    transform: translate(toRem(-10),toRem(7));
+    transform: translate(toRem(-10), toRem(7));
     transition: all 0.6s ease-in-out;
     overflow: hidden;
 
@@ -812,10 +814,28 @@ body:has(#infoBtn:hover) .ActivityInfo {
     height: toRem(25);
 
 }
+
 body:has(#infoBtn:hover) .pad {
     padding: toRem(1);
 
 }
+
 body:has(#infoBtn:hover) .ActivityInfo .textinfo p {
     opacity: 1;
 }
+
+.swiper {
+    width: toRem(300);
+    height: fit-content;
+}
+
+.swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // border-radius: 18px;
+    // font-size: 22px;
+    font-weight: bold;
+    color: #fff;
+}
+

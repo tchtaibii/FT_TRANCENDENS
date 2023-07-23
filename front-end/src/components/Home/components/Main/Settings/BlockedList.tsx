@@ -8,6 +8,7 @@ function Blockedlist() {
     const [update, setUpdate] = useState(true);
     function UserB(props: any) {
         const Deblock = async () => {
+            console.log(props.friendshipId )
             await axios.post('/CancelRequest', { FriendshipId: props.idShip })
             setUpdate(!update)
         }

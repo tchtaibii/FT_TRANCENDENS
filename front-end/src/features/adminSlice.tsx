@@ -20,6 +20,8 @@ const initialState: adminType | undefined = {
 }
 export const getAdmin = createAsyncThunk('admin/getAdmin', async () => {
     const response = await axios.get("/Home/MyProfile");
+    // console.log("admin/get", response.data)
+    //    console.log('axios data notification fetching', response.data);
     return response.data;
 });
 
@@ -63,6 +65,7 @@ const Admin = createSlice({
                 state.status = status;
                 state.badge = badge;
                 state.isLoader = true;
+                // console.log("state a zbi", state);
             })
             .addCase(getAdmin.rejected, (state) => {
                 // state.loading = false;

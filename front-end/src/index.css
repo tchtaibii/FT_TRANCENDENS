@@ -203,3 +203,6 @@ canvas {
     display: flex;
   }
 }
+.swiper-slide-shadow.swiper-slide-shadow-cards{
+  background: rgba(0, 0, 0, 0);
+}

@@ -16,6 +16,7 @@ import { io, Socket } from 'socket.io-client';
 import GradienBox from './tools/GradienBox';
 import { motion, AnimatePresence } from 'framer-motion';
 function SlideButton(props: any) {
+	console.log(props.data);
 	const [slideChanger, SetSlideChange] = useState({ circle: props.isAccept ? 'sliderA' : 'sliderD' })
 	const handler = () => {
 		const PostData = async () => {
@@ -62,7 +63,6 @@ function Invitation({ state, data }: InvitationFunc) {
 			animate={{ y: 0, opacity: 1 }}
 			exit={{ opacity: 0 }}
 			transition={{ duration: 0.5 }}
-			key={'invinitations'}
 			className="invitation-container">
 			<GradienBox zIndex={100000} mywidth="397px" myheight="157.02px" myborder="20px">
 				<div className="invitation">
@@ -119,13 +119,17 @@ function App() {
 				await axios.get('/').then((resp) => {
 					dispatch(seIsDown(false));
 				}).catch(error => {
+					// console.log('hgdggsdgdsg')
+					// if (error.request)
 					dispatch(seIsDown(true));
+					// tesServer();
 				})
 			}
 
 		}
 		tesServer();
 		const token = Cookies.get('isAuthenticated');
+		// console.log(token);
 		if (token === 'true') {
 			setisLogin(true);
 		}
@@ -152,6 +156,7 @@ function App() {
 	}, [isLogin])
 
 	useEffect(() => {
+		console.log('hshshs');
 		if (token) {
 			const socket = io('http://localhost:3001/', {
 				extraHeaders: {
@@ -168,6 +173,7 @@ function App() {
 				setTimeout(() => {
 					setInvit(false);
 				}, 30000)
+				console.log('Received notification:', data);
 
 			});
 
@@ -201,6 +207,7 @@ function App() {
 	// 	}
 	// 	fetchData();
 	// }, [invit])
+	console.log(token);
 	return (
 		<div className="App">
 			<Particle />

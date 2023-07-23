@@ -76,7 +76,6 @@ function GamesMode() {
 			initial={{ y: '100vh' }}
 			animate={{ y: 0 }}
 			exit={{ y: '100vh' }}
-			key={'GamesMode-Home'}
 			transition={{delay: 0.2, duration: 0.4}}
 			className='box-box-cont'>
 			<h1 className='title-h1'>Games mode</h1>
@@ -94,8 +93,10 @@ function GamesMode() {
 					smartSpeed={700}
 					autoplayTimeout={3000}
 					loop
-					navText={[ '<button class="custom-nav-btn prev-btn"><div class="content-nav"><svg width="0.813rem" height="1.188rem" viewBox="0 0 13 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.1818 2L3 9.84091L11.1818 17" stroke="#F9C690" stroke-width="3" stroke-linecap="round"/></svg></div></button>', '<button class="custom-nav-btn next-btn"><div class="content-nav"><svg width="0.813rem" height="1.188rem" viewBox="0 0 13 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.81818 17L10 9.15909L1.81818 2" stroke="#F9C690" stroke-width="3" stroke-linecap="round"/></svg></div></button>']}
-				// responsive={{ 0: { items: 1 }, 768: { items: 3 } }}
+					navText={[
+						'<button class="custom-nav-btn prev-btn"><div class="content-nav"><svg width="0.813rem" height="1.188rem" viewBox="0 0 13 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.1818 2L3 9.84091L11.1818 17" stroke="#F9C690" stroke-width="3" stroke-linecap="round"/></svg></div></button>'
+						, 
+						'<button class="custom-nav-btn next-btn"><div class="content-nav"><svg width="0.813rem" height="1.188rem" viewBox="0 0 13 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.81818 17L10 9.15909L1.81818 2" stroke="#F9C690" stroke-width="3" stroke-linecap="round"/></svg></div></button>']}
 				>
 					{GameModesArr}
 				</OwlCarousel>

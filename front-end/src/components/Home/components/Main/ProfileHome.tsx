@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux';
 import defaultAvatar from '../../../../assets/img/avatar.png'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion';
-import {useMemo} from 'react'
 
 function ProfileHome() {
 
@@ -61,12 +60,14 @@ function ProfileHome() {
                                         transition={{ delay: 0.2 }}
                                         className='profile-mid'>
                                         <div className='mid1'>
-                                            <Link to={`/profile/${data.username}`} >
-                                                <img className='mid-img1' onError={(e: any) => {
+                                            <Link  to={`/profile/${data.username}`} >
+                                                <div style={{backgroundImage: `url(${data.avatar})`}}></div>
+
+                                                {/* <img className='mid-img1' onError={(e: any) => {
                                                     console.log(e.target);
                                                     e.target.src = defaultAvatar;
                                                 }
-                                                } alt='' src={data.avatar} />
+                                                } alt='' src={data.avatar} /> */}
                                             </Link>
                                             <div className='m1-nl'>
                                                 <h1 style={{ width: '6.25rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{data.username}</h1>

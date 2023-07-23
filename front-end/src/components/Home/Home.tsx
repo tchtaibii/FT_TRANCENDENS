@@ -8,13 +8,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from "../../store/store"
 import { getAdmin } from "../../features/adminSlice"
 import { get2FA } from "../../features/2FA"
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 
 
-function Home(props:any) {
-  
+function Home(props: any) {
+
   const dispatch: AppDispatch = useDispatch();
-  const DataLoader = useSelector((state:any)=> state.admin).isLoader;
+  const DataLoader = useSelector((state: any) => state.admin).isLoader;
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(getAdmin());
@@ -31,7 +31,9 @@ function Home(props:any) {
         {IsLoading && DataLoader && <Loading />}
         <div className="container-home">
           <LeftBar />
-          <Main socketInvi={props.socketInvi} setInvi={props.setInv} setNoti={props.setNoti} invitations={props.invitations} notifications={props.notifications}  />
+          <Suspense fallback={<><Loading /></>}>
+            <Main socketInvi={props.socketInvi} setInvi={props.setInv} setNoti={props.setNoti} invitations={props.invitations} notifications={props.notifications} />
+          </Suspense>
           <Outlet />
         </div>
       </Router>

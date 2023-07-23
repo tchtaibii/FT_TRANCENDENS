@@ -638,17 +638,17 @@
     left: toRem(4);
 }
 
-.prev-btn {
-    position: absolute;
-    top: -9.75rem;
-    left: toRem(-610);
-}
+// .prev-btn {
+//     position: absolute;
+//     top: initial;
+//     left: initial;
+// }
 
-.next-btn {
-    position: absolute;
-    top: -9.75rem;
-    left: 33.7rem;
-}
+// .next-btn {
+//     position: absolute;
+//     top: -9.75rem;
+//     left: 33.7rem;
+// }
 
 .owl-carousel .owl-nav button.owl-prev,
 .owl-carousel .owl-nav button.owl-next,

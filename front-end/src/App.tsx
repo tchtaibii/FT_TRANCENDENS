@@ -1,7 +1,7 @@
 import Login from './components/Login/Login';
 import './App.scss';
 import Home from './components/Home/Home';
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense, lazy } from 'react';
 import Particle from './tools/ParticalComponent';
 import Cookies from 'js-cookie';
 import axios from './Interceptor/Interceptor'
@@ -11,10 +11,14 @@ import { useSelector } from 'react-redux';
 import Loading from './components/Loading';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from './store/store'
-import Secure from './Secure';
-import { io, Socket } from 'socket.io-client';
+// import Secure from '';
+import { io } from 'socket.io-client';
 import GradienBox from './tools/GradienBox';
 import { motion, AnimatePresence } from 'framer-motion';
+// const Home = lazy(() => import('./components/Home/Home'));
+const Secure = lazy(() => import('./Secure'));
+// const Particle = lazy(() => import('./tools/ParticalComponent'));
+
 function SlideButton(props: any) {
 	console.log(props.data);
 	const [slideChanger, SetSlideChange] = useState({ circle: props.isAccept ? 'sliderA' : 'sliderD' })
@@ -24,7 +28,7 @@ function SlideButton(props: any) {
 		}
 		SetSlideChange({ circle: props.isAccept ? 'sliderA slider-accept' : 'sliderD slider-decline' });
 		PostData();
-		setTimeout(()=>{props.set(false)}, 500);
+		setTimeout(() => { props.set(false) }, 500);
 	}
 	const Accept = () => (
 		<svg width="1rem" height="0.75rem" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -186,35 +190,16 @@ function App() {
 			};
 		}
 	}, [token]);
-
-	// const [invitations, setInvitation] = useState([]);
-	// const [notifications, setNotifications] = useState([]);
-	// useEffect(() => {
-	// 	const fetchData = async () => {
-	// 		await axios.get('FriendshipRequest').then(resp => {
-	// 			console.log('tahataatahataa', resp.data);
-	// 			setInvitation(resp.data)
-	// 		}).catch((err) => {
-	// 			console.log('had error', err);
-	// 		})
-	
-	// 		await axios.get('/getNotification').then(resp => {
-	// 			setNotifications(resp.data)
-	// 			console.log(resp.data);
-	// 		}).catch((err) => {
-	// 			console.log('had error', err);
-	// 		})
-	// 	}
-	// 	fetchData();
-	// }, [invit])
 	console.log(token);
 	return (
 		<div className="App">
-			<Particle />
-			{
-				isDown ? <Loading /> :
-					!isLogin ? <Login /> : (!isSecure ? <><Home socketInvi={setInvit} /><AnimatePresence mode='wait'>{invit && <Invitation data={invitationRequest} state={setInvit} />}</AnimatePresence></> : <Secure setSec={setSecure} />)
-			}
+			{/* <Suspense fallback={<><Loading /></>}> */}
+				<Particle />
+				{
+					isDown ? <Loading /> :
+						!isLogin ? <Login /> : (!isSecure ? <><Home socketInvi={setInvit} /><AnimatePresence mode='wait'>{invit && <Invitation data={invitationRequest} state={setInvit} />}</AnimatePresence></> : <Secure setSec={setSecure} />)
+				}
+			{/* </Suspense> */}
 		</div>
 	);
 }

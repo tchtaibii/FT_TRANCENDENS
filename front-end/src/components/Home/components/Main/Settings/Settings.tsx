@@ -2,7 +2,7 @@ import './Settings.scss'
 import GradienBox from '../../../../../tools/GradienBox'
 import axios from '../../../../../Interceptor/Interceptor'
 import { useSelector } from 'react-redux'
-import { useEffect, useState, ChangeEvent, useMemo } from 'react'
+import { useEffect, useState, ChangeEvent } from 'react'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../../../store/store'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -14,13 +14,6 @@ import TwoFa from './TwoFa'
 import BackToHome from '../../BackToHome'
 
 
-
-const Pen = () => {
-    return (<svg width="1.938rem" height="1.938rem" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path fillRule="evenodd" clipRule="evenodd" d="M16.642 7.2809C17.7388 6.18414 19.517 6.18414 20.6138 7.2809L22.6467 9.31381C23.7435 10.4106 23.7434 12.1888 22.6467 13.2855L12.7368 23.1954C12.5613 23.3709 12.3232 23.4696 12.0749 23.4696H7.39415C6.87713 23.4696 6.45801 23.0505 6.45801 22.5334V17.8527C6.45801 17.6044 6.55664 17.3663 6.7322 17.1907L16.642 7.2809ZM19.2899 8.60481C18.9243 8.23922 18.3315 8.23922 17.966 8.60481L17.304 7.94286L17.966 8.60481L8.3303 18.2405V21.5973H11.6871L21.3228 11.9616C21.6884 11.596 21.6884 11.0033 21.3228 10.6377L19.2899 8.60481L19.9518 7.94286L19.2899 8.60481Z" fill="white" />
-    </svg>
-    )
-}
 const IconName = () => {
     return (
         <svg width="1.125rem" height="1.375rem" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -256,7 +249,6 @@ function Settings() {
                     </div>
                 </GradienBox>
             </motion.div>
-
             <motion.div
                 initial={{ y: '100vh' }}
                 animate={{ y: 0 }}

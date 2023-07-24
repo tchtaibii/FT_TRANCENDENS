@@ -37,7 +37,7 @@ export class HomeService {
 
 		var avatar = user.avatar;
 
-        if (user.avatar.search("https://cdn.intra.42.fr/users/") === -1)
+        if (user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !user.avatar.search('/uploads/'))
             avatar = process.env.HOST + process.env.PORT + user.avatar;
 	
 		return {
@@ -205,9 +205,8 @@ export class HomeService {
 		  });
 
 		topPlayers = topPlayers.filter(user => !blockedUserIds.includes(user.UserId));
-
 		const top = await Promise.all(topPlayers.map(async (player) => {
-			player.avatar = player.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + player.avatar : player.avatar;
+			player.avatar = player.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !player.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + player.avatar : player.avatar;
 			const rating = await this.calculRating(player.UserId);
 			var XP = player.XP;
 			for (let i : number = 1; i < player.level + 1; i++)
@@ -347,8 +346,8 @@ export class HomeService {
 		const recently : RecentActivity[] = [];
 		for (let i = 0; i < allgames.length; i++) {
 			
-			allgames[i].Player2.avatar = allgames[i].Player2.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + allgames[i].Player2.avatar : allgames[i].Player2.avatar;
-			allgames[i].Player1.avatar = allgames[i].Player1.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + allgames[i].Player1.avatar : allgames[i].Player1.avatar;
+			allgames[i].Player2.avatar = allgames[i].Player2.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !allgames[i].Player2.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + allgames[i].Player2.avatar : allgames[i].Player2.avatar;
+			allgames[i].Player1.avatar = allgames[i].Player1.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !allgames[i].Player1.avatar.search('/uploads/')? process.env.HOST + process.env.PORT + allgames[i].Player1.avatar : allgames[i].Player1.avatar;
 			const check = friends.includes(allgames[i].Player2.username) && friends.includes(allgames[i].Player1.username);
 			if (allgames[i].isDraw)
 			{

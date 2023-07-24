@@ -39,7 +39,8 @@
     "qrcode": "*",
     "reflect-metadata": "*",
     "rxjs": "*",
-    "speakeasy": "*"
+    "speakeasy": "*",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "*",

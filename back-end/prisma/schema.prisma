@@ -45,23 +45,23 @@ model achievement {
 	badgesId        Int       @id @default(autoincrement())
 	user						User?			@relation(fields : [UserId], references : [UserId])
 	UserId					String		@unique
-  First_Blood			Boolean		@default(false) // win first game
-	Shutout					Boolean		@default(false) // Win a game without the opponent scoring
-	Unstoppable			Boolean		@default(false) // Win 10 games.
-	Invincible			Boolean		@default(false) // Win 20 games
-	Legend					Boolean		@default(false) // Win 50 games.
-	Lets_Play			  Boolean		@default(false) // Invite a friend to play their first game.
-	Rookie			    Boolean		@default(false) // Play 5 games
+  extrovert			  Boolean		@default(false) // got 10 friends
+	Helmchen				Boolean		@default(false) // 10 in 3 matches
+	PongPlayer			Boolean		@default(false) // Played a game
+	kasparov			  Boolean		@default(false) // won against ai
+	Worldcup				Boolean		@default(false) // Win 7 games in football
+	Hawking 			  Boolean		@default(false) // win a blackhole game
+  Batal			      Boolean		@default(false) // first rank
 }
 
 model Room {
   
   RoomId        Int       @id @default(autoincrement())
-  RoomNAme      String
+  RoomNAme      String?
   CreationTime  DateTime  @default(now())
   updateTime    DateTime  @updatedAt @default(now())
-  ischannel     Boolean
-  Password      String
+  ischannel     Boolean   @default(true)
+  Password      String?
 
   // Relations
   Message Message[] @relation("messages")
@@ -77,7 +77,6 @@ model Message {
   UserId      String
   Content     String
   SendTime    DateTime  @updatedAt @default(now())
-  
 }
 
 model Friendship {
@@ -111,21 +110,18 @@ model Notification {
   CreationTime    DateTime @default(now())
 }
 
-enum Role {
-  USER
-  ADMIN
-}
+
 
 model Membership {
 
-  GroupId       Int  @id @default(autoincrement())
+  MembershipId  Int  @id @default(autoincrement())
   room          Room @relation(name: "roomMember", fields : [RoomId], references : [RoomId])
   RoomId        Int
   member        User @relation(name: "MembershipGroupUsers", fields : [UserId], references : [UserId])
   UserId        String
-  Role          Role @default(USER)
-  isBanned      Boolean
-  isMuted       Boolean
+  Role          String @default("USER")
+  isBanned      Boolean @default(false)
+  isMuted       Boolean @default(false)
   CreationTime  DateTime   @default(now())
 }
 

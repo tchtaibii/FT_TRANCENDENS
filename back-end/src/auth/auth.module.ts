@@ -16,7 +16,7 @@ import { GoogleStrategy } from './auth-services/GoogleStrategy';
   imports: [
     JwtModule.register({
       secret: process.env.SECRET_KEY,
-      signOptions: { expiresIn: '1d' },
+      signOptions: { expiresIn: '15m' },
     }),
     UsersModule],
 })

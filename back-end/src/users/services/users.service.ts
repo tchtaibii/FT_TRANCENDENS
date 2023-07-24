@@ -103,6 +103,7 @@ export class UsersService {
 		const notifications = notification.filter(user => !blocks.includes(user.senderId));
 
 		const final : notification[] = notifications.map(user => {
+
 			return {
 				avatar : user.sender.avatar,
 				username : user.sender.username,
@@ -187,7 +188,8 @@ export class UsersService {
 						}
 					}
 				]
-			}
+			},
+			take : 10,
 		})
 
 		const users = user.filter(filter => !blocked.includes(filter.UserId));
@@ -226,7 +228,7 @@ export class UsersService {
 		})
 
 		const fetchusers = users.map((user) => {
-			user.avatar = user.avatar.search("https://cdn.intra.42.fr/users/") === -1 ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
+			user.avatar = user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
 			const check = friends.includes(user.UserId);
 			const badge = this.getBadge(user.level);
 			return {

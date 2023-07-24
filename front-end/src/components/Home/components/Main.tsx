@@ -13,8 +13,9 @@ import "./Main.scss"
 import Settings from './Main/Settings/Settings'
 // import Error404 from './404'
 import { AnimatePresence } from 'framer-motion';
+import Activity from './Activity';
 
-const Activity = lazy(() => import('./Activity'));
+// const Activity = lazy(() => import('./Activity'));
 const ProfileProfile = lazy(() => import('./Main/Profile/ProfileProfile'));
 // const Settings = lazy(() => import('./Main/Settings/Settings'));
 const LeaderBoard = lazy(() => import('./Main/LeaderBoard/LeaderBoard'));

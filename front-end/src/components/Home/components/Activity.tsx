@@ -4,8 +4,7 @@ import axios from '../../../Interceptor/Interceptor'
 import defaultAvatar from '../../../assets/img/avatar.png'
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom'
-
-
+import {nanoid} from 'nanoid'
 function ActivityContent(props: any) {
 	return (
 
@@ -17,7 +16,6 @@ function ActivityContent(props: any) {
 			className="activity-x">
 			<div className="part1">
 				<Link to={'/profile/' + props.p1}><img src={props.avatar1} onError={(e: any) => {
-					console.log(e.target);
 					e.target.src = defaultAvatar;
 				}
 				} alt="" /></Link>
@@ -33,7 +31,6 @@ function ActivityContent(props: any) {
 function Activity() {
 	const [isAll, setIsALL] = useState({ boolAll: true });
 	const [data, seData] = useState([]);
-	console.log(data)
 	useEffect(() => {
 		axios.get('Home/RecentActivity').then((response) => seData(response.data));
 	}, [])
@@ -65,10 +62,10 @@ function Activity() {
 										(data && data.map((e: any, i) => {
 											return (
 												e.IsDraw === false ?
-													<ActivityContent side={'-'} id={i} key={'activ-' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+													<ActivityContent side={'-'} id={i} key={nanoid()} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
 													: <>
-														<ActivityContent side={'-'} id={i} key={'activ-' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
-														<ActivityContent side={'-'} id={i} key={'activ-' + i + '2'} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
+														<ActivityContent side={'-'} id={i} key={nanoid()} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+														<ActivityContent side={'-'} id={i} key={nanoid()} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
 													</>
 											)
 										})) : (data && data.filter((e: any) => e.AreFriends === true)
@@ -78,10 +75,10 @@ function Activity() {
 													index = 6;
 												return (
 													e.IsDraw === false ?
-														<ActivityContent side={''} id={index} key={'activ-' + 'firends' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+														<ActivityContent side={''} id={index} key={nanoid()} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
 														: <>
-															<ActivityContent side={''} id={index} key={'activ-' + 'firends' + i + 'draw'} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
-															<ActivityContent side={''} id={index} key={'activ-' + 'firends' + i + 'draw2'} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
+															<ActivityContent side={''} id={index} key={nanoid()} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+															<ActivityContent side={''} id={index} key={nanoid()} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
 														</>
 												)
 											}

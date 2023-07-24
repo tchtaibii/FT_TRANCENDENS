@@ -2,17 +2,11 @@ import emoji from '../../../../../assets/img/emojis.svg'
 import send from '../../../../../assets/img/send.svg'
 import GradienBox from '../../../../../tools/GradienBox'
 import './Chat.scss'
-// import { io, Socket } from 'socket.io-client';
-import { useSelector } from 'react-redux'
-// import { userType, adminType, MessageType } from '../../../../../interface/interfaces'
+
 import { Link, useParams } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
-// import axios from 'axios'
-
-
-// const socket: Socket = io('http://localhost:3001');
-// 
+import { nanoid } from 'nanoid'
 
 function StartChat() {
 	return (
@@ -74,7 +68,6 @@ function ChatContent(params: any) {
 			setMessageTyping('');
 		}
 	}
-	// console.log(messageTyping);
 	return (
 		<div className="chatContent">
 			<div className="header">
@@ -122,7 +115,7 @@ function ChatContent(params: any) {
 				<div className="messages">
 					{AllMsg.filter((e: any) => params.pageOf === e.from || params.pageOf === e.to).map((e: MessageType) => {
 						return (
-							<div key={e.date + ''} className={e.from === params.pageOf ? 'messageShow' : "myMessage messageShow"}>
+							<div key={nanoid()} className={e.from === params.pageOf ? 'messageShow' : "myMessage messageShow"}>
 								<img src={e.from === params.pageOf ? converastionWith()?.avatar : params.admin.avatar} alt="" />
 								<p className='theTextMsg'>{e.message}</p>
 							</div>
@@ -135,28 +128,15 @@ function ChatContent(params: any) {
 	)
 }
 function Chat(props: any) {
-	const users: userType[] = useSelector((state: any) => state.users).users;
-	const admin: adminType = useSelector((state: any) => state.admin);
 	function truncateString(str: string): string {
 		if (str.length > 30) {
 			return str.slice(0, 30 - 3) + '...';
 		}
 		return str;
 	}
-	const { login } = useParams();
-	const messages = useSelector((state: any) => state.messages);
-	var sortedMessages: any[] = Object.values(messages).sort((a: any, b: any) => a.date - b.date);
-	// const [leftChat, setleftChat]: any[] = useState(sortedMessages[0].filter((e: any) => e.isLast === true));
-	const leftChat: any[] = sortedMessages[0].filter((e: any) => e.isLast === true);
-	const searchByAttribute = (array: userType[], attribute: string): userType | undefined => {
-		return array.find(obj => obj.login === attribute);
-	}
-	// const [reversedMessages, setreversedMessages]: any[] = useState([...sortedMessages[0]].reverse());
-	const reversedMessages: any[] = [...sortedMessages[0]].reverse();
-	// const messageIds: number[] = reversedMessages.map((msg: any) => msg.id);
 
 	return (
-		<div style={{marginTop: '5rem'}} className="main-core">
+		<div style={{ marginTop: '5rem' }} className="main-core">
 			<GradienBox mywidth="1201px" myheight="850px" myborder="40px">
 				<div className="chatContainer">
 					<div className="chatUsers">
@@ -165,12 +145,6 @@ function Chat(props: any) {
 								<div className="newClear">
 									<button className='new'>New Group</button>
 									<button onClick={async () => {
-
-										// for (const idMsg of messageIds) {
-											// await axios.delete(`http://localhost:3001/messages/${idMsg}`);
-											// setreversedMessages([]);
-											// setleftChat([]);
-										// }
 									}} className='clear'>Clear Chat</button>
 								</div>
 								<div className="chatSearch">
@@ -179,26 +153,18 @@ function Chat(props: any) {
 								</div>
 							</div>
 							<div className="lastMessage">
-								{
-									leftChat.map((e: any, index: number) => {
-										const ownerLogin = e.from === admin.login ? e.to : e.from;
-										const owner = searchByAttribute(users, ownerLogin);
-										return (
-											<Link to={'/chat/' + owner?.login} key={index + '-last'} className="chatUser">
-												<img src={owner?.avatar} alt="" />
-												<div className="textUserChat">
-													<h1>{owner?.login}</h1>
-													<p>{truncateString(e.message)}</p>
-												</div>
-											</Link>
-										);
-									})
-								}
+								<Link to={'/chat/' + 'tchtaibi'} key={nanoid()} className="chatUser">
+									<img src={''} alt="" />
+									<div className="textUserChat">
+										<h1>{'tchtaibi'}</h1>
+										<p>{truncateString('tdgudbhdshsdhudsuyuygdsyucdsyhuds')}</p>
+									</div>
+								</Link>
 							</div>
 						</div>
 					</div>
 					{
-						props.params == false ? <StartChat /> : <ChatContent messages={reversedMessages} users={users} admin={admin} pageOf={login} />
+						props.params == false ? <StartChat /> : <ChatContent users={users} admin={admin} pageOf={login} />
 					}
 				</div>
 			</GradienBox>

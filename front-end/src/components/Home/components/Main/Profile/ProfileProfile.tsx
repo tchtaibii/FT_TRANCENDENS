@@ -1,19 +1,13 @@
 import './Profile.scss'
 import GradienBox from '../../../../../tools/GradienBox'
 import { AppDispatch } from '../../../../../store/store'
-import { setFalse, setTrue } from '../../../../../features/isLoading';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-// import { AppDispatch } from '../../../../../store/store'
-// import { setFalse, setTrue } from '../../../../../features/isLoading';
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import axios from '../../../../../Interceptor/Interceptor'
 import { useParams } from 'react-router-dom';
-// import { useDispatch } from 'react-redux';
 import defaultAvatar from '../../../../../assets/img/avatar.png'
-// import { useNavigate } from 'react-router-dom';
-
 const Playbtn = () => (
     <div>
         <svg width={(12 / 16) + 'rem'} height={(15 / 16) + 'rem'} viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -103,42 +97,34 @@ export function ProfileProfile() {
         const Fetch = async () => {
             await axios.get('/Profile/' + login + '/profile').then((response) => {
                 setPR(response.data)
-                dispatch(setFalse());
             }).catch((e) => {
                 navigate('/404');
-                dispatch(setFalse());
-                console.log()
             })
             setOpacity(1);
         }
         {
-            dispatch(setTrue());
             Fetch();
         }
 
     }, [login, update]);
 
     useEffect(() => {
-        console.log('hilo', ((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
         setwidthPro(((ProfileRight.xp / (200 * (ProfileRight.level + 1))) * 100));
         setOpacity(1);
     }, [ProfileRight])
 
     const AddFriend = async () => {
         await axios.post("/SendRequest", { receiverId: ProfileRight.UserId }).then(resp => {
-            console.log(resp);
             setUpdate(!update);
         })
     }
     const BlockUser = async () => {
         await axios.post("/Profile/blockUser", { blockedUser: ProfileRight.username }).then(resp => {
-            console.log(resp);
             setUpdate(!update);
         })
     }
     const CancelFriend = async () => {
         await axios.post("/CancelRequest", { FriendshipId: ProfileRight.friendshipId }).then(resp => {
-            console.log(resp);
             setUpdate(!update);
         })
     }
@@ -154,7 +140,6 @@ export function ProfileProfile() {
                     <h1>Profile</h1>
                     <div className='imgS'>
                         <img src={ProfileRight.avatar} onError={(e: any) => {
-                            console.log(e.target);
                             e.target.src = defaultAvatar;
                         }
                         } alt="" />

@@ -20,6 +20,7 @@ import Stream from "../../../../assets/img/stream.svg";
 import LeaderBoard from "../../../../assets/img/leaderBoard.svg";
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom';
+import {nanoid} from 'nanoid'
 function MsgNot(props: any) {
 	const [isVisible, setIsVisible] = useState(false);
 	const [isVisibleI, setIsVisibleI] = useState(false);
@@ -30,7 +31,6 @@ function MsgNot(props: any) {
 	const [isFull, setIsfull] = useState(0);
 	useEffect(() => {
 		axios.get('/Home/Hero').then((response) => setLogin(response.data))
-		// console.log('hey', Login)
 	}, [])
 	const handleClickOutside = async () => {
 
@@ -155,15 +155,11 @@ function MsgNot(props: any) {
 	)
 }
 function Notification(props: any) {
-	// const handleClick = () => {
-	// 	props.onClick();
-	// };
 	const [textNotifi, setText] = useState('')
 
 	useEffect(() => {
 		setText(text());
 	}, [])
-	console.log(props.type);
 	const text = () => {
 		switch (props.type) {
 			case "Accepted_request":
@@ -220,7 +216,6 @@ function Invitation(props: any) {
 							navigate(`/profile/${props.data.username}`)
 						} className="info">
 							<img onError={(e: any) => {
-								console.log(e.target);
 								e.target.src = defaultAvatar;
 							}
 							} src={props.data.avatar} />
@@ -248,7 +243,6 @@ function NotificationCont(props: any) {
 				setData(response.data);
 
 			} catch (err) {
-				console.log('had error', err);
 			}
 		};
 		fetchData();
@@ -266,10 +260,10 @@ function NotificationCont(props: any) {
 
 					{
 						!props.isN ?
-							data.map((e: any, i: number) => <Invitation key={'invi- ' + i} data={e} />)
+							data.map((e: any, i: number) => <Invitation key={nanoid()} data={e} />)
 							:
 							data.map((e: any) => {
-								return (<Notification key={e.notificationId} username={e.username} type={e.Type} isRead={e.isRead} img={e.avatar ? e.avatar : null} />);
+								return (<Notification key={nanoid()} username={e.username} type={e.Type} isRead={e.isRead} img={e.avatar ? e.avatar : null} />);
 							})
 						// onClick={() => handleNotificationClick(index + 1)}
 						// props.isN === true ? notifi.map((e: any, index: number) => {

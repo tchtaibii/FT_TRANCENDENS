@@ -7,10 +7,10 @@ import medaille from '../../../../../assets/img/Gold.svg'
 import defaultAvatar from '../../../../../assets/img/avatar.png'
 import axios from '../../../../../Interceptor/Interceptor'
 import { AppDispatch } from '../../../../../store/store'
-import { setFalse, setTrue } from '../../../../../features/isLoading';
 import Iaward from "../../../../../assets/img/award.svg"
 import Silver from "../../../../../assets/img/silver.svg"
 import Bronze from "../../../../../assets/img/bronze.svg"
+import {nanoid} from 'nanoid'
 
 
 
@@ -22,7 +22,6 @@ function LeaderBoard() {
                 <div className="index">{props.i + 1}.</div>
                 <img src={(props.i === 0 ? medaille : props.i === 1 ? Silver : props.i === 2 ? Bronze : Iaward)} alt="" className="medaille" />
                 <img className='avatarRank' onError={(e: any) => {
-                    console.log(e.target);
                     e.target.src = defaultAvatar;
                 }
                 } src={props.user.avatar} alt="" />
@@ -35,11 +34,9 @@ function LeaderBoard() {
     const dispatch: AppDispatch = useDispatch()
     const [Data, setData] = useState([]);
     useEffect(() => {
-        dispatch(setTrue());
         const fetchData = () => {
             axios.get('/Home/Best6Players').then((resp: any) => {
                 setData(resp.data);
-                dispatch(setFalse());
             })
         }
 
@@ -66,7 +63,7 @@ function LeaderBoard() {
                 <GradienBox mywidth="1201px" myheight="710px" myborder="40px">
                     <div className="BigRank">
                         {
-                            Data.map((e, i) => <RankC user={e} i={i} key={'user' + i} />)
+                            Data.map((e, i) => <RankC user={e} i={i} key={nanoid()} />)
                         }
                     </div>
                 </GradienBox>

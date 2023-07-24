@@ -10,6 +10,7 @@ import platinium from '../../../../assets/img/Badges/Platinium.png'
 import diamond from '../../../../assets/img/Badges/Diamond.png'
 import master from '../../../../assets/img/Badges/Master.png'
 import grandMaster from '../../../../assets/img/Badges/GrandMaster.png'
+import {nanoid} from 'nanoid'
 import { useState, useRef } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
 import { Link } from 'react-router-dom'
@@ -36,14 +37,12 @@ function SearchContent(props: any) {
 		return ''
 	}
 	const SimpeLoop = () => {
-		// console.log('user ound', props.userFound);
 		const elements = props.userFound.map((e: any, i: number) =>
 			<Link onClick={() => {
 				props.set(false);
-			}} to={`/profile/${e.username}`} key={'userFound-' + i} className="found">
+			}} to={`/profile/${e.username}`} key={nanoid()} className="found">
 				<div className={'f-part1 ' + (e.isFriend ? (e.status === true ? "user-active-search" : "user-desactive-search") : 'user-notFriend-search')}>
 					<img onError={(e: any) => {
-						console.log(e.target);
 						e.target.src = defaultAvatar;
 					}
 					} src={e.avatar} alt="" />

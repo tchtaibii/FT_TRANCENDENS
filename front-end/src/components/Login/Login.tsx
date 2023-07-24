@@ -50,7 +50,6 @@ function Login() {
     const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
 
     function handleMouseMove(event: any) {
-        console.log(event);
         setPosition({ x: event.clientX / 20, y: event.clientY / 20 });
     }
     return (

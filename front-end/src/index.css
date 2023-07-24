@@ -206,3 +206,6 @@ canvas {
 .swiper-slide-shadow.swiper-slide-shadow-cards{
   background: rgba(0, 0, 0, 0);
 }
+.swiper-3d .swiper-slide-shadow{
+ display: none;
+}

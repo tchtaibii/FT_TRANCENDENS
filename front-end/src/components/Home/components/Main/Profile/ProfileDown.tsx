@@ -12,6 +12,7 @@ import axios from '../../../../../Interceptor/Interceptor'
 import GradienBox from '../../../../../tools/GradienBox'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
+import {nanoid} from 'nanoid'
 
 type ProfileRightType = {
     avatar: string;
@@ -37,7 +38,6 @@ function TheGame(props: any) {
                     <div className="infoGame">
                         <Link to={`/profile/${props.login}`}>
                             <img src={props.avatar} onError={(e: any) => {
-                                console.log(e.target);
                                 e.target.src = defaultAvatar;
                             }
                             } alt="Enemey" />
@@ -218,7 +218,7 @@ function ProfileDown() {
                         </div>
                         <div className="gameHistoryC">
                             {
-                                allGames?.AllGames.map((e, i) => <TheGame loser={e.looserxp} winner={e.Winnerxp} key={e.GameId + i}
+                                allGames?.AllGames.map((e, i) => <TheGame loser={e.looserxp} winner={e.Winnerxp} key={nanoid()}
                                     login={e.AdvName} mode={e.Mode} avatar={e.advPic}
                                     theGame={e.isDraw ? 'draw' : e.won ? 'win' : 'lose'
                                     }

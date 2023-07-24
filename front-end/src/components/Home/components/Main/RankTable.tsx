@@ -5,6 +5,7 @@ import gold from "../../../../assets/img/Gold.svg"
 import Silver from "../../../../assets/img/silver.svg"
 import Bronze from "../../../../assets/img/bronze.svg"
 import intero from "../../../../assets/img/interogation.svg"
+import {nanoid} from 'nanoid'
 
 function  	RankTable({data}) {
 
@@ -54,7 +55,7 @@ function  	RankTable({data}) {
 					{
 						newObject.map((e, index) => {
 							// if (index < 1)
-								return <PlayerRank key={(index + 1) + 'player'} award={e.award} avatar={e.avatar} login={e.login} points={e.points} level={e.level} />
+								return <PlayerRank key={nanoid()} award={e.award} avatar={e.avatar} login={e.login} points={e.points} level={e.level} />
 						})}
 				</div>
 			</div>

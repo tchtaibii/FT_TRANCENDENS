@@ -20,11 +20,10 @@ const Secure = lazy(() => import('./Secure'));
 // const Particle = lazy(() => import('./tools/ParticalComponent'));
 
 function SlideButton(props: any) {
-	console.log(props.data);
 	const [slideChanger, SetSlideChange] = useState({ circle: props.isAccept ? 'sliderA' : 'sliderD' })
 	const handler = () => {
 		const PostData = async () => {
-			await axios.post((props.isAccept ? '/AcceptRequest' : '/CancelRequest'), { FriendshipId: props.data }).then((data) => console.log(data));
+			await axios.post((props.isAccept ? '/AcceptRequest' : '/CancelRequest'), { FriendshipId: props.data });
 		}
 		SetSlideChange({ circle: props.isAccept ? 'sliderA slider-accept' : 'sliderD slider-decline' });
 		PostData();
@@ -123,7 +122,6 @@ function App() {
 				await axios.get('/').then((resp) => {
 					dispatch(seIsDown(false));
 				}).catch(error => {
-					// console.log('hgdggsdgdsg')
 					// if (error.request)
 					dispatch(seIsDown(true));
 					// tesServer();
@@ -133,7 +131,6 @@ function App() {
 		}
 		tesServer();
 		const token = Cookies.get('isAuthenticated');
-		// console.log(token);
 		if (token === 'true') {
 			setisLogin(true);
 		}
@@ -160,7 +157,6 @@ function App() {
 	}, [isLogin])
 
 	useEffect(() => {
-		console.log('hshshs');
 		if (token) {
 			const socket = io('http://localhost:3001/', {
 				extraHeaders: {
@@ -190,7 +186,6 @@ function App() {
 			};
 		}
 	}, [token]);
-	console.log(token);
 	return (
 		<div className="App">
 			{/* <Suspense fallback={<><Loading /></>}> */}

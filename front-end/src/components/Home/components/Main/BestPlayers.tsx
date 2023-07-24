@@ -7,7 +7,6 @@ import { useEffect, useState, useRef, useMemo } from 'react'
 import axios from '../../../../Interceptor/Interceptor'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../../store/store'
-import { setFalse, setTrue } from '../../../../features/isLoading';
 
 function BestPlayers() {
 
@@ -15,11 +14,8 @@ function BestPlayers() {
 	const [rankData, setBestPlayers] = useState([])
 	useEffect(() => {
 		if (rankData.length === 0) {
-			dispatch(setTrue());
-			console.log('outside')
 			axios.get('/Home/Best6Players').then((response) => {
 				setBestPlayers(response.data);
-				dispatch(setFalse());
 			})
 		}
 	}, [])

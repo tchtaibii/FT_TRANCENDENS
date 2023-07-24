@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState, ChangeEvent, lazy } from 'react'
 import { AppDispatch } from '../../../../../store/store'
 import { motion, AnimatePresence } from 'framer-motion'
-import { setFalse, setTrue } from '../../../../../features/isLoading';
 import { getAdmin, setUsername as setUSer, setStatus as statusSet } from '../../../../../features/adminSlice'
 import { get2FA } from '../../../../../features/2FA'
 const TwoFa = lazy((() => import('./TwoFa')));
@@ -61,12 +60,10 @@ function Settings() {
     const [updateS, setUpdate] = useState(false);
     const Athenti = useSelector((state: any) => state.TwoFa);
     const [LinkGoogle, setLinkGoogle] = useState(Athenti.FA_ON);
-    console.log(Athenti.FA_ON)
     const handleChange = (event: any) => {
         if (!LinkGoogle) {
             setPopUp(true)
             set2fa(true);
-            console.log('!LinkGoogle')
         }
         else {
             const SendData = async () => {
@@ -75,7 +72,6 @@ function Settings() {
                 dispatch(get2FA());
             }
             SendData();
-            console.log('LinkGoogle')
         }
 
         // dispatch(get2FA());
@@ -85,10 +81,8 @@ function Settings() {
         setLinkGoogle(Athenti.FA_ON);
     }, [Athenti])
     useEffect(() => {
-        dispatch(setTrue());
         dispatch(getAdmin());
         dispatch(get2FA());
-        console.log('hello', Athenti);
         const FetchData = async () => {
             await axios.get("/setting/account").then((resp) => {
                 setInfo(resp.data);
@@ -97,11 +91,8 @@ function Settings() {
             if (isOff === null) {
                 await axios.get("/setting/status").then((resp) => {
                     setisOff(!resp.data.status);
-                    console.log("status", isOff);
                 })
             }
-            dispatch(setFalse());
-
             // setTimeout(() => {},2000)
         }
         FetchData();
@@ -122,18 +113,12 @@ function Settings() {
         setImgChange(file);
     };
     const handleStatus = async () => {
-        dispatch(setTrue());
-        await axios.post("/setting/updateStatus", !isOff).then((resp) => console.log(resp))
+        await axios.post("/setting/updateStatus", !isOff);
         setisOff(!isOff)
-        // setTimeout(() => {
-        // console.log('hello');
-        dispatch(setFalse());
-        // }, 200);
 
     }
     const HandleImg = async (event: any) => {
         if (username !== myInfo.username && username != '') {
-            dispatch(setTrue());
             await axios
                 .post("/setting/updateUsername", { username })
                 .then((resp) => {
@@ -145,26 +130,20 @@ function Settings() {
                     setImgChange(null);
                     setStatus(false);
                 });
-            dispatch(setFalse());
         }
         if (imgChange !== null) {
             event.preventDefault();
             const data = new FormData();
             data.append('file', imgChange);
-            console.log(imgChange);
             const headers = {
                 'Content-Type': 'multipart/form-data'
             };
-            dispatch(setTrue());
             await axios.post("/setting/UpdatePicture", data, { headers: headers as any }).then((res) => {
-                console.log(res.statusText);
             });
             dispatch(getAdmin());
-            dispatch(setFalse());
         }
     }
     const handleSave = async (event: any) => {
-        dispatch(setTrue());
         if (username !== myInfo.username && username != '') {
             await axios
                 .post("/setting/updateUsername", { username })
@@ -178,14 +157,11 @@ function Settings() {
                     setStatus(false);
                 });
         }
-        dispatch(setFalse());
     }
     useEffect(() => {
         // if (username !== myInfo.username)
         {
-            // dispatch(setTrue());
             dispatch(setUSer(username));
-            // dispatch(setFalse());
         }
         if (isOff !== null)
             dispatch(statusSet(isOff));

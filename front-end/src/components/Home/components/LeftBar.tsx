@@ -19,7 +19,6 @@ function LeftBar() {
   // const [Login, setLogin] = useState('')
   // useEffect(() => {
   //   axios.get('/Home/Hero').then((response) => setLogin(response.data))
-  //   console.log('hey', Login)
   // }, [])
   return (
     <div className="bar-left">

@@ -8,6 +8,7 @@ import { Link, useParams } from 'react-router-dom';
 import defaultAvatar from '../../../../../assets/img/avatar.png'
 import 'swiper/css';
 import 'swiper/css/effect-cards';
+import {nanoid} from 'nanoid'
 
 
 const Infobtn = () => {
@@ -56,7 +57,7 @@ function Profile() {
             await axios.get('/Profile/' + login + '/Friends').then((response) => setFriends(response.data));
         }
         Fetch();
-    }, [myFriends, login])
+    }, [login])
     return (
         <div className="ProfileComponent-Activity-Friends">
             <motion.div
@@ -93,11 +94,10 @@ function Profile() {
                                 myFriends.length > 0 &&
                                 myFriends.map((e: any, i: number) => {
                                     return (
-                                        <div key={e.UserId + 'fr-' + i} className="friend-Profile">
+                                        <div key={nanoid()} className="friend-Profile">
                                             <div className="friend-info">
                                                 <Link to={'/profile/' + e.username}>
                                                     <img src={e.avatar} onError={(e: any) => {
-                                                        console.log(e.target);
                                                         e.target.src = defaultAvatar;
                                                     }
                                                     } alt="" />

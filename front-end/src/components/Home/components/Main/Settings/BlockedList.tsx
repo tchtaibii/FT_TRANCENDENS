@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import './Settings.scss'
 import axios from '../../../../../Interceptor/Interceptor'
-
+import {nanoid} from 'nanoid'
 
 
 function Blockedlist() {
     const [update, setUpdate] = useState(true);
     function UserB(props: any) {
         const Deblock = async () => {
-            console.log(props.friendshipId )
             await axios.post('/CancelRequest', { FriendshipId: props.idShip })
             setUpdate(!update)
         }
@@ -39,7 +38,7 @@ function Blockedlist() {
                 <div className="blockedListC">
                     <div className="usersBlocked">
                         {
-                            data.length > 0 ? data.map((e: any, number) => <UserB key={number + 'userBlocked'} idShip={e.friendshipId} avatar={e.avatar} username={e.username} />) : <p>No User Blocked</p>
+                            data.length > 0 ? data.map((e: any, number) => <UserB key={nanoid()} idShip={e.friendshipId} avatar={e.avatar} username={e.username} />) : <p>No User Blocked</p>
                         }
                     </div>
                 </div>

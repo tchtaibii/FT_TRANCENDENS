@@ -10,8 +10,6 @@ const initialState: twoFA | undefined = {
 }
 export const get2FA = createAsyncThunk('twoFA/get2FA', async () => {
     const response = await axios.get("/auth/isFA-enabled");
-    // console.log("admin/get", response.data)
-    //    console.log('axios data notification fetching', response.data);
     return response.data;
 });
 

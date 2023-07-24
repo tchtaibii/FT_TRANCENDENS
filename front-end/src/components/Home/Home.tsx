@@ -24,11 +24,11 @@ function Home(props: any) {
     };
     fetchData();
   }, []);
-  var IsLoading = useSelector((state: any) => (state.isLoading)).isLoading;
+
   return (
     <div className='Home'>
       <Router>
-        {IsLoading && DataLoader && <Loading />}
+        {!DataLoader && <Loading />}
         <div className="container-home">
           <LeftBar />
           <Suspense fallback={<><Loading /></>}>

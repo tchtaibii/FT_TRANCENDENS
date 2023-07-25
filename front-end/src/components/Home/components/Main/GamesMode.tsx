@@ -63,14 +63,7 @@ function GamesMode() {
 		<BOxGame key='Foot' idA='Foot' imgID='FootIMG' classB="FOOT" titleB="Football Mode" StitleB='Play like a Football Player' linkB="#" imgB={footBall} />,
 		<BOxGame key='BlackHole' idA='BlackHole' imgID='BlackHoleIMG' classB="BLACKHOLE" titleB="Black Hole" StitleB='Play and challenge the blackholes' linkB="#" imgB={blackHole} />,
 		<BOxGame key='friendA' idA='friendA' imgID='friendIMG' classB="friend" titleB="Friends Mode" StitleB='Social play, easy invites' linkB="#" imgB={friendI} />,
-	]
-	const GameModesArrMob = [
-		<BOxGameMob key='classicA' idA='classicA' imgID='classicIMG' classB="classic" titleB="Classic" StitleB='Challenge the computer' linkB="#" imgB={classicI} />,
-		<BOxGameMob key='aiA' idA='aiA' imgID='aiIMG' classB="ai" titleB="AI Mode" StitleB='Traditional gameplay' linkB="#" imgB={aiI} />,
-		<BOxGameMob key='aiA2' idA='aiA' imgID='friendIMG' classB="friend" titleB="Friends Mode" StitleB='Social play, easy invites' linkB="#" imgB={friendI} />,
-		<BOxGameMob key='friendA' idA='friendA' imgID='friendIMG' classB="friend" titleB="Friends Mode" StitleB='Social play, easy invites' linkB="#" imgB={friendI} />,
-	]
-
+	];
 	return (
 		<motion.div
 			initial={{ y: '100vh' }}
@@ -100,9 +93,6 @@ function GamesMode() {
 				>
 					{GameModesArr}
 				</OwlCarousel>
-			</div>
-			<div className="gamesmodeCont-mobile">
-				{GameModesArrMob}
 			</div>
 		</motion.div>
 	);

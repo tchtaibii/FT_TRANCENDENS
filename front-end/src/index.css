@@ -112,6 +112,15 @@ canvas {
     display: none !important;
 
   }
+  .profileDown{
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transform: translate(-27.5rem, 6rem);
+    
+  }
 
   .login-container{
     width: 100vw;
@@ -169,7 +178,7 @@ canvas {
   }
   .profileRE{
     position: relative;
-    top: -28rem;
+    top: -47rem;
   }
   .nav-mobile {
     display: block;
@@ -196,12 +205,20 @@ canvas {
   }
 
   .gamesmodeCont {
-    display: none;
+    /* display: none; */
   }
 
   .gamesmodeCont-mobile {
     display: flex;
   }
+.ProfileComponent-Activity-Friends .fa-Profile {
+  position: relative;
+  top: 32rem;
+  transform: translateX(17rem);
+}
+.ProfileComponent-Activity-Friends .fa-Profile .textActive, .ProfileComponent-Activity-Friends .fa-Profile .graph{
+  transform: translateX(17rem);
+}
 }
 .swiper-slide-shadow.swiper-slide-shadow-cards{
   background: rgba(0, 0, 0, 0);

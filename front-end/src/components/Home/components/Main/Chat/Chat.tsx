@@ -2,11 +2,13 @@ import emoji from '../../../../../assets/img/emojis.svg'
 import send from '../../../../../assets/img/send.svg'
 import GradienBox from '../../../../../tools/GradienBox'
 import './Chat.scss'
-
+import { motion } from 'framer-motion'
 import { Link, useParams } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
 import { nanoid } from 'nanoid'
+import checkBox from '../../../../../assets/img/checkbox.svg'
+import axios from '../../../../../Interceptor/Interceptor'
 
 function StartChat() {
 	return (
@@ -34,6 +36,23 @@ const SearchChat = () => {
 	)
 }
 
+function TypeGroup(props: any) {
+	return (
+		<div className="theType">
+			<div onClick={() => {
+				if (props.type === 'private')
+					props.setType({ protected: false, private: true, public: false })
+				if (props.type === 'public')
+					props.setType({ protected: false, private: false, public: true })
+				if (props.type === 'protected')
+					props.setType({ protected: true, private: false, public: false })
+			}} className={props.typeGroup[props.type] ? "checkbox isTrue" : "checkbox"}>
+				<img src={checkBox} />
+			</div>
+			<p>{props.type}</p>
+		</div>
+	)
+}
 
 function ChatContent(params: any) {
 
@@ -127,14 +146,43 @@ function ChatContent(params: any) {
 		</div>
 	)
 }
+type CreateRoomT = {
+	name: string,
+	password: string | null,
+	type: string
+}
 function Chat(props: any) {
+	const [isNewGroup, setNewGroup] = useState(false)
+	const [isDm, setDm] = useState(true);
+	const [typeGroup, setType] = useState({ protected: true, private: false, public: false });
 	function truncateString(str: string): string {
 		if (str.length > 30) {
 			return str.slice(0, 30 - 3) + '...';
 		}
 		return str;
 	}
-
+	const [CreateRoom, setRoom] = useState<CreateRoomT>({
+		name: "",
+		password: "",
+		type: "protected"
+	})
+	const handleChangeName = (e: any) => {
+		setRoom({ ...CreateRoom, name: e.target.value });
+	}
+	const handleChangePassword = (e: any) => {
+		setRoom({ ...CreateRoom, password: e.target.value });
+	}
+	useEffect(() => {
+		if (!typeGroup.protected) {
+			if (typeGroup.private)
+				setRoom({ ...CreateRoom, type: 'private', password: null });
+			else
+				setRoom({ ...CreateRoom, type: 'public', password: null });
+		}
+		else
+			setRoom({ ...CreateRoom, type: 'protected' });
+	}, [typeGroup])
+	console.log(CreateRoom);
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
 			<GradienBox mywidth="1201px" myheight="850px" myborder="40px">
@@ -142,29 +190,84 @@ function Chat(props: any) {
 					<div className="chatUsers">
 						<div className="chatUsersmesage">
 							<div className="headerLeftChat">
-								<div className="newClear">
-									<button className='new'>New Group</button>
-									<button onClick={async () => {
-									}} className='clear'>Clear Chat</button>
-								</div>
 								<div className="chatSearch">
 									<input type="text" placeholder='Search for a Message...' />
 									<button><SearchChat /></button>
 								</div>
 							</div>
+							<div className="button-switch">
+								<div className={!isDm ? "switch-back friend-active-btn" : 'switch-back all-active-btn'} />
+								<button onClick={() => !isDm && setDm(true)} className='all-btn'>DM's</button>
+								<button onClick={() => isDm && setDm(false)} className='friends-btn'>Groups</button>
+							</div>
+							<div className="newClear">
+								<button onClick={() => {
+									setNewGroup(true);
+								}} className='new'>New Group</button>
+							</div>
 							<div className="lastMessage">
-								<Link to={'/chat/' + 'tchtaibi'} key={nanoid()} className="chatUser">
-									<img src={''} alt="" />
-									<div className="textUserChat">
-										<h1>{'tchtaibi'}</h1>
-										<p>{truncateString('tdgudbhdshsdhudsuyuygdsyucdsyhuds')}</p>
-									</div>
-								</Link>
+								{
+									isDm &&
+									<Link to={'/chat/' + 'tchtaibi'} key={nanoid()} className="chatUser">
+										<img src={''} alt="" />
+										<div className="textUserChat">
+											<h1>{'tchtaibi'}</h1>
+											<p>{truncateString('tdgudbhdshsdhudsuyuygdsyucdsyhuds')}</p>
+										</div>
+									</Link>
+								}
+								{
+									isNewGroup && <motion.div
+										key='delete-pop'
+										initial={{ opacity: 0 }}
+										animate={{ opacity: 1 }}
+										exit={{ opacity: 0 }}
+										className="deleteFull popupChat">
+										<div className="newGroup">
+											<div className="newGroupC">
+												<div onClick={() => {
+
+												}} className="newGroupHeader">New Group</div>
+												<div className="contentNewGroup">
+													<div className="inputContainer"><input onChange={handleChangeName} type="text" placeholder='Name of Group' /></div>
+													<div style={{ width: '15.625rem', height: '2.188rem' }}>
+														{
+															typeGroup.protected && <div className="inputContainer"><input onChange={handleChangePassword} type="password" placeholder='Password' /></div>
+														}
+													</div>
+													<div className="typeGroup">
+														<TypeGroup typeGroup={typeGroup} setType={setType} type={'protected'} />
+														<TypeGroup typeGroup={typeGroup} setType={setType} type={'public'} />
+														<TypeGroup typeGroup={typeGroup} setType={setType} type={'private'} />
+													</div>
+													<div className="buttonNewGroup">
+														<button onClick={async () => {
+															console.log(CreateRoom);
+															
+															await axios.post('/room/create', { room: CreateRoom }).then((resp) => {
+																if (resp)
+																	setNewGroup(false);
+																else{
+																	alert('someting Wrong');
+																}
+															});
+
+														}} className='btnNewGrp'>Done</button>
+														<button onClick={() => {
+															setNewGroup(false);
+														}} className='btnNewGrp cancel'>Cancel</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</motion.div>
+								}
+
 							</div>
 						</div>
 					</div>
 					{
-						props.params == false ? <StartChat /> : <ChatContent users={users} admin={admin} pageOf={login} />
+						// props.params == false ? <StartChat /> : <ChatContent users={users} admin={admin} pageOf={login} />
 					}
 				</div>
 			</GradienBox>

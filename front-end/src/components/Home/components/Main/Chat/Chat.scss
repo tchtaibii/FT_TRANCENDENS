@@ -23,38 +23,39 @@
             gap: 2rem;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: start;
+
+            .newClear {
+                display: flex;
+                gap: toRem(8);
+                width: 100%;
+
+                button {
+                    width: toRem(144);
+                    height: toRem(37);
+                    background: rgba(35, 34, 36, 0.7);
+                    border-radius: toRem(19);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: #FFFFFF;
+                    font-family: 'SF';
+                    font-size: toRem(14);
+                    font-style: normal;
+                    font-weight: 500;
+                }
+
+                .clear {
+                    color: #ED5152;
+                }
+            }
 
             .headerLeftChat {
                 display: flex;
-                // width: toRem(295.93);
+                width: toRem(295.93);
                 flex-direction: column;
                 gap: toRem(22);
 
-                .newClear {
-                    display: flex;
-                    gap: toRem(8);
-                    width: 100%;
-
-                    button {
-                        width: toRem(144);
-                        height: toRem(37);
-                        background: rgba(35, 34, 36, 0.7);
-                        border-radius: toRem(19);
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        color: #FFFFFF;
-                        font-family: 'SF';
-                        font-size: toRem(14);
-                        font-style: normal;
-                        font-weight: 500;
-                    }
-
-                    .clear {
-                        color: #ED5152;
-                    }
-                }
 
                 .chatSearch {
                     display: flex;
@@ -405,5 +406,154 @@
     .Block {
         font-weight: 500;
         color: #ED5152;
+    }
+}
+
+.popupChat {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.newGroup {
+    width: toRem(354);
+    height: toRem(300);
+    padding: toRem(1);
+    background: linear-gradient(360deg, rgba(86, 153, 174, 1) 0%, rgba(225, 82, 83, 1) 100%);
+    filter: drop-shadow(0px toRem(4) toRem(40) rgba(0, 0, 0, 0.50));
+    border-radius: toRem(40);
+
+    .newGroupC {
+        width: 100%;
+        height: 100%;
+        border-radius: toRem(40);
+        background: #232225;
+        display: flex;
+        flex-direction: column;
+        gap: toRem(22);
+        padding: toRem(28);
+        padding-top: toRem(25);
+
+        .newGroupHeader {
+            width: toRem(296);
+            height: toRem(37);
+            border-radius: toRem(19);
+            background: #1C1B1D;
+            color: #FFF;
+            font-size: toRem(14);
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contentNewGroup {
+            width: toRem(296);
+            height: toRem(200);
+            border-radius: toRem(40);
+            background: #1C1B1D;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: toRem(25);
+            gap: toRem(13);
+
+            .inputContainer {
+                width: toRem(250);
+                height: toRem(35);
+                border-radius: toRem(40);
+                background: rgb(237, 81, 82);
+                background: linear-gradient(298deg, rgba(237, 81, 82, 1) 0%, rgba(86, 153, 174, 1) 100%);
+                padding: toRem(1);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                input[type=text],
+                input[type=password] {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: toRem(40);
+                    background: rgba(18, 18, 19, 1);
+                    padding-left: toRem(12);
+                    padding-right: toRem(8);
+                    color: rgba(255, 255, 255, 0.70);
+                    font-size: toRem(11);
+                    font-style: normal;
+                    font-weight: 300;
+                    line-height: normal;
+                }
+            }
+
+            .typeGroup {
+                display: flex;
+                align-items: center;
+                flex-direction: row-reverse;
+                padding-right: toRem(30);
+                justify-content: flex-start;
+                width: 100%;
+                gap: toRem(10);
+
+                .theType {
+                    display: flex;
+                    gap: toRem(5);
+
+                    p {
+                        color: #FFF;
+                        font-size: toRem(8.188);
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: normal;
+                    }
+
+                    .checkbox {
+                        width: toRem(11);
+                        height: toRem(11);
+                        border-radius: toRem(4);
+                        border: 0.512px solid #FFF;
+                        cursor: pointer;
+                        transition: all 0.4s ease-in-out;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        &:hover {
+                            background-color: rgba(0, 136, 122, 0.4);
+                        }
+
+                        img {
+                            width: toRem(5);
+                        }
+                    }
+
+                    .isTrue {
+
+                        background-color: rgba(0, 136, 122, 1);
+                    }
+                }
+            }
+
+            .buttonNewGroup {
+                display: flex;
+                gap: toRem(23);
+
+                button {
+                    width: toRem(80);
+                    height: toRem(30);
+                    background-color: #17AFA0;
+                    border-radius: toRem(19);
+                    font-size: toRem(14);
+                }
+
+                .cancel {
+                    background-color: #ED5152;
+                }
+
+            }
+        }
     }
 }

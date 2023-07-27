@@ -2,7 +2,7 @@ import emoji from '../../../../../assets/img/emojis.svg'
 import send from '../../../../../assets/img/send.svg'
 import GradienBox from '../../../../../tools/GradienBox'
 import './Chat.scss'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useParams } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
@@ -154,6 +154,7 @@ type CreateRoomT = {
 function Chat(props: any) {
 	const [isNewGroup, setNewGroup] = useState(false)
 	const [isDm, setDm] = useState(true);
+	const [isError, setError] = useState(false);
 	const [typeGroup, setType] = useState({ protected: true, private: false, public: false });
 	function truncateString(str: string): string {
 		if (str.length > 30) {
@@ -182,7 +183,6 @@ function Chat(props: any) {
 		else
 			setRoom({ ...CreateRoom, type: 'protected' });
 	}, [typeGroup])
-	console.log(CreateRoom);
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
 			<GradienBox mywidth="1201px" myheight="850px" myborder="40px">
@@ -216,52 +216,59 @@ function Chat(props: any) {
 										</div>
 									</Link>
 								}
-								{
-									isNewGroup && <motion.div
-										key='delete-pop'
-										initial={{ opacity: 0 }}
-										animate={{ opacity: 1 }}
-										exit={{ opacity: 0 }}
-										className="deleteFull popupChat">
-										<div className="newGroup">
-											<div className="newGroupC">
-												<div onClick={() => {
+								<AnimatePresence mode='wait'>
+									{
+										isNewGroup && <motion.div
+											key='chat-popup'
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											className="popupChat">
+											<motion.div
+												initial={{ scale: 0 }}
+												animate={{ scale: 1 }}
+												exit={{ scale: 0 }}
+												className="newGroup">
+												<div className="newGroupC">
+													<div onClick={() => {
 
-												}} className="newGroupHeader">New Group</div>
-												<div className="contentNewGroup">
-													<div className="inputContainer"><input onChange={handleChangeName} type="text" placeholder='Name of Group' /></div>
-													<div style={{ width: '15.625rem', height: '2.188rem' }}>
-														{
-															typeGroup.protected && <div className="inputContainer"><input onChange={handleChangePassword} type="password" placeholder='Password' /></div>
-														}
-													</div>
-													<div className="typeGroup">
-														<TypeGroup typeGroup={typeGroup} setType={setType} type={'protected'} />
-														<TypeGroup typeGroup={typeGroup} setType={setType} type={'public'} />
-														<TypeGroup typeGroup={typeGroup} setType={setType} type={'private'} />
-													</div>
-													<div className="buttonNewGroup">
-														<button onClick={async () => {
-															console.log(CreateRoom);
-															
-															await axios.post('/room/create', { room: CreateRoom }).then((resp) => {
-																if (resp)
-																	setNewGroup(false);
-																else{
-																	alert('someting Wrong');
-																}
-															});
+													}} className="newGroupHeader">New Group</div>
+													<div className="contentNewGroup">
+														<div className="inputContainer"><input onChange={handleChangeName} type="text" placeholder='Name of Group' /></div>
+														<div style={{ width: '15.625rem', height: '2.188rem' }}>
+															{
+																typeGroup.protected && <div className="inputContainer"><input onChange={handleChangePassword} type="password" placeholder='Password' /></div>
+															}
+														</div>
+														<div className="typeGroup">
+															<TypeGroup typeGroup={typeGroup} setType={setType} type={'protected'} />
+															<TypeGroup typeGroup={typeGroup} setType={setType} type={'public'} />
+															<TypeGroup typeGroup={typeGroup} setType={setType} type={'private'} />
+														</div>
+														<div className="buttonNewGroup">
+															<button onClick={async () => {
+																console.log(CreateRoom);
 
-														}} className='btnNewGrp'>Done</button>
-														<button onClick={() => {
-															setNewGroup(false);
-														}} className='btnNewGrp cancel'>Cancel</button>
+																await axios.post('/room/create', { room: CreateRoom }).then((resp) => {
+																	if (resp)
+																		setNewGroup(false);
+																	else {
+																		setError(true);
+																	}
+																});
+
+															}} className='btnNewGrp' disabled={CreateRoom.type === 'protected' && (CreateRoom.password?.length === 0 || CreateRoom.password === null)}>Done</button>
+															<button onClick={() => {
+																setNewGroup(false);
+															}} className='btnNewGrp cancel'>Cancel</button>
+															{ isError && <p className='Error statusInput ChatError'>Something Wrong!</p>}
+														</div>
 													</div>
 												</div>
-											</div>
-										</div>
-									</motion.div>
-								}
+											</motion.div>
+										</motion.div>
+									}
+								</AnimatePresence>
 
 							</div>
 						</div>

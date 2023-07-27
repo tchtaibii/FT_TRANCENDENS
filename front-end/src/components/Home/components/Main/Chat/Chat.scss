@@ -17,7 +17,6 @@
         padding-right: toRem(5);
 
         .chatUsersmesage {
-            // margin-top: toRem(153);
             width: 100%;
             height: 100%;
             gap: 2rem;
@@ -68,7 +67,6 @@
                     padding-right: toRem(16);
 
                     input {
-                        // width: 100%;
                         flex: 1;
                         height: 100%;
                         font-style: normal;
@@ -380,9 +378,6 @@
     gap: toRem(14);
     flex-direction: column;
     padding-top: toRem(11);
-
-    // justify-content: center;
-    // align-items: center;
     position: absolute;
     background: rgba(35, 34, 37, 0.9);
     box-shadow: 0px toRem(4) toRem(40) rgba(0, 0, 0, 0.5);
@@ -416,14 +411,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 0, 0, 0.4);
     z-index: 99999999999;
     border-radius: toRem(40);
     position: absolute;
     left: 0;
     top: 0;
-    filter: drop-shadow(0px toRem(4) toRem(40) rgba(0, 0, 0, 0.8));
-    backdrop-filter: blur(toRem(3));
+    filter: drop-shadow(0px toRem(4) toRem(40) rgba(0, 0, 0, 0.9));
 }
 
 .newGroup {

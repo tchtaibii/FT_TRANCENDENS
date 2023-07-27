@@ -105,9 +105,34 @@ async createRoomAndMembership(@Body() createRoomWithMembers: CreateRoomwithMemeb
     async getRooms(@Req() req) {
       const userId = req.user.UserId;
       const messages = await this.messagesservice.getRooms(userId);
-        return messages;
+    const msg= messages.map(room => ({
+        name: room.RoomNAme,
+        userid: room.RoomId,
+        lastMessage: room.Message.length > 0 ? {
+        content: room.Message[0].Content,
+      } : null,
+    }));
+
+    return msg;
     }
 
+    @Get('/dms')
+    async getdms(@Req() req) {  
+      const userId = req.user.UserId;
+      const messages = await this.messagesservice.getroomsdms(userId);
+      const msg= messages.map(room => ({
+        name: room.members[1].member.username,
+        avatar: room.members[1].member.avatar,
+        status: room.members[1].member.status,
+        userid: room.members[1].member.UserId,
+        lastMessage: room.Message.length > 0 ? {
+        content: room.Message[0].Content,
+      } : null,
+      }
+      )
+      );
+      return msg;
+    }
     // @Post('joinroom/:roomId')
     // async joinexistedroom(@Req() req, @Param('roomId', ParseIntPipe) roomId: number) {
       

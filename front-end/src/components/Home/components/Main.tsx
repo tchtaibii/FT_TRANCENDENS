@@ -14,6 +14,7 @@ import Settings from './Main/Settings/Settings'
 // import Error404 from './404'
 import { AnimatePresence } from 'framer-motion';
 import Activity from './Activity';
+import Game from './Main/Game/Game'
 
 // const Activity = lazy(() => import('./Activity'));
 const ProfileProfile = lazy(() => import('./Main/Profile/ProfileProfile'));
@@ -61,6 +62,7 @@ function Main(props: any) {
 						<Route path="profile/:login" element={<><Profile /></>} />
 						<Route path="settings/" element={<><Settings /></>} />
 						<Route path="/leaderBoard" element={<LeaderBoard />} />
+						<Route path="/game" element={<Game />} />
 						<Route path="/404" element={<Error404 />} />
 						<Route path="*" element={<Error404 />} />
 

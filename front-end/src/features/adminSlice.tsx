@@ -8,6 +8,7 @@ type adminType = {
     status: boolean,
     badge: number | null,
     isLoader : boolean,
+    UserId: string
 }
 const initialState: adminType | undefined = {
     username: "user",
@@ -17,6 +18,7 @@ const initialState: adminType | undefined = {
     status: false,
     badge: null,
     isLoader: false,
+    UserId: ''
 }
 export const getAdmin = createAsyncThunk('admin/getAdmin', async () => {
     const response = await axios.get("/Home/MyProfile");
@@ -55,7 +57,7 @@ const Admin = createSlice({
             })
             .addCase(getAdmin.fulfilled, (state, action) => {
                 // state.loading = false;
-                const { username, level, lastGame, avatar, status, badge } = action.payload;
+                const { username, level, lastGame, avatar, status, badge, UserId } = action.payload;
                 state.username = username;
                 state.level = level;
                 state.lastGame = lastGame;
@@ -63,6 +65,7 @@ const Admin = createSlice({
                 state.status = status;
                 state.badge = badge;
                 state.isLoader = true;
+                state.UserId = UserId;
             })
             .addCase(getAdmin.rejected, (state) => {
                 // state.loading = false;

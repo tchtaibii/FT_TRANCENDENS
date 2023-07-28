@@ -126,7 +126,7 @@ const Ball = ({
                 return newScore;
               });
               setBallspeed(() => 1);
-            } else if (newX > 36.875) {
+            } else if (newX > 35.7) {
               setLeftScore((prevScore: number) => {
                 const newScore = prevScore + 1;
                 if (newScore / 2 === 5) {

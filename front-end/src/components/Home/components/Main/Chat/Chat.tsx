@@ -9,6 +9,8 @@ import { useOnClickOutside } from 'usehooks-ts'
 import { nanoid } from 'nanoid'
 import checkBox from '../../../../../assets/img/checkbox.svg'
 import axios from '../../../../../Interceptor/Interceptor'
+import grpsImg from '../../../../../assets/img/groups.jpeg'
+import { useSelector } from 'react-redux'
 
 function StartChat() {
 	return (
@@ -55,12 +57,12 @@ function TypeGroup(props: any) {
 }
 
 function ChatContent(params: any) {
-
+	const MyUserId = useSelector((state:any) => state.admin).UserId;
 	const [threDots, setThreDots] = useState(false)
 	const ref = useRef(null)
 	const handleClickOutside = () => { setThreDots(false) }
 	useOnClickOutside(ref, handleClickOutside)
-
+	console.log('hoil', MyUserId)
 	const converastionWith = (): userType | undefined => {
 		return params.users.length > 0 ? params.users.filter((e: userType) => e.login === params.pageOf)[0] : undefined;
 	};
@@ -87,6 +89,7 @@ function ChatContent(params: any) {
 			setMessageTyping('');
 		}
 	}
+
 	return (
 		<div className="chatContent">
 			<div className="header">
@@ -152,6 +155,8 @@ type CreateRoomT = {
 	type: string
 }
 function Chat(props: any) {
+	const [Dms, setTheDms] = useState([]);
+	const [Grps, setGrps] = useState([]);
 	const [isNewGroup, setNewGroup] = useState(false)
 	const [isDm, setDm] = useState(true);
 	const [isError, setError] = useState(false);
@@ -184,6 +189,16 @@ function Chat(props: any) {
 		else
 			setRoom({ ...CreateRoom, type: 'protected' });
 	}, [typeGroup])
+
+	useEffect(() => {
+		const FetchDms = async () => {
+			await axios.get('/room/dms').then((resp: any) => setTheDms(resp.data));
+			await axios.get('/room/rooms').then((resp: any) => setGrps(resp.data));
+
+		}
+		FetchDms();
+	}, [])
+
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
 			<GradienBox mywidth="1201px" myheight="850px" myborder="40px">
@@ -208,17 +223,49 @@ function Chat(props: any) {
 								}} className='new'>New Group</button>
 							</div>
 							<div className="lastMessage">
-								{
-									isDm &&
-									<Link to={'/chat/' + 'tchtaibi'} key={nanoid()} className="chatUser">
-										<img src={''} alt="" />
-										<div className="textUserChat">
-											<h1>{'tchtaibi'}</h1>
-											<p>{truncateString('tdgudbhdshsdhudsuyuygdsyucdsyhuds')}</p>
-										</div>
-									</Link>
-								}
 								<AnimatePresence mode='wait'>
+									{
+										isDm ? (
+											Dms.length > 0 &&
+											Dms.map((e: any, i: number) => {
+												return (
+													<motion.div
+														initial={{ opacity: 0 }}
+														animate={{ opacity: 1 }}
+														exit={{ opacity: 0 }}
+														transition={{ delay: 0.2 * i, duration: 0.3 }}
+													>
+														<Link to={'/chat/' + e.userid} key={nanoid()} className="chatUser">
+															<img src={e.avatar ? e.avatar : ''} />
+															<div className="textUserChat">
+																<h1>{e.name}</h1>
+																<p>{!e.lastMessage ? `Say Hi to ${e.name}` : truncateString(e.lastMessage)}</p>
+															</div>
+														</Link>
+													</motion.div>
+												)
+											})
+										) : (Grps.length > 0 &&
+											Grps.map((e: any, i: number) => {
+												return (
+													<motion.div
+														initial={{ opacity: 0 }}
+														animate={{ opacity: 1 }}
+														exit={{ opacity: 0 }}
+														transition={{ delay: 0.2 * i, duration: 0.3 }}
+													>
+														<Link to={'/chat/' + e.userid} key={nanoid()} className="chatUser">
+															<img src={grpsImg} />
+															<div className="textUserChat">
+																<h1>{e.name}</h1>
+																<p>{!e.lastMessage ? `Say Hi to ${e.name}` : truncateString(e.lastMessage)}</p>
+															</div>
+														</Link>
+													</motion.div>
+												)
+											}))
+
+									}
 									{
 										isPopup && <motion.div
 											key='chat-popup'

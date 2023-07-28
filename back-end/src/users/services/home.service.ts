@@ -39,13 +39,13 @@ export class HomeService {
 
         if (user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !user.avatar.search('/uploads/'))
             avatar = process.env.HOST + process.env.PORT + user.avatar;
-	
 		return {
 			lastGame : lastGame,
             avatar : avatar,
             username : user.username,
             level : user.level,
             badge : badge,
+			UserId : user.UserId,
             status : user.status,
 		}
 

@@ -86,10 +86,11 @@ function ChatContent(params: any) {
 	// }
 	useEffect(() => {
 		const FetchData = async () => {
-			await axios.get(`/room/${params.userId}/messages`).then((rsp) => setMessages(rsp.data));
+			await axios.get(`/room/${params.userId}/messages`).then((rsp) => setMessages(rsp.data.reverse()));
 			await axios.get(`/room/${params.userId}/RoomData`).then((rsp) => setData(rsp.data));
 		}
 		FetchData();
+
 	},[params.userId]);
 	console.log('Data :', Data)
 	
@@ -98,8 +99,8 @@ function ChatContent(params: any) {
 			<div className="header">
 				<div className="infoUser">
 					{/* userImg */}
-					{/* <div style={{backgroundImage: `url(${Data.avatar})`}} className="img"></div> */}
-					<img src={Data.avatar} alt="" />
+					<div style={{backgroundImage: `url(${Data.avatar})`}} className="img"></div>
+					{/* <img src={Data.avatar} alt="" /> */}
 					<div className="nameAndStatus">
 						{/* name */}
 						<h1>{Data.name}<span className={Data.isChannel && Data.status === true ? 'activeUser' : ''}></span></h1>
@@ -142,7 +143,6 @@ function ChatContent(params: any) {
 								<p className='theTextMsg'>{e.Content}</p>
 							</div>
 						);
-
 					})}
 				</div>
 			</div>
@@ -197,7 +197,7 @@ function Chat(props: any) {
 			await axios.get('/room/rooms').then((resp: any) => setGrps(resp.data));
 		}
 		FetchDms();
-	}, [])
+	}, [isNewGroup, isDm])
 	console.log(Dms);
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">

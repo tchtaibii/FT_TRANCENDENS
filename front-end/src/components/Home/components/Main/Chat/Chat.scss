@@ -183,10 +183,13 @@
                 gap: toRem(37);
                 align-items: center;
 
-                img {
+                .img {
                     width: toRem(86.15);
-                    height: toRem(90);
+                    height: toRem(86.15);
+                    // object-fit: cover;
                     border-radius: toRem(30);
+                    background-size: cover;
+                    background-position: center;
                 }
 
                 .nameAndStatus {

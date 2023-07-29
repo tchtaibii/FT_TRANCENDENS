@@ -58,7 +58,7 @@ function Main(props: any) {
 					<Routes>
 						<Route path="/" element={<AnimatePresence mode='wait'><Hero /><GamesMode /><BestPlayers /></AnimatePresence>} />
 						<Route path="chat" element={<Chat params={false} />} />
-						<Route path="chat/:login" element={<Chat params={true} />} />
+						<Route path="chat/:userId" element={<Chat params={true} />} />
 						<Route path="profile/:login" element={<><Profile /></>} />
 						<Route path="settings/" element={<><Settings /></>} />
 						<Route path="/leaderBoard" element={<LeaderBoard />} />
@@ -74,7 +74,7 @@ function Main(props: any) {
 					<Route path="/settings" element={<Side2 isN={1} />} />
 					<Route path="/leaderBoard" element={<Side2 isN={1} />} />
 					<Route path="chat" element={<Side2 isN={1} />} />
-					<Route path="chat/:login" element={<Side2 isN={1} />} />
+					<Route path="chat/:userId" element={<Side2 isN={1} />} />
 					<Route path="/profile/:login" element={<Side2 isN={0} />} />
 					<Route path="/404" element={<Side2 isN={1} />} />
 					<Route path="*" element={<Side2 isN={1} />} />

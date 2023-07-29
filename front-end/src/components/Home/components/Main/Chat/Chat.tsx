@@ -57,47 +57,53 @@ function TypeGroup(props: any) {
 }
 
 function ChatContent(params: any) {
-	const MyUserId = useSelector((state:any) => state.admin).UserId;
-	const [threDots, setThreDots] = useState(false)
+	const myData = useSelector((state: any) => state.admin);
+
+	const [threDots, setThreDots] = useState(false);
+	const [AllMsgs, setMessages] = useState([]);
+	const [Data, setData] = useState<any>({isChannel: false, avatar: '', name: '', status: false});
+	
 	const ref = useRef(null)
 	const handleClickOutside = () => { setThreDots(false) }
 	useOnClickOutside(ref, handleClickOutside)
-	console.log('hoil', MyUserId)
-	const converastionWith = (): userType | undefined => {
-		return params.users.length > 0 ? params.users.filter((e: userType) => e.login === params.pageOf)[0] : undefined;
-	};
-	const [AllMsg, setAllMsg] = useState<MessageType[]>(params.messages);
-	const [oneTime, setOnetime] = useState(true);
-	if (params.messages.length > 0 && oneTime === true) {
-		setOnetime(false);
-		setAllMsg(params.messages);
-	}
-	const [messageTyping, setMessageTyping] = useState<string>('');
-	const handleKeyPress = (event: any) => {
-		if (event.key === 'Enter' && !event.shiftKey) {
-			event.preventDefault();
-			if (messageTyping.length > 0) {
-				setAllMsg([{
-					id: params.messages.length + 1,
-					from: params.admin.login,
-					to: params.pageOf,
-					message: messageTyping,
-					date: Date.now(),
-					isLast: false
-				}, ...AllMsg])
-			}
-			setMessageTyping('');
-		}
-	}
 
+	const [messageTyping, setMessageTyping] = useState<string>('');
+	// const handleKeyPress = (event: any) => {
+	// 	if (event.key === 'Enter' && !event.shiftKey) {
+	// 		event.preventDefault();
+	// 		if (messageTyping.length > 0) {
+	// 			setAllMsg([{
+	// 				id: params.messages.length + 1,
+	// 				from: params.admin.login,
+	// 				to: params.pageOf,
+	// 				message: messageTyping,
+	// 				date: Date.now(),
+	// 				isLast: false
+	// 			}, ...AllMsg])
+	// 		}
+	// 		setMessageTyping('');
+	// 	}
+	// }
+	useEffect(() => {
+		const FetchData = async () => {
+			await axios.get(`/room/${params.userId}/messages`).then((rsp) => setMessages(rsp.data));
+			await axios.get(`/room/${params.userId}/RoomData`).then((rsp) => setData(rsp.data));
+		}
+		FetchData();
+	},[params.userId]);
+	console.log('Data :', Data)
+	
 	return (
 		<div className="chatContent">
 			<div className="header">
 				<div className="infoUser">
-					<img src={converastionWith() !== undefined ? converastionWith()?.avatar : ''} alt="" />
+					{/* userImg */}
+					{/* <div style={{backgroundImage: `url(${Data.avatar})`}} className="img"></div> */}
+					<img src={Data.avatar} alt="" />
 					<div className="nameAndStatus">
-						<h1>{converastionWith() !== undefined ? converastionWith()?.login : 'Guest'}<span className={(converastionWith() !== undefined ? converastionWith()?.status === true ? 'activeUser' : '' : '')}></span></h1>
-						<p>{converastionWith() !== undefined && converastionWith()?.status === true ? 'Active Now' : 'Disconnected'}</p>
+						{/* name */}
+						<h1>{Data.name}<span className={Data.isChannel && Data.status === true ? 'activeUser' : ''}></span></h1>
+						<p>{Data.isChannel && Data.status === true ? 'Active Now' : 'Disconnected'}</p>
 					</div>
 				</div>
 				<div ref={ref} >
@@ -116,30 +122,24 @@ function ChatContent(params: any) {
 			<div className="content">
 				<div className="messageSend">
 					<button><img src={emoji} alt="" /></button>
-					<textarea onKeyDown={handleKeyPress} value={messageTyping} onChange={(e: any) => {
+					{/* onKeyDown={handleKeyPress} */}
+					<textarea value={messageTyping} onChange={(e: any) => {
 						setMessageTyping(e.target.value);
 					}} placeholder='Type a message ...' name="" id=""></textarea>
 					<button onClick={() => {
 						if (messageTyping.length > 0) {
-							setAllMsg([{
-								id: params.messages.length + 1,
-								from: params.admin.login,
-								to: params.pageOf,
-								message: messageTyping,
-								date: Date.now(),
-								isLast: false
-							}, ...AllMsg])
+
 							setMessageTyping('');
 						}
 
 					}} className='send'><img src={send} alt="" /></button>
 				</div>
 				<div className="messages">
-					{AllMsg.filter((e: any) => params.pageOf === e.from || params.pageOf === e.to).map((e: MessageType) => {
+					{AllMsgs.map((e: any) => {
 						return (
-							<div key={nanoid()} className={e.from === params.pageOf ? 'messageShow' : "myMessage messageShow"}>
-								<img src={e.from === params.pageOf ? converastionWith()?.avatar : params.admin.avatar} alt="" />
-								<p className='theTextMsg'>{e.message}</p>
+							<div key={nanoid()} className={e.UserId === myData.UserId ? "myMessage messageShow" : 'messageShow'}>
+								<img src={e.UserId === myData.UserId ? myData?.avatar : e.user.avatar} alt="" />
+								<p className='theTextMsg'>{e.Content}</p>
 							</div>
 						);
 
@@ -155,6 +155,7 @@ type CreateRoomT = {
 	type: string
 }
 function Chat(props: any) {
+	const { userId } = useParams();
 	const [Dms, setTheDms] = useState([]);
 	const [Grps, setGrps] = useState([]);
 	const [isNewGroup, setNewGroup] = useState(false)
@@ -194,11 +195,10 @@ function Chat(props: any) {
 		const FetchDms = async () => {
 			await axios.get('/room/dms').then((resp: any) => setTheDms(resp.data));
 			await axios.get('/room/rooms').then((resp: any) => setGrps(resp.data));
-
 		}
 		FetchDms();
 	}, [])
-
+	console.log(Dms);
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
 			<GradienBox mywidth="1201px" myheight="850px" myborder="40px">
@@ -235,11 +235,11 @@ function Chat(props: any) {
 														exit={{ opacity: 0 }}
 														transition={{ delay: 0.2 * i, duration: 0.3 }}
 													>
-														<Link to={'/chat/' + e.userid} key={nanoid()} className="chatUser">
+														<Link to={'/chat/' + e.roomid} key={nanoid()} className="chatUser">
 															<img src={e.avatar ? e.avatar : ''} />
 															<div className="textUserChat">
 																<h1>{e.name}</h1>
-																<p>{!e.lastMessage ? `Say Hi to ${e.name}` : truncateString(e.lastMessage)}</p>
+																<p>{!e.lastMessage ? `Say Hi to ${e.name}` : truncateString(e.lastMessage.content)}</p>
 															</div>
 														</Link>
 													</motion.div>
@@ -254,7 +254,7 @@ function Chat(props: any) {
 														exit={{ opacity: 0 }}
 														transition={{ delay: 0.2 * i, duration: 0.3 }}
 													>
-														<Link to={'/chat/' + e.userid} key={nanoid()} className="chatUser">
+														<Link to={'/chat/' + e.roomid} key={nanoid()} className="chatUser">
 															<img src={grpsImg} />
 															<div className="textUserChat">
 																<h1>{e.name}</h1>
@@ -327,7 +327,7 @@ function Chat(props: any) {
 						</div>
 					</div>
 					{
-						// props.params == false ? <StartChat /> : <ChatContent users={users} admin={admin} pageOf={login} />
+						props.params == false ? <StartChat /> : <ChatContent userId={userId} />
 					}
 				</div>
 			</GradienBox>

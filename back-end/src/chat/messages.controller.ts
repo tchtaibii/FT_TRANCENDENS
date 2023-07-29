@@ -112,6 +112,7 @@ export class RoomsController {
     const userId = req.user.UserId;
     const messages = await this.messagesservice.getRooms(userId);
     const msg = messages.map(room => ({
+      roomid: room.RoomId,
       name: room.RoomNAme,
       lastMessage: room.Message.length > 0 ? {
         content: room.Message[0].Content,

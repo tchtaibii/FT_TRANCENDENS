@@ -99,12 +99,10 @@ function ChatContent(params: any) {
 			<div className="header">
 				<div className="infoUser">
 					{/* userImg */}
-					<div style={{backgroundImage: `url(${Data.avatar})`}} className="img"></div>
-					{/* <img src={Data.avatar} alt="" /> */}
+					<div style={{backgroundImage: `url(${!Data.isChannel ? Data.avatar : grpsImg})`}} className="img"></div>
 					<div className="nameAndStatus">
-						{/* name */}
-						<h1>{Data.name}<span className={Data.isChannel && Data.status === true ? 'activeUser' : ''}></span></h1>
-						<p>{Data.isChannel && Data.status === true ? 'Active Now' : 'Disconnected'}</p>
+						<h1>{Data.name}<span className={!Data.isChannel ? (Data.status === true ? 'activeUser' : '') : 'room'}></span></h1>
+						<p>{!Data.isChannel ? (Data.status === true ? 'Active Now' : 'Disconnected') : ''}</p>
 					</div>
 				</div>
 				<div ref={ref} >
@@ -197,8 +195,7 @@ function Chat(props: any) {
 			await axios.get('/room/rooms').then((resp: any) => setGrps(resp.data));
 		}
 		FetchDms();
-	}, [isNewGroup, isDm])
-	console.log(Dms);
+	}, [])
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
 			<GradienBox mywidth="1201px" myheight="850px" myborder="40px">
@@ -228,14 +225,18 @@ function Chat(props: any) {
 										isDm ? (
 											Dms.length > 0 &&
 											Dms.map((e: any, i: number) => {
+												let j = i;
+												if (i > 5)
+													j = 0;
 												return (
 													<motion.div
 														initial={{ opacity: 0 }}
 														animate={{ opacity: 1 }}
 														exit={{ opacity: 0 }}
-														transition={{ delay: 0.2 * i, duration: 0.3 }}
+														transition={{ delay: 0.07 * j, duration: 0.1 }}
+														key={e.roomid + '-user'}
 													>
-														<Link to={'/chat/' + e.roomid} key={nanoid()} className="chatUser">
+														<Link to={'/chat/' + e.roomid} className="chatUser">
 															<img src={e.avatar ? e.avatar : ''} />
 															<div className="textUserChat">
 																<h1>{e.name}</h1>
@@ -245,16 +246,22 @@ function Chat(props: any) {
 													</motion.div>
 												)
 											})
-										) : (Grps.length > 0 &&
+										) : (
+											
+											Grps.length > 0 &&
 											Grps.map((e: any, i: number) => {
+												let j = i;
+												if (i > 5)
+													j = 0;
 												return (
 													<motion.div
 														initial={{ opacity: 0 }}
 														animate={{ opacity: 1 }}
 														exit={{ opacity: 0 }}
-														transition={{ delay: 0.2 * i, duration: 0.3 }}
+														transition={{ delay: 0.07 * j, duration: 0.1 }}
+														key={e.roomid + '-group'}
 													>
-														<Link to={'/chat/' + e.roomid} key={nanoid()} className="chatUser">
+														<Link to={'/chat/' + e.roomid}  className="chatUser">
 															<img src={grpsImg} />
 															<div className="textUserChat">
 																<h1>{e.name}</h1>
@@ -298,8 +305,9 @@ function Chat(props: any) {
 															<div className="buttonNewGroup">
 																<button onClick={async () => {
 																	console.log(CreateRoom);
-																	await axios.post('/room/create', { room: CreateRoom }).then((resp) => {
+																	await axios.post('/room/create', { room: CreateRoom }).then(async (resp) => {
 																		if (resp) {
+																			// await axios.get('/room/rooms').then((resp: any) => setGrps(resp.data));
 																			setNewGroup(false);
 																			setPopUp(false);
 																		}
@@ -309,7 +317,7 @@ function Chat(props: any) {
 																	});
 
 																}} className='btnNewGrp' disabled={CreateRoom.type === 'protected' && (CreateRoom.password?.length === 0 || CreateRoom.password === null)}>Done</button>
-																<button onClick={() => {
+																<button onClick={ () => {
 																	setNewGroup(false);
 																	setPopUp(false);
 																}} className='btnNewGrp cancel'>Cancel</button>

@@ -446,36 +446,52 @@ export class MessagesService {
         //   return null;
         return messages;
     }
-    async getroomsdms(userid: string) {
-        const messages = await this.prisma.room.findMany({
+    
+    async getroomsdms(userid: string)
+    {
+    const messages = await this.prisma.room.findMany({
             where: {
-                members: {
-                    some: {
-                        UserId: userid,
-                    },
+            members: {
+                some: {
+                UserId: userid,
+                member : {
+                    // ReceiverFriendships : {
+                    // some : {
+                    //         Accepted : true,
+                    //         blockedByReceiver : false,
+                    //         blockedBySender : false,
+                    //     }
+                    // },
+                    // SenderFriendships : {
+                    // some : {
+                    //         Accepted : true,
+                    //         blockedByReceiver : false,
+                    //         blockedBySender : false,
+                    //     }
+                    // }
+                }
                 },
-                ischannel: false,
+                
+            },
+            ischannel : false,
+
             },
             include: {
-                Message: {
-                    select: {
-                        RoomId: true,
-                        Content: true,
-                    },
-                    orderBy: {
-                        SendTime: 'desc',
-                    },
-                    take: 1
+            Message :{
+                orderBy :{
+                SendTime : 'desc',
                 },
-                members: {
-                    include: {
-                        member: {
+                take : 1
+            },
+            members: {
+                include : {
+                member: {
                             select: {
-                                avatar: true,
-                                username: true,
-                                status: true,
-                                UserId: true,
-                            },
+                            avatar : true,
+                            username: true,
+                            status: true,
+                            UserId : true,
+                          },
                         },
                     },
                 },

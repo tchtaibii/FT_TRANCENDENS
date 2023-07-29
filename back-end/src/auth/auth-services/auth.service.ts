@@ -53,11 +53,21 @@ export class AuthService {
 
 	async checkvaliditionof2fa(user : User, code)
 	{
+		const FA : User = await this.prisma.user.findFirst({
+			where : {
+				UserId : user.UserId,
+			}
+		})
+ 
 		const verify = otplib.authenticator.check(code, user.FAsecret);
-		await this.prisma.user.update({
-			where : {UserId : user.UserId},
-			data : {FA_On : verify},
-		});
+
+		if (!FA.FA_On && verify)
+		{
+			await this.prisma.user.update({
+				where : {UserId : user.UserId},
+				data : {FA_On : verify},
+			});
+		}
 		return verify;
 	}
 

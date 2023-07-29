@@ -108,10 +108,11 @@ export class RoomsController {
   };
 
   @Get('/rooms')
-  async getRooms(@Req() req) {
-    const userId = req.user.UserId;
-    const messages = await this.messagesservice.getRooms(userId);
+  async getRooms() {
+   // const userId = req.user.UserId;
+    const messages = await this.messagesservice.getRooms();
     const msg = messages.map(room => ({
+      roomtype : room.Type,
       roomid: room.RoomId,
       name: room.RoomNAme,
       lastMessage: room.Message.length > 0 ? {

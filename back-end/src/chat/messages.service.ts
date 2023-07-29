@@ -422,15 +422,10 @@ export class MessagesService {
         }
     }
 
-    async getRooms(userid: string) {
+    async getRooms() {
 
         const messages = await this.prisma.room.findMany({
             where: {
-                members: {
-                    some: {
-                        UserId: userid,
-                    },
-                },
                 ischannel: true,
             },
             include: {

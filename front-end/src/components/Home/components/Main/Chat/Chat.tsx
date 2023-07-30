@@ -61,11 +61,11 @@ function TypeGroup(props: any) {
 
 function ChatContent(params: any) {
 	const myData = useSelector((state: any) => state.admin);
-	const [Checker, setCheck] = useState(false);
+	const [Checker, setCheck] = useState<boolean | null>(null);
 	const [threDots, setThreDots] = useState(false);
 	const [AllMsgs, setMessages] = useState([]);
 	const [Socket, setSocket] = useState<any>(null);
-	const [Data, setData] = useState<any>({ isChannel: false, avatar: '', name: '', status: false });
+	const [Data, setData] = useState<any>({ isChannel: false, avatar: '', name: '', status: false, type: '' });
 	const ref = useRef(null)
 	// const token = useSelector((state: any) => state.token);
 
@@ -92,6 +92,14 @@ function ChatContent(params: any) {
 		}
 		checkMember();
 	}, [])
+	useEffect(() => {
+		if (Checker === false)
+		{
+			params.setPop(true);
+			params.setDisplay({ display: true, name: Data.name, roomId: params.userId, type: Data.type, password: null });
+		}
+	},[Checker, Data])
+	console.log(Checker);
 
 	useEffect(() => {
 
@@ -117,8 +125,6 @@ function ChatContent(params: any) {
 		}
 	}, [Socket])
 
-
-
 	useEffect(() => {
 		const FetchData = async () => {
 			await axios.get(`/room/${params.userId}/messages`).then((rsp) => setMessages(rsp.data.reverse()));
@@ -129,53 +135,59 @@ function ChatContent(params: any) {
 	}, [params.userId]);
 	return (
 		<div className="chatContent">
-			<div className="header">
-				<div className="infoUser">
-					{/* userImg */}
-					<div style={{ backgroundImage: `url(${!Data.isChannel ? Data.avatar : grpsImg})` }} className="img"></div>
-					<div className="nameAndStatus">
-						<h1>{Data.name}<span className={!Data.isChannel ? (Data.status === true ? 'activeUser' : '') : 'room'}></span></h1>
-						<p>{!Data.isChannel ? (Data.status === true ? 'Active Now' : 'Disconnected') : ''}</p>
-					</div>
-				</div>
-				<div ref={ref} >
-					{
-						threDots && <div className="threedots">
-							<button>Invite to play</button>
-							<button className='Block'>Block</button>
-						</div>
-					}
-					<button onClick={() => {
-						setThreDots(!threDots);
-					}} className="more"><ThreeDots /></button>
-				</div>
-
-			</div>
-			<div className="content">
-				<div className="messageSend">
-					<button><img src={emoji} alt="" /></button>
-
-					<textarea onKeyDown={handleKeyPress} value={messageTyping} onChange={(e: any) => {
-						setMessageTyping(e.target.value);
-					}} placeholder='Type a message ...' name="" id=""></textarea>
-					<button onClick={() => {
-						if (messageTyping.length > 0) {
-							handleButtonClick();
-							setMessageTyping('');
-						}
-					}} className='send'><img src={send} alt="" /></button>
-				</div>
-				<div className="messages">
-					{AllMsgs.map((e: any) => {
-						return (
-							<div key={nanoid()} className={e.UserId === myData.UserId ? "myMessage messageShow" : 'messageShow'}>
-								<img src={e.UserId === myData.UserId ? myData?.avatar : e.user.avatar} alt="" />
-								<p className='theTextMsg'>{e.Content}</p>
+			{
+				Checker &&
+				<>
+					<div className="header">
+						<div className="infoUser">
+							{/* userImg */}
+							<div style={{ backgroundImage: `url(${!Data.isChannel ? Data.avatar : grpsImg})` }} className="img"></div>
+							<div className="nameAndStatus">
+								<h1>{Data.name}<span className={!Data.isChannel ? (Data.status === true ? 'activeUser' : '') : 'room'}></span></h1>
+								<p>{!Data.isChannel ? (Data.status === true ? 'Active Now' : 'Disconnected') : ''}</p>
 							</div>
-						);
-					})}
-				</div>
-			</div>
+						</div>
+						<div ref={ref} >
+							{
+								threDots && <div className="threedots">
+									<button>Invite to play</button>
+									<button className='Block'>Block</button>
+								</div>
+							}
+							<button onClick={() => {
+								setThreDots(!threDots);
+							}} className="more"><ThreeDots /></button>
+						</div>
+
+					</div>
+					<div className="content">
+						<div className="messageSend">
+							<button><img src={emoji} alt="" /></button>
+
+							<textarea onKeyDown={handleKeyPress} value={messageTyping} onChange={(e: any) => {
+								setMessageTyping(e.target.value);
+							}} placeholder='Type a message ...' name="" id=""></textarea>
+							<button onClick={() => {
+								if (messageTyping.length > 0) {
+									handleButtonClick();
+									setMessageTyping('');
+								}
+							}} className='send'><img src={send} alt="" /></button>
+						</div>
+						<div className="messages">
+							{AllMsgs.map((e: any) => {
+								return (
+									<div key={nanoid()} className={e.UserId === myData.UserId ? "myMessage messageShow" : 'messageShow'}>
+										<img src={e.UserId === myData.UserId ? myData?.avatar : e.user.avatar} alt="" />
+										<p className='theTextMsg'>{e.Content}</p>
+									</div>
+								);
+							})}
+						</div>
+					</div>
+				</>
+			}
+
 		</div>
 	)
 }
@@ -190,17 +202,17 @@ function Chat(props: any) {
 		name: string
 		roomId: string
 		type: string
+		password: string | null
 	}
 	const { userId } = useParams();
 	const navigate = useNavigate();
-	const [Checker, setCheck] = useState(false);
 	const [Dms, setTheDms] = useState([]);
 	const [Grps, setGrps] = useState([]);
 	const [isNewGroup, setNewGroup] = useState(false)
 	const [isDm, setDm] = useState(true);
 	const [isError, setError] = useState(false);
 	const [isPopup, setPopUp] = useState(false);
-	const [shouldJoin, setShouldJoin] = useState<DisplayIt>({ display: false, name: '', roomId: '', type: ''});
+	const [shouldJoin, setShouldJoin] = useState<DisplayIt>({ display: false, name: '', roomId: '', type: '', password: null });
 	const [typeGroup, setType] = useState({ protected: true, private: false, public: false });
 	function truncateString(str: string): string {
 		if (str.length > 30) {
@@ -303,28 +315,32 @@ function Chat(props: any) {
 														key={e.roomid + '-group'}
 													>
 														{/* to={'/chat/' + e.roomid}  */}
-														<div onClick={async () => {
-															await axios.post(`/room/checkmember/${e.roomid}`).then((rsp) => setCheck(rsp.data));
-															if (Checker) {
-																navigate('/chat/' + e.roomid);
-															}
-															else {
-																setShouldJoin({ display: true, name: e.name, roomId: e.roomid, type: e.type });
-															}
+														<button onClick={async () => {
+															await axios.post(`/room/checkmember/${e.roomid}`).then((rsp) => {
+																console.log('checkmember', rsp.data);
+																if (rsp.data) {
+																	navigate('/chat/' + e.roomid);
+																}
+																else {
+																	setPopUp(true);
+																	setShouldJoin({ display: true, name: e.name, roomId: e.roomid, type: e.type, password: null });
+																}
+															});
+
 														}} className="chatUser">
 															<img src={grpsImg} />
 															<div className="textUserChat">
 																<h1>{e.name}</h1>
 																<p>{!e.lastMessage ? `Say Hi to ${e.name}` : truncateString(e.lastMessage)}</p>
 															</div>
-														</div>
+														</button>
 													</motion.div>
 												)
 											}))
 
 									}
 									{
-										!isPopup && <motion.div
+										isPopup && <motion.div
 											key='chat-popup'
 											initial={{ opacity: 0 }}
 											animate={{ opacity: 1 }}
@@ -361,6 +377,7 @@ function Chat(props: any) {
 																			// await axios.get('/room/rooms').then((resp: any) => setGrps(resp.data));
 																			setNewGroup(false);
 																			setPopUp(false);
+																			window.location.reload(false);
 																		}
 																		else {
 																			setError(true);
@@ -379,7 +396,7 @@ function Chat(props: any) {
 												</motion.div>
 											}
 											{
-												!shouldJoin.display
+												shouldJoin.display
 												&&
 												<motion.div
 													initial={{ scale: 0 }}
@@ -391,17 +408,31 @@ function Chat(props: any) {
 															<h1 className='h1Displ'>{`Join ${shouldJoin.name} Room?`}</h1>
 															<div style={{ width: '10', height: '2.188rem' }}>
 																{
-																	shouldJoin.type === 'protected' && <div className="inputContainer"><input onChange={} type="password" placeholder='Password' /></div>
+																	shouldJoin.type === 'protected' && <div className="inputContainer"><input onChange={(e: any) => {
+																		setShouldJoin({ ...shouldJoin, password: e.target.value })
+																	}} type="password" placeholder='Password' /></div>
 																}
 															</div>
 															<div className="buttonNewGroup">
 																<button onClick={async () => {
-																	setShouldJoin({ display: true, name: '', roomId: '', type: ''});
-																	setPopUp(false);
-																}} className='btnNewGrp' disabled={false}>join</button>
+																	await axios.post(`/room/${shouldJoin.roomId}/joinroom`, { roomId: shouldJoin.roomId, password: shouldJoin.password }).then((rsp) => {
+																		console.log('is :', rsp.data);
+																		if (rsp.data.is) {
+																			setShouldJoin({ display: false, name: '', roomId: '', type: '', password: null });
+																			setPopUp(false);
+																			setError(false);
+																			window.location.reload(false);
+																		}
+																		else {
+																			setError(true);
+																		}
+																	})
+																	// disabled={(shouldJoin.type === 'protected' || (shouldJoin.password !== null && shouldJoin.password.length <= 0))}
+																}} className='btnNewGrp' >join</button>
 																<button onClick={() => {
-																	setShouldJoin({ display: true, name: '', roomId: '', type: ''});
+																	setShouldJoin({ display: false, name: '', roomId: '', type: '', password: null });
 																	setPopUp(false);
+																	setError(false);
 																}} className='btnNewGrp cancel'>Cancel</button>
 																{isError && <p className='Error statusInput ChatError'>Something Wrong!</p>}
 															</div>
@@ -417,7 +448,7 @@ function Chat(props: any) {
 						</div>
 					</div>
 					{
-						props.params == false ? <StartChat /> : <ChatContent userId={userId} />
+						props.params == false ? <StartChat /> : <ChatContent userId={userId} setPop={setPopUp} setDisplay={setShouldJoin}/>
 					}
 				</div>
 			</GradienBox>

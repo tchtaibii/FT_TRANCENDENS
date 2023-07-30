@@ -169,21 +169,20 @@ export class RoomsController {
   }
 
   @Post(':roomId/joinroom')
-  async joinroom(@Req() req, @Param('roomId', ParseIntPipe) roomId: number, @Param('password') password: string) {
+  async joinroom(@Req() req, @Param('roomId', ParseIntPipe) roomId: number, @Body('password') password : string) {
+    console.log(typeof password)
     const joinroom = await this.messagesservice.joinroom(req.user.UserId, roomId, password);
+    if(!joinroom)
+      return { message: 'You are already a member of this room or the room was not found', is: false };
+    if ('message' in joinroom && joinroom['message'] === 'Password is incorrect') {
+        return { message: 'Password is incorrect', is: false };
+      }
 
-    if (!joinroom) {
-      //console.log(userId)
       return {
-        message: 'deja nta member or password incorrect',
-        is: false,
+        is : true,
+        membership: joinroom,
+        message: 'U re joined',
       };
-    }
-    return {
-      is: true,
-      membership: joinroom,
-      message: 'U re joined',
-    };
   }
 
 

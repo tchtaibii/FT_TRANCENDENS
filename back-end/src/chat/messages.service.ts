@@ -363,6 +363,7 @@ export class MessagesService {
                 members: {
                     select: {
                         UserId: true,
+
                         member: {
                             select: {
                                 avatar: true,
@@ -378,16 +379,18 @@ export class MessagesService {
         var avatar;
         var name;
         var status;
-        if (infos.members && infos.members.length == 2) {
-            avatar = infos.members[0].UserId === user.UserId ? infos.members[1].member.avatar : infos.members[0].member.avatar;
-            name = infos.members[0].UserId === user.UserId ? infos.members[1].member.username : infos.members[0].member.username;
-            status = infos.members[0].UserId === user.UserId ? infos.members[1].member.status : infos.members[0].member.status;
+        if (!infos.ischannel) {
+            if (infos.members && infos.members.length == 2) {
+                avatar = infos.members[0].UserId === user.UserId ? infos.members[1].member.avatar : infos.members[0].member.avatar;
+                name = infos.members[0].UserId === user.UserId ? infos.members[1].member.username : infos.members[0].member.username;
+                status = infos.members[0].UserId === user.UserId ? infos.members[1].member.status : infos.members[0].member.status;
+            }
         }
         else {
             name = infos.RoomNAme;
         }
-
         return {
+            type: infos.Type,
             isChannel: infos.ischannel,
             avatar,
             name,
@@ -548,84 +551,82 @@ export class MessagesService {
         // }
         return messages;
     }
-    
-    async sendMessage(content : string, UserId : string, roomId : string)
-    {
+
+    async sendMessage(content: string, UserId: string, roomId: string) {
         const RoomId = parseInt(roomId);
         console.log(RoomId, UserId, content);
         const send = await this.prisma.message.create({
-            data : {
-                UserId : UserId,
-                Content : content,
-                RoomId : RoomId,
+            data: {
+                UserId: UserId,
+                Content: content,
+                RoomId: RoomId,
             },
-            select : {
-                MessageId : true,
-                UserId : true,
-                user : {
-                    select :
+            select: {
+                MessageId: true,
+                UserId: true,
+                user: {
+                    select:
                     {
-                        avatar : true,
-                        username : true,
+                        avatar: true,
+                        username: true,
                     }
                 }
             }
         })
     }
 
-    async getroomsdms(userid: string)
-    {
+    async getroomsdms(userid: string) {
         const messages = await this.prisma.room.findMany({
             where: {
                 members: {
-                  some: {
-                    member: {
-                      OR: [
-                        {
-                          ReceiverFriendships: {
-                            some: {
-                              Accepted: true,
-                              blockedBySender: false,
-                              blockedByReceiver: false,
-                              sender: {
-                                UserId: userid,
-                              },
-                            },
-                          },
+                    some: {
+                        member: {
+                            OR: [
+                                {
+                                    ReceiverFriendships: {
+                                        some: {
+                                            Accepted: true,
+                                            blockedBySender: false,
+                                            blockedByReceiver: false,
+                                            sender: {
+                                                UserId: userid,
+                                            },
+                                        },
+                                    },
+                                },
+                                {
+                                    SenderFriendships: {
+                                        some: {
+                                            Accepted: true,
+                                            blockedBySender: false,
+                                            blockedByReceiver: false,
+                                            receiver: {
+                                                UserId: userid,
+                                            },
+                                        },
+                                    },
+                                },
+                            ],
                         },
-                        {
-                          SenderFriendships: {
-                            some: {
-                              Accepted: true,
-                              blockedBySender: false,
-                              blockedByReceiver: false,
-                              receiver: {
-                                UserId: userid,
-                              },
-                            },
-                          },
-                        },
-                      ],
                     },
-                  },
                 },
-                ischannel : false,
-                },
-                include: {
-                Message :{
-                    orderBy : {
-                    SendTime : 'desc',
+                ischannel: false,
+            },
+            include: {
+                Message: {
+                    orderBy: {
+                        SendTime: 'desc',
                     },
-                    take : 1
+                    take: 1
                 },
                 members: {
-                    include : {
-                    member: {
-                                select: {
-                                avatar : true,
+                    include: {
+                        member: {
+                            select: {
+                                avatar: true,
                                 username: true,
                                 status: true,
-                                UserId : true,
+                                UserId: true,
                             },
                         },
                     },
@@ -638,7 +639,7 @@ export class MessagesService {
 
 
     async joinroom(userid: string, roomid: number, password: string) {
-
+        console.log(password)
         const userexist = await this.prisma.membership.findFirst({
             where: {
                 UserId: userid,
@@ -646,7 +647,10 @@ export class MessagesService {
             },
         });
         if (userexist) {
-            return null;
+            return {
+                message: 'u are already a member of this room',
+                is: false
+            };
         }
 
         const room = await this.prisma.room.findUnique({
@@ -655,14 +659,12 @@ export class MessagesService {
             },
         });
         if (!room)
-            return { message: 'room mnot found' };
-
-        // if(userexist.isBanned)
-        //     return {
-        //       message: 'U re banned to join this room',
-        //     };
+            return {
+                message: 'room mnot found',
+                is: false
+            };
         if (room.Type === 'protected') {
-            const joinpprivateroom = await this.checkpassword(room.RoomId, room.Password);
+            const joinpprivateroom = await bcrypt.compare(password, room.Password);;
             if (!joinpprivateroom)
                 return { message: 'Password is incorrect' };
         }

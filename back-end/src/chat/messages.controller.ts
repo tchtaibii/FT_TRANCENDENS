@@ -106,7 +106,7 @@ export class RoomsController {
     return { message: 'Member unbanned' };
   };
 
- 
+
   @Get('/rooms')
   async getRooms(@Req() req) {
     const userId = req.user.UserId;
@@ -122,10 +122,10 @@ export class RoomsController {
       name: room.RoomNAme,
       roomid: room.RoomId,
       lastMessage: room.Message.length > 0 ? {
-      content: room.Message[0].Content,
-    } : null,
-  }));
-  return msg;
+        content: room.Message[0].Content,
+      } : null,
+    }));
+    return msg;
   }
 
   @Get('/dms')
@@ -169,21 +169,28 @@ export class RoomsController {
   }
 
   @Post(':roomId/joinroom')
-  async joinroom(@Req() req, @Param('roomId', ParseIntPipe) roomId: number, @Body('password') password : string) {
+  async joinroom(@Req() req, @Param('roomId', ParseIntPipe) roomId: number, @Body('password') password: string) {
     console.log(typeof password)
     const joinroom = await this.messagesservice.joinroom(req.user.UserId, roomId, password);
-    if(!joinroom)
+    if (!joinroom)
       return { message: 'You are already a member of this room or the room was not found', is: false };
     if ('message' in joinroom && joinroom['message'] === 'Password is incorrect') {
-        return { message: 'Password is incorrect', is: false };
-      }
+      return { message: 'Password is incorrect', is: false };
+    }
 
-      return {
-        is : true,
-        membership: joinroom,
-        message: 'U re joined',
-      };
+    return {
+      is: true,
+      membership: joinroom,
+      message: 'U re joined',
+    };
   }
+
+  @Get(':roomId/getdetails')
+  async getroomdetails(@Param('roomId', ParseIntPipe) roomId: number,@Req() req) {
+    const getroomdetails = await this.messagesservice.getroomdetails(roomId, req.user);
+    return getroomdetails;
+  }
+
 
 
 }

@@ -707,5 +707,47 @@ export class MessagesService {
         return !!membership;
     }
 
+    async getroomdetails(roomId : number, User : User)
+    {
+      const roomDetails = await this.prisma.room.findUnique({
+        where: {
+          RoomId: roomId,
+        },
+        select : {
+            RoomId : true,
+            RoomNAme : true,
+            ischannel : true,
+            Type : true,
+            members : {
+               select : {
+                    MembershipId : true,
+                    Role : true,
+                    member : {
+                        select : {
+                            avatar : true,
+                            username : true,
+                            UserId : true,
+                            status : true,
+                        }
+                    }
+               }
+            }
+        }
+      });
+
+      const final = {
+        RoomId : roomDetails.RoomId,
+        RoomName : roomDetails.RoomNAme,
+        isChannel : roomDetails.ischannel,
+        Type : roomDetails.Type,
+        UserRole : roomDetails.members.map((user) => {
+            if (user.member.UserId === User.UserId)
+                return user.Role;
+        }).filter((user) => user != null)[0],
+        members : roomDetails.members, 
+      }
+      return final;
+    }
+    
 
 }

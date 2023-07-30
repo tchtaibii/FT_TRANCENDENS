@@ -93,12 +93,11 @@ function ChatContent(params: any) {
 		checkMember();
 	}, [])
 	useEffect(() => {
-		if (Checker === false)
-		{
+		if (Checker === false) {
 			params.setPop(true);
 			params.setDisplay({ display: true, name: Data.name, roomId: params.userId, type: Data.type, password: null });
 		}
-	},[Checker, Data])
+	}, [Checker, Data])
 	console.log(Checker);
 
 	useEffect(() => {
@@ -133,6 +132,7 @@ function ChatContent(params: any) {
 		FetchData();
 
 	}, [params.userId]);
+	const navigate = useNavigate();
 	return (
 		<div className="chatContent">
 			{
@@ -149,9 +149,23 @@ function ChatContent(params: any) {
 						</div>
 						<div ref={ref} >
 							{
-								threDots && <div className="threedots">
-									<button>Invite to play</button>
-									<button className='Block'>Block</button>
+								threDots && params.roomData &&
+								<div className="threedots">
+									{params.roomData.isChannel === false && <button>Invite to play</button>}
+									{params.roomData.isChannel === false && <button>invite Profile</button>}
+									{params.roomData.isChannel === false && <button onClick={async () => {
+										await axios.post('/Profile/blockUser', {
+											blockedUser: Data.name
+										})
+										navigate('/');
+										window.location.reload(false);
+
+									}} className='Block'>Block</button>}
+									{params.roomData.isChannel === true && <button onClick={() => {
+										params.setIsPop(true);
+										params.setisMembers(true);
+									}} >Members</button>}
+
 								</div>
 							}
 							<button onClick={() => {
@@ -212,6 +226,7 @@ function Chat(props: any) {
 	const [isDm, setDm] = useState(true);
 	const [isError, setError] = useState(false);
 	const [isPopup, setPopUp] = useState(false);
+	const [isMemeber, setmember] = useState(false);
 	const [shouldJoin, setShouldJoin] = useState<DisplayIt>({ display: false, name: '', roomId: '', type: '', password: null });
 	const [typeGroup, setType] = useState({ protected: true, private: false, public: false });
 	function truncateString(str: string): string {
@@ -249,6 +264,15 @@ function Chat(props: any) {
 		}
 		FetchDms();
 	}, [])
+	const [RoomData, setRoomData] = useState<any | null>(null)
+	useEffect(() => {
+		if (props.params) {
+			const FetchData = async () => {
+				await axios.get(`/room/${userId}/getdetails`).then((rsp: any) => setRoomData(rsp.data));
+			}
+			FetchData();
+		}
+	}, [userId])
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
 			<GradienBox mywidth="1201px" myheight="850px" myborder="40px">
@@ -427,8 +451,7 @@ function Chat(props: any) {
 																			setError(true);
 																		}
 																	})
-																	// disabled={(shouldJoin.type === 'protected' || (shouldJoin.password !== null && shouldJoin.password.length <= 0))}
-																}} className='btnNewGrp' >join</button>
+																}} className='btnNewGrp' disabled={(shouldJoin.type === 'protected' && (shouldJoin.password !== null && shouldJoin.password.length <= 0))} >join</button>
 																<button onClick={() => {
 																	setShouldJoin({ display: false, name: '', roomId: '', type: '', password: null });
 																	setPopUp(false);
@@ -440,6 +463,46 @@ function Chat(props: any) {
 													</div>
 												</motion.div>
 											}
+											{
+												isMemeber && RoomData &&
+												<motion.div
+													key='setting-popup'
+													initial={{ scale: 0 }}
+													animate={{ scale: 1 }}
+													exit={{ scale: 0 }}
+													className="newGroup"
+													style={{ width: '43.875rem', height: '21.438rem' }}
+												>
+													<div className="closeMemebers" onClick={() => {
+														setPopUp(false)
+														setmember(false)
+													}}>
+														<svg width="0.75rem" height="0.75rem" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+															<path fillRule="evenodd" clipRule="evenodd" d="M10.7126 0.357436C11.1891 0.834018 11.1891 1.60671 10.7126 2.08329L7.26085 5.535L10.7126 8.98671C11.1891 9.46329 11.1891 10.236 10.7126 10.7126C10.236 11.1891 9.46329 11.1891 8.98671 10.7126L5.535 7.26086L2.08329 10.7126C1.60671 11.1891 0.834018 11.1891 0.357437 10.7126C-0.119145 10.236 -0.119145 9.46329 0.357437 8.98671L3.80915 5.535L0.357436 2.08329C-0.119145 1.60671 -0.119145 0.834019 0.357436 0.357438C0.834018 -0.119144 1.60671 -0.119144 2.08329 0.357438L5.535 3.80915L8.98671 0.357436C9.46329 -0.119145 10.236 -0.119145 10.7126 0.357436Z" fill="white" />
+														</svg>
+
+													</div>
+													<div className="newGroupC">
+														<div className="settingHeader">Members</div>
+														<div className="membersEdit">
+															<div className="members">
+																{
+																	RoomData.members.map((e: any, i: number) => (
+																		<div key={e.member.UserId} className="userSection">
+																			<div className="contUserSect">
+																				<img src={e.member.avatar} />
+																				<p>{e.member.username}</p>
+																			</div>
+																		</div>
+																	))
+																}
+															</div>
+															{(RoomData.UserRole === "Owner" || RoomData.UserRole === "Admin") && <div className="butnsAdd"><button>Add Member</button></div>}
+														</div>
+													</div>
+
+												</motion.div>
+											}
 										</motion.div>
 									}
 								</AnimatePresence>
@@ -448,7 +511,7 @@ function Chat(props: any) {
 						</div>
 					</div>
 					{
-						props.params == false ? <StartChat /> : <ChatContent userId={userId} setPop={setPopUp} setDisplay={setShouldJoin}/>
+						props.params == false ? <StartChat /> : <ChatContent setIsPop={setPopUp} setisMembers={setmember} roomData={RoomData} userId={userId} setPop={setPopUp} setDisplay={setShouldJoin} />
 					}
 				</div>
 			</GradienBox>

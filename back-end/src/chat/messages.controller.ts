@@ -31,11 +31,10 @@ export class RoomsController {
     return true;
   }
 
-    @Get(':roomId/RoomData')
-    async RoomData(@Req() req, @Param('roomId', ParseIntPipe) roomId: number)
-    {
-        return await this.messagesservice.RoomData(req.user, roomId);
-    }
+  @Get(':roomId/RoomData')
+  async RoomData(@Req() req, @Param('roomId', ParseIntPipe) roomId: number) {
+    return await this.messagesservice.RoomData(req.user, roomId);
+  }
 
   @Get(':roomId/messages/')
   async getMessagesByRoomId(@Param('roomId', ParseIntPipe) roomId: number) {
@@ -107,19 +106,26 @@ export class RoomsController {
     return { message: 'Member unbanned' };
   };
 
+ 
   @Get('/rooms')
-  async getRooms() {
-   // const userId = req.user.UserId;
-    const messages = await this.messagesservice.getRooms();
-    const msg = messages.map(room => ({
-      roomtype : room.Type,
-      roomid: room.RoomId,
+  async getRooms(@Req() req) {
+    const userId = req.user.UserId;
+    const rooms = await this.messagesservice.getRooms(userId);
+
+    if (rooms === null) {
+      return { message: 'u re banned' };
+    }
+    // const otherrooms = rooms.filter(room => room['members']?.some(member => member.UserId === userId && !member.isBanned));
+
+    const msg = rooms.map(room => ({
+      type: room.Type,
       name: room.RoomNAme,
+      roomid: room.RoomId,
       lastMessage: room.Message.length > 0 ? {
-        content: room.Message[0].Content,
-      } : null,
-    }));
-    return msg;
+      content: room.Message[0].Content,
+    } : null,
+  }));
+  return msg;
   }
 
   @Get('/dms')
@@ -142,17 +148,43 @@ export class RoomsController {
   }
 
 
-  @Post('joinroom/:roomId')
-  async joinroom(@Req() req, @Param('roomId', ParseIntPipe) roomId: number, @Param('password') password: string) {
-    const joinroom = await this.joinroom(req.user.UserId, roomId, password);
-    if (!joinroom) {
-      return { message: 'deja nta member or password incorrect' };
-    }
+  // @Post('joinroom/:roomId')
+  // async joinroom(@Req() req, @Param('roomId', ParseIntPipe) roomId: number, @Param('password') password: string) {
+  //   const joinroom = await this.joinroom(req.user.UserId, roomId, password);
+  //   if (!joinroom) {
+  //     return { message: 'deja nta member or password incorrect' };
+  //   }
 
+  //   return {
+  //     membership: joinroom,
+  //     message: 'U re joined',
+  //   };
+  // }
+
+  @Post('checkmember/:roomId')
+  async checkismember(@Req() req, @Param('roomId', ParseIntPipe) roomId: number) {
+    const userId = req.user.UserId;
+    const checkroomsmember = await this.messagesservice.checkmembership(roomId, userId);
+    return checkroomsmember;
+  }
+
+  @Post(':roomId/joinroom')
+  async joinroom(@Req() req, @Param('roomId', ParseIntPipe) roomId: number, @Param('password') password: string) {
+    const joinroom = await this.messagesservice.joinroom(req.user.UserId, roomId, password);
+
+    if (!joinroom) {
+      //console.log(userId)
+      return {
+        message: 'deja nta member or password incorrect',
+        is: false,
+      };
+    }
     return {
+      is: true,
       membership: joinroom,
       message: 'U re joined',
     };
   }
+
 
 }

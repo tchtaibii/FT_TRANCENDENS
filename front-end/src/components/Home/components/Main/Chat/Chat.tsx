@@ -261,13 +261,16 @@ function Chat(props: any) {
 														transition={{ delay: 0.07 * j, duration: 0.1 }}
 														key={e.roomid + '-group'}
 													>
-														<Link to={'/chat/' + e.roomid}  className="chatUser">
+														{/* to={'/chat/' + e.roomid}  */}
+														<div onClick={async () => {
+															
+														}} className="chatUser">
 															<img src={grpsImg} />
 															<div className="textUserChat">
 																<h1>{e.name}</h1>
 																<p>{!e.lastMessage ? `Say Hi to ${e.name}` : truncateString(e.lastMessage)}</p>
 															</div>
-														</Link>
+														</div>
 													</motion.div>
 												)
 											}))

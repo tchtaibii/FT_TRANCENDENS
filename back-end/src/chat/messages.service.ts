@@ -12,31 +12,6 @@ export class MessagesService {
 
     constructor(private readonly prisma: PrismaClient) { }
 
-    // messages: Message[] = [{ name: 'Saber', text: 'Heey' }];
-    // clientToUser = {};
-    // identify(name: string, clientId: string ){
-    //   this.clientToUser[clientId] = name;
-
-    //   return Object.values(this.clientToUser);
-    // }
-
-    // getClientName(clientId: string){
-    //   return this.clientToUser[clientId];
-    // }
-    // create(createMessageDto: CreateMessageDto, clientId: string) {
-    //   const message = { 
-    //     name: this.clientToUser[clientId],
-    //     text: createMessageDto.text,
-    //   };
-    //   this.messages.push(message);
-
-    //   return message;
-    // }
-
-    // async findAll() {
-    //   return this.messages;
-    // }
-
     async createRoom(createRoomDto: CreateRoomDto) {
 
         const { name, password, type } = createRoomDto;
@@ -573,55 +548,89 @@ export class MessagesService {
         // }
         return messages;
     }
-    async getroomsdms(userid: string) {
+    
+    async sendMessage(content : string, UserId : string, roomId : string)
+    {
+        const RoomId = parseInt(roomId);
+        console.log(RoomId, UserId, content);
+        const send = await this.prisma.message.create({
+            data : {
+                UserId : UserId,
+                Content : content,
+                RoomId : RoomId,
+            },
+            select : {
+                MessageId : true,
+                UserId : true,
+                user : {
+                    select :
+                    {
+                        avatar : true,
+                        username : true,
+                    }
+                }
+            }
+        })
+    }
+
+    async getroomsdms(userid: string)
+    {
         const messages = await this.prisma.room.findMany({
             where: {
                 members: {
-                    some: {
-                        UserId: userid,
-                        member: {
-                            ReceiverFriendships: {
-                                every: {
-                                    Accepted: true,
-                                    blockedByReceiver: false,
-                                    blockedBySender: false,
-                                }
+                  some: {
+                    member: {
+                      OR: [
+                        {
+                          ReceiverFriendships: {
+                            some: {
+                              Accepted: true,
+                              blockedBySender: false,
+                              blockedByReceiver: false,
+                              sender: {
+                                UserId: userid,
+                              },
                             },
-                            SenderFriendships: {
-                                every: {
-                                    Accepted: true,
-                                    blockedByReceiver: false,
-                                    blockedBySender: false,
-                                }
-                            }
-                        }
+                          },
+                        },
+                        {
+                          SenderFriendships: {
+                            some: {
+                              Accepted: true,
+                              blockedBySender: false,
+                              blockedByReceiver: false,
+                              receiver: {
+                                UserId: userid,
+                              },
+                            },
+                          },
+                        },
+                      ],
                     },
-
+                  },
                 },
-                ischannel: false,
-
-            },
-            include: {
-                Message: {
-                    orderBy: {
-                        SendTime: 'desc',
+                ischannel : false,
+                },
+                include: {
+                Message :{
+                    orderBy : {
+                    SendTime : 'desc',
                     },
-                    take: 1
+                    take : 1
                 },
                 members: {
-                    include: {
-                        member: {
-                            select: {
-                                avatar: true,
+                    include : {
+                    member: {
+                                select: {
+                                avatar : true,
                                 username: true,
                                 status: true,
-                                UserId: true,
+                                UserId : true,
                             },
                         },
                     },
                 },
             },
-
         })
         return messages;
     }

@@ -4,6 +4,8 @@ import { GamesDTO, AllGames, topPlayers, RecentActivity, ProfileFriends, blocked
 import { create } from 'domain';
 import { type } from 'os';
 import { NotificationGateway } from 'src/events/notification/notification.gateway';
+// import { v4 as uuidv4 } from 'uuid';
+
 
 @Injectable()
 export class FriendshipService {
@@ -50,7 +52,7 @@ export class FriendshipService {
                 throw new InternalServerErrorException('something went wrong');
         }
 
-        invite.sender.avatar = invite.sender.avatar[0] === '/uploads' ? process.env.HOST + process.env.PORT + invite.sender.avatar : invite.sender.avatar;
+        invite.sender.avatar =  invite.sender.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !invite.sender.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + invite.sender.avatar : invite.sender.avatar;
         console.log(invite.sender.avatar);
         const final = {
             friendshipId : invite.FriendshipId,
@@ -108,7 +110,7 @@ export class FriendshipService {
 
 		})
 
-        notification.sender.avatar =  notification.sender.avatar[0] === '/uploads' ? process.env.HOST + process.env.PORT + notification.sender.avatar : notification.sender.avatar;
+        notification.sender.avatar =  notification.sender.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !notification.sender.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + notification.sender.avatar : notification.sender.avatar;
         const websocketNotifiation = {
             avatar : notification.sender.avatar,
             username : notification.sender.username,
@@ -118,7 +120,52 @@ export class FriendshipService {
         };
 
         this.NotificationGateway.handleNotification(notification.receiverId, websocketNotifiation);
+
+        // const RoomNAme = uuidv4();
+
+        const check = await this.checkRoom(notification.receiverId, notification.senderId);
+    
+        if (!check)
+        {
+            await this.prisma.$transaction(async (prisma) => {
+                const room = await prisma.room.create({ data: { RoomNAme : "" } });
+                await prisma.membership.createMany({ data: [ { RoomId: room.RoomId, UserId : notification.receiverId },
+                                                            { RoomId: room.RoomId, UserId : notification.senderId } ]
+                });
+            });
+        }
 	}
+
+    async checkRoom(UserId1, UserId2)
+    {
+        console.log(UserId1, UserId2);
+        const user1Memberships = await this.prisma.membership.findMany({
+            where: {
+              UserId: UserId1,
+            },
+            select: {
+              RoomId: true,
+            },
+        });
+
+        const sharedRoom = await this.prisma.membership.findFirst({
+            where: {
+              UserId: UserId2,
+              RoomId: {
+                in: user1Memberships.map((membership) => membership.RoomId),
+              },
+              room: {
+                ischannel: false,
+              },
+            },
+            select : {
+                RoomId : true,
+            }
+        });
+
+
+        return sharedRoom;
+    }
 
 
 	async cancelRequest(FriendshipId : number)
@@ -166,7 +213,7 @@ export class FriendshipService {
 
 
         const friendshipRequest  = request.map((user) => {
-            user.sender.avatar = user.sender.avatar[0] === '/uploads' ? process.env.HOST + process.env.PORT + user.sender.avatar : user.sender.avatar;
+            user.sender.avatar = user.sender.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !user.sender.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + user.sender.avatar : user.sender.avatar;
             return {
                 friendshipId : user.FriendshipId,
                 UserId : user.sender.UserId,

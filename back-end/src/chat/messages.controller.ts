@@ -137,7 +137,7 @@ export class RoomsController {
       avatar: room.members[0].member.UserId === req.user.UserId ? room.members[1].member.avatar : room.members[0].member.avatar,
       status: room.members[0].member.UserId === req.user.UserId ? room.members[1].member.status : room.members[0].member.status,
       userid: room.members[0].member.UserId === req.user.UserId ? room.members[1].member.UserId : room.members[0].member.UserId,
-      roomid: room.Message[0].RoomId,
+      roomid: room.RoomId,
       lastMessage: room.Message.length > 0 ? {
         content: room.Message[0].Content,
       } : null,

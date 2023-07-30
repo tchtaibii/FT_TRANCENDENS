@@ -155,7 +155,7 @@ function App() {
 		}
 		GetToken();
 	}, [isLogin])
-
+	const [Socket, theSocket] = useState<any>(null)
 	useEffect(() => {
 		if (token) {
 			const socket = io('http://localhost:3001/', {
@@ -164,7 +164,8 @@ function App() {
 				}
 			});
 			socket.on('connect', () => {
-				console.log('Socket.IO connected.');
+				// console.log('socket is connected')
+				theSocket(socket);
 			});
 
 			socket.on('request', (data: invitationRequest) => {
@@ -189,11 +190,11 @@ function App() {
 	return (
 		<div className="App">
 			{/* <Suspense fallback={<><Loading /></>}> */}
-				<Particle />
-				{
-					isDown ? <Loading /> :
-						!isLogin ? <Login /> : (!isSecure ? <><Home socketInvi={setInvit} /><AnimatePresence mode='wait'>{invit && <Invitation data={invitationRequest} state={setInvit} />}</AnimatePresence></> : <Secure setSec={setSecure} />)
-				}
+			<Particle />
+			{
+				isDown ? <Loading /> :
+					!isLogin ? <Login /> : (!isSecure ? <><Home socketInvi={setInvit} /><AnimatePresence mode='wait'>{invit && <Invitation data={invitationRequest} state={setInvit} />}</AnimatePresence></> : <Secure setSec={setSecure} />)
+			}
 			{/* </Suspense> */}
 		</div>
 	);

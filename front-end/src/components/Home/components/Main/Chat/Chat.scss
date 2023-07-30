@@ -470,6 +470,9 @@
             align-items: center;
             padding-top: toRem(25);
             gap: toRem(13);
+            .h1Displ{
+                font-size: toRem(14);
+            }
 
             .inputContainer {
                 width: toRem(250);
@@ -569,6 +572,13 @@
 
             }
         }
+    }
+}
+.displayIt{
+    width: toRem(300);
+    height: toRem(170);
+    .displayitC{
+        padding: 0;
     }
 }
 .ChatError{

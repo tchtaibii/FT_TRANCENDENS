@@ -11,6 +11,9 @@ import checkBox from '../../../../../assets/img/checkbox.svg'
 import axios from '../../../../../Interceptor/Interceptor'
 import grpsImg from '../../../../../assets/img/groups.jpeg'
 import { useSelector } from 'react-redux'
+import { io } from 'socket.io-client'
+import { useNavigate } from "react-router-dom";
+
 
 function StartChat() {
 	return (
@@ -58,32 +61,69 @@ function TypeGroup(props: any) {
 
 function ChatContent(params: any) {
 	const myData = useSelector((state: any) => state.admin);
-
+	const [Checker, setCheck] = useState<boolean | null>(null);
 	const [threDots, setThreDots] = useState(false);
 	const [AllMsgs, setMessages] = useState([]);
-	const [Data, setData] = useState<any>({isChannel: false, avatar: '', name: '', status: false});
-	
+	const [Socket, setSocket] = useState<any>(null);
+	const [Data, setData] = useState<any>({ isChannel: false, avatar: '', name: '', status: false, type: '' });
 	const ref = useRef(null)
+	// const token = useSelector((state: any) => state.token);
+
 	const handleClickOutside = () => { setThreDots(false) }
 	useOnClickOutside(ref, handleClickOutside)
-
+	const handleButtonClick = () => {
+		Socket.emit('message', { message: messageTyping, roomId: params.userId, UserId: myData.UserId });
+	};
 	const [messageTyping, setMessageTyping] = useState<string>('');
-	// const handleKeyPress = (event: any) => {
-	// 	if (event.key === 'Enter' && !event.shiftKey) {
-	// 		event.preventDefault();
-	// 		if (messageTyping.length > 0) {
-	// 			setAllMsg([{
-	// 				id: params.messages.length + 1,
-	// 				from: params.admin.login,
-	// 				to: params.pageOf,
-	// 				message: messageTyping,
-	// 				date: Date.now(),
-	// 				isLast: false
-	// 			}, ...AllMsg])
-	// 		}
-	// 		setMessageTyping('');
-	// 	}
-	// }
+	const handleKeyPress = (event: any) => {
+		if (event.key === 'Enter' && !event.shiftKey) {
+			event.preventDefault();
+			if (messageTyping.length > 0) {
+				handleButtonClick();
+				setMessageTyping('');
+			}
+
+		}
+	}
+
+	useEffect(() => {
+		const checkMember = async () => {
+			await axios.post(`/room/checkmember/${params.userId}`).then((rsp) => setCheck(rsp.data));
+		}
+		checkMember();
+	}, [])
+	useEffect(() => {
+		if (Checker === false) {
+			params.setPop(true);
+			params.setDisplay({ display: true, name: Data.name, roomId: params.userId, type: Data.type, password: null });
+		}
+	}, [Checker, Data])
+	console.log(Checker);
+
+	useEffect(() => {
+
+		const socket = io('http://localhost:3001');
+		setSocket(socket);
+		// socket.on('connect', () => {
+		// 	// socket.emit('joinRoom', { roomId: params.userId });
+		// });
+		// socket.on('message', (data: any) => {
+
+		// });
+	}, [])
+
+	useEffect(() => {
+		if (Socket) {
+			Socket.on('connect', () => {
+				console.log('connected');
+				Socket.emit('joinRoom', params.userId);
+			});
+			// Socket.on('message', (data: any) => {
+
+			// });
+		}
+	}, [Socket])
+
 	useEffect(() => {
 		const FetchData = async () => {
 			await axios.get(`/room/${params.userId}/messages`).then((rsp) => setMessages(rsp.data.reverse()));
@@ -91,59 +131,77 @@ function ChatContent(params: any) {
 		}
 		FetchData();
 
-	},[params.userId]);
-	console.log('Data :', Data)
-	
+	}, [params.userId]);
+	const navigate = useNavigate();
 	return (
 		<div className="chatContent">
-			<div className="header">
-				<div className="infoUser">
-					{/* userImg */}
-					<div style={{backgroundImage: `url(${!Data.isChannel ? Data.avatar : grpsImg})`}} className="img"></div>
-					<div className="nameAndStatus">
-						<h1>{Data.name}<span className={!Data.isChannel ? (Data.status === true ? 'activeUser' : '') : 'room'}></span></h1>
-						<p>{!Data.isChannel ? (Data.status === true ? 'Active Now' : 'Disconnected') : ''}</p>
-					</div>
-				</div>
-				<div ref={ref} >
-					{
-						threDots && <div className="threedots">
-							<button>Invite to play</button>
-							<button className='Block'>Block</button>
-						</div>
-					}
-					<button onClick={() => {
-						setThreDots(!threDots);
-					}} className="more"><ThreeDots /></button>
-				</div>
-
-			</div>
-			<div className="content">
-				<div className="messageSend">
-					<button><img src={emoji} alt="" /></button>
-					{/* onKeyDown={handleKeyPress} */}
-					<textarea value={messageTyping} onChange={(e: any) => {
-						setMessageTyping(e.target.value);
-					}} placeholder='Type a message ...' name="" id=""></textarea>
-					<button onClick={() => {
-						if (messageTyping.length > 0) {
-
-							setMessageTyping('');
-						}
-
-					}} className='send'><img src={send} alt="" /></button>
-				</div>
-				<div className="messages">
-					{AllMsgs.map((e: any) => {
-						return (
-							<div key={nanoid()} className={e.UserId === myData.UserId ? "myMessage messageShow" : 'messageShow'}>
-								<img src={e.UserId === myData.UserId ? myData?.avatar : e.user.avatar} alt="" />
-								<p className='theTextMsg'>{e.Content}</p>
+			{
+				Checker &&
+				<>
+					<div className="header">
+						<div className="infoUser">
+							{/* userImg */}
+							<div style={{ backgroundImage: `url(${!Data.isChannel ? Data.avatar : grpsImg})` }} className="img"></div>
+							<div className="nameAndStatus">
+								<h1>{Data.name}<span className={!Data.isChannel ? (Data.status === true ? 'activeUser' : '') : 'room'}></span></h1>
+								<p>{!Data.isChannel ? (Data.status === true ? 'Active Now' : 'Disconnected') : ''}</p>
 							</div>
-						);
-					})}
-				</div>
-			</div>
+						</div>
+						<div ref={ref} >
+							{
+								threDots && params.roomData &&
+								<div className="threedots">
+									{params.roomData.isChannel === false && <button>Invite to play</button>}
+									{params.roomData.isChannel === false && <button>invite Profile</button>}
+									{params.roomData.isChannel === false && <button onClick={async () => {
+										await axios.post('/Profile/blockUser', {
+											blockedUser: Data.name
+										})
+										navigate('/');
+										window.location.reload(false);
+
+									}} className='Block'>Block</button>}
+									{params.roomData.isChannel === true && <button onClick={() => {
+										params.setIsPop(true);
+										params.setisMembers(true);
+									}} >Members</button>}
+
+								</div>
+							}
+							<button onClick={() => {
+								setThreDots(!threDots);
+							}} className="more"><ThreeDots /></button>
+						</div>
+
+					</div>
+					<div className="content">
+						<div className="messageSend">
+							<button><img src={emoji} alt="" /></button>
+
+							<textarea onKeyDown={handleKeyPress} value={messageTyping} onChange={(e: any) => {
+								setMessageTyping(e.target.value);
+							}} placeholder='Type a message ...' name="" id=""></textarea>
+							<button onClick={() => {
+								if (messageTyping.length > 0) {
+									handleButtonClick();
+									setMessageTyping('');
+								}
+							}} className='send'><img src={send} alt="" /></button>
+						</div>
+						<div className="messages">
+							{AllMsgs.map((e: any) => {
+								return (
+									<div key={nanoid()} className={e.UserId === myData.UserId ? "myMessage messageShow" : 'messageShow'}>
+										<img src={e.UserId === myData.UserId ? myData?.avatar : e.user.avatar} alt="" />
+										<p className='theTextMsg'>{e.Content}</p>
+									</div>
+								);
+							})}
+						</div>
+					</div>
+				</>
+			}
+
 		</div>
 	)
 }
@@ -153,13 +211,23 @@ type CreateRoomT = {
 	type: string
 }
 function Chat(props: any) {
+	type DisplayIt = {
+		display: boolean,
+		name: string
+		roomId: string
+		type: string
+		password: string | null
+	}
 	const { userId } = useParams();
+	const navigate = useNavigate();
 	const [Dms, setTheDms] = useState([]);
 	const [Grps, setGrps] = useState([]);
 	const [isNewGroup, setNewGroup] = useState(false)
 	const [isDm, setDm] = useState(true);
 	const [isError, setError] = useState(false);
 	const [isPopup, setPopUp] = useState(false);
+	const [isMemeber, setmember] = useState(false);
+	const [shouldJoin, setShouldJoin] = useState<DisplayIt>({ display: false, name: '', roomId: '', type: '', password: null });
 	const [typeGroup, setType] = useState({ protected: true, private: false, public: false });
 	function truncateString(str: string): string {
 		if (str.length > 30) {
@@ -196,6 +264,15 @@ function Chat(props: any) {
 		}
 		FetchDms();
 	}, [])
+	const [RoomData, setRoomData] = useState<any | null>(null)
+	useEffect(() => {
+		if (props.params) {
+			const FetchData = async () => {
+				await axios.get(`/room/${userId}/getdetails`).then((rsp: any) => setRoomData(rsp.data));
+			}
+			FetchData();
+		}
+	}, [userId])
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
 			<GradienBox mywidth="1201px" myheight="850px" myborder="40px">
@@ -247,7 +324,7 @@ function Chat(props: any) {
 												)
 											})
 										) : (
-											
+
 											Grps.length > 0 &&
 											Grps.map((e: any, i: number) => {
 												let j = i;
@@ -261,13 +338,26 @@ function Chat(props: any) {
 														transition={{ delay: 0.07 * j, duration: 0.1 }}
 														key={e.roomid + '-group'}
 													>
-														<Link to={'/chat/' + e.roomid}  className="chatUser">
+														{/* to={'/chat/' + e.roomid}  */}
+														<button onClick={async () => {
+															await axios.post(`/room/checkmember/${e.roomid}`).then((rsp) => {
+																console.log('checkmember', rsp.data);
+																if (rsp.data) {
+																	navigate('/chat/' + e.roomid);
+																}
+																else {
+																	setPopUp(true);
+																	setShouldJoin({ display: true, name: e.name, roomId: e.roomid, type: e.type, password: null });
+																}
+															});
+
+														}} className="chatUser">
 															<img src={grpsImg} />
 															<div className="textUserChat">
 																<h1>{e.name}</h1>
 																<p>{!e.lastMessage ? `Say Hi to ${e.name}` : truncateString(e.lastMessage)}</p>
 															</div>
-														</Link>
+														</button>
 													</motion.div>
 												)
 											}))
@@ -281,7 +371,8 @@ function Chat(props: any) {
 											exit={{ opacity: 0 }}
 											className="popupChat">
 											{
-												isNewGroup && <motion.div
+												isNewGroup &&
+												<motion.div
 													initial={{ scale: 0 }}
 													animate={{ scale: 1 }}
 													exit={{ scale: 0 }}
@@ -310,6 +401,7 @@ function Chat(props: any) {
 																			// await axios.get('/room/rooms').then((resp: any) => setGrps(resp.data));
 																			setNewGroup(false);
 																			setPopUp(false);
+																			window.location.reload(false);
 																		}
 																		else {
 																			setError(true);
@@ -317,7 +409,7 @@ function Chat(props: any) {
 																	});
 
 																}} className='btnNewGrp' disabled={CreateRoom.type === 'protected' && (CreateRoom.password?.length === 0 || CreateRoom.password === null)}>Done</button>
-																<button onClick={ () => {
+																<button onClick={() => {
 																	setNewGroup(false);
 																	setPopUp(false);
 																}} className='btnNewGrp cancel'>Cancel</button>
@@ -325,6 +417,90 @@ function Chat(props: any) {
 															</div>
 														</div>
 													</div>
+												</motion.div>
+											}
+											{
+												shouldJoin.display
+												&&
+												<motion.div
+													initial={{ scale: 0 }}
+													animate={{ scale: 1 }}
+													exit={{ scale: 0 }}
+													className="newGroup displayIt">
+													<div className="newGroupC displayitC">
+														<div className="contentNewGroup">
+															<h1 className='h1Displ'>{`Join ${shouldJoin.name} Room?`}</h1>
+															<div style={{ width: '10', height: '2.188rem' }}>
+																{
+																	shouldJoin.type === 'protected' && <div className="inputContainer"><input onChange={(e: any) => {
+																		setShouldJoin({ ...shouldJoin, password: e.target.value })
+																	}} type="password" placeholder='Password' /></div>
+																}
+															</div>
+															<div className="buttonNewGroup">
+																<button onClick={async () => {
+																	await axios.post(`/room/${shouldJoin.roomId}/joinroom`, { roomId: shouldJoin.roomId, password: shouldJoin.password }).then((rsp) => {
+																		console.log('is :', rsp.data);
+																		if (rsp.data.is) {
+																			setShouldJoin({ display: false, name: '', roomId: '', type: '', password: null });
+																			setPopUp(false);
+																			setError(false);
+																			window.location.reload(false);
+																		}
+																		else {
+																			setError(true);
+																		}
+																	})
+																}} className='btnNewGrp' disabled={(shouldJoin.type === 'protected' && (shouldJoin.password !== null && shouldJoin.password.length <= 0))} >join</button>
+																<button onClick={() => {
+																	setShouldJoin({ display: false, name: '', roomId: '', type: '', password: null });
+																	setPopUp(false);
+																	setError(false);
+																}} className='btnNewGrp cancel'>Cancel</button>
+																{isError && <p className='Error statusInput ChatError'>Something Wrong!</p>}
+															</div>
+														</div>
+													</div>
+												</motion.div>
+											}
+											{
+												isMemeber && RoomData &&
+												<motion.div
+													key='setting-popup'
+													initial={{ scale: 0 }}
+													animate={{ scale: 1 }}
+													exit={{ scale: 0 }}
+													className="newGroup"
+													style={{ width: '43.875rem', height: '21.438rem' }}
+												>
+													<div className="closeMemebers" onClick={() => {
+														setPopUp(false)
+														setmember(false)
+													}}>
+														<svg width="0.75rem" height="0.75rem" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+															<path fillRule="evenodd" clipRule="evenodd" d="M10.7126 0.357436C11.1891 0.834018 11.1891 1.60671 10.7126 2.08329L7.26085 5.535L10.7126 8.98671C11.1891 9.46329 11.1891 10.236 10.7126 10.7126C10.236 11.1891 9.46329 11.1891 8.98671 10.7126L5.535 7.26086L2.08329 10.7126C1.60671 11.1891 0.834018 11.1891 0.357437 10.7126C-0.119145 10.236 -0.119145 9.46329 0.357437 8.98671L3.80915 5.535L0.357436 2.08329C-0.119145 1.60671 -0.119145 0.834019 0.357436 0.357438C0.834018 -0.119144 1.60671 -0.119144 2.08329 0.357438L5.535 3.80915L8.98671 0.357436C9.46329 -0.119145 10.236 -0.119145 10.7126 0.357436Z" fill="white" />
+														</svg>
+
+													</div>
+													<div className="newGroupC">
+														<div className="settingHeader">Members</div>
+														<div className="membersEdit">
+															<div className="members">
+																{
+																	RoomData.members.map((e: any, i: number) => (
+																		<div key={e.member.UserId} className="userSection">
+																			<div className="contUserSect">
+																				<img src={e.member.avatar} />
+																				<p>{e.member.username}</p>
+																			</div>
+																		</div>
+																	))
+																}
+															</div>
+															{(RoomData.UserRole === "Owner" || RoomData.UserRole === "Admin") && <div className="butnsAdd"><button>Add Member</button></div>}
+														</div>
+													</div>
+
 												</motion.div>
 											}
 										</motion.div>
@@ -335,7 +511,7 @@ function Chat(props: any) {
 						</div>
 					</div>
 					{
-						props.params == false ? <StartChat /> : <ChatContent userId={userId} />
+						props.params == false ? <StartChat /> : <ChatContent setIsPop={setPopUp} setisMembers={setmember} roomData={RoomData} userId={userId} setPop={setPopUp} setDisplay={setShouldJoin} />
 					}
 				</div>
 			</GradienBox>

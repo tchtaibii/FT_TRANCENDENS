@@ -3,9 +3,9 @@ import { Socket, Server } from 'socket.io';
 import { MessagesService } from './messages.service';
 import { SocketIOMIDDELWARE } from 'src/auth/auth-services/ws';
 
-@WebSocketGateway({cors : true, namespace : 'chat'})
+@WebSocketGateway({cors : true})
 export class ChatGateway implements OnGatewayConnection{
-  @WebSocketServer() server: Server;
+    @WebSocketServer() server: Server;
   constructor(private readonly ChatService : MessagesService)
   {}
 
@@ -14,10 +14,11 @@ export class ChatGateway implements OnGatewayConnection{
         client.use(SocketIOMIDDELWARE() as any);
     }
 
-    handleConnection(client: any, ...args: any[]) {
-        console.log('chat connected')
-    }
+    async handleConnection(client: Socket) {
+        
+        console.log('connected');
 
+    }
     @SubscribeMessage('joinRoom')
     handleJoinRoom(client: Socket, roomId: string) {
         console.log('here');

@@ -174,7 +174,7 @@ function ChatContent(params: any) {
 								threDots && params.roomData &&
 								<div className="threedots">
 									{params.roomData.isChannel === false && <button className='threeD'>Invite to play</button>}
-									{params.roomData.isChannel === false && <button>invite Profile</button>}
+									{params.roomData.isChannel === false && <Link to={`/profile/${Data.name}`} className='threeD'>invite Profile</Link>}
 									{params.roomData.isChannel === false && <button onClick={async () => {
 										await axios.post('/Profile/blockUser', {
 											blockedUser: Data.name
@@ -244,10 +244,10 @@ function ChatContent(params: any) {
 						<div className="messages">
 							{AllMsgs.map((e: any) => {
 								return (
-									<div key={nanoid()} className={e.UserId === myData.UserId ? "myMessage messageShow" : 'messageShow'}>
+									<Link to={`/profile/${e.user.username}`} key={nanoid()} className={e.UserId === myData.UserId ? "myMessage messageShow" : 'messageShow'}>
 										<img src={e.UserId === myData.UserId ? myData?.avatar : e.user.avatar} alt="" />
 										<p className='theTextMsg'>{e.Content}</p>
-									</div>
+									</Link>
 								);
 							})}
 						</div>

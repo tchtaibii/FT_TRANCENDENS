@@ -26,10 +26,10 @@ export class ChatGateway implements OnGatewayConnection{
     }
 
     @SubscribeMessage('message')
-    handleMessage(client: Socket, payload: { RoomId: string, message: string }) {
+    async handleMessage(client: Socket, payload: { RoomId: string, message: string }) {
         console.log(payload.message);
-        this.ChatService.sendMessage(payload.message, client.data.playload.userId, payload.RoomId);
-        this.server.to(payload.RoomId).emit('message', { message: payload.message, UserId: client.data.playload.userId });
+        const message = await this.ChatService.sendMessage(payload.message, client.data.playload.userId, payload.RoomId);
+        this.server.to(payload.RoomId).emit('message', message);
     }
 
     @SubscribeMessage('leaveRoom')

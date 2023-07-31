@@ -562,8 +562,10 @@ export class MessagesService {
                 RoomId: RoomId,
             },
             select: {
+                RoomId : true,
                 MessageId: true,
                 UserId: true,
+                Content : true,
                 user: {
                     select:
                     {
@@ -573,6 +575,14 @@ export class MessagesService {
                 }
             }
         })
+
+        return {
+            username : send.user.username,
+            RoomId : send.RoomId,
+            avatar : send.user.avatar,
+            UserId : send.UserId,
+            content : send.Content,
+        };
     }
 
     async getroomsdms(userid: string) {

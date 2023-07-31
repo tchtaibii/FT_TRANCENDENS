@@ -350,10 +350,12 @@
                         font-size: toRem(14);
                         line-height: toRem(17);
                         color: #FFFFFF;
+                        align-items: center;
                         max-width: toRem(400);
                         height: fit-content;
                         overflow: hidden;
                         overflow-wrap: break-word;
+                        text-align: center;
                         white-space: pre-wrap;
                     }
                 }
@@ -862,3 +864,8 @@
         color: #ED5152;
     }
 }
+
+.EmojiPickerReact{
+    position: relative;
+}
+

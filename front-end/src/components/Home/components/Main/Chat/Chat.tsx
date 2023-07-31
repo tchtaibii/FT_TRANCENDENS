@@ -13,6 +13,16 @@ import grpsImg from '../../../../../assets/img/groups.jpeg'
 import { useSelector } from 'react-redux'
 import { io } from 'socket.io-client'
 import { useNavigate } from "react-router-dom";
+import EmojiPicker, {
+	EmojiStyle,
+	SkinTones,
+	Theme,
+	Categories,
+	EmojiClickData,
+	Emoji,
+	SuggestionMode,
+	SkinTonePickerLocation
+} from "emoji-picker-react";
 
 
 function StartChat() {
@@ -134,6 +144,17 @@ function ChatContent(params: any) {
 
 	}, [params.userId]);
 	const navigate = useNavigate();
+	const [isEmoji, setEmoji] = useState(false);
+	const EmojiRef = useRef(null);
+	const handleClickOutsideEm = () => {
+		setEmoji(false);
+	}
+	useOnClickOutside(EmojiRef, handleClickOutsideEm);
+	// const [selectedEmoji, setSelectedEmoji] = useState<string>("");
+
+	function onClick(emojiData: EmojiClickData, event: MouseEvent) {
+		setMessageTyping((state: any) => state + '' + emojiData.emoji);
+	}
 	return (
 		<div className="chatContent">
 			{
@@ -185,7 +206,30 @@ function ChatContent(params: any) {
 					</div>
 					<div className="content">
 						<div className="messageSend">
-							<button><img src={emoji} alt="" /></button>
+							<div className="emojies">
+								<button style={{ position: 'relative' }} ref={EmojiRef} onClick={() => {
+									if (!isEmoji)
+										setEmoji(true);
+								}}>
+									<img src={emoji} alt="" />
+									{
+										isEmoji &&
+										<div style={{ position: 'absolute', bottom: 0, left: 0 }}>
+											<EmojiPicker
+												onEmojiClick={onClick}
+												autoFocusSearch={false}
+												theme={Theme.DARK}
+												// emojiVersion={'5.0'}
+												height={'20rem'}
+												width={'15rem'}
+												lazyLoadEmojis={true}
+												emojiStyle={EmojiStyle.APPLE}
+											/>
+										</div>
+									}
+								</button>
+							</div>
+
 
 							<textarea onKeyDown={handleKeyPress} value={messageTyping} onChange={(e: any) => {
 								setMessageTyping(e.target.value);

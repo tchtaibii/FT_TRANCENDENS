@@ -25,7 +25,7 @@
     "@nestjs/jwt": "*",
     "@nestjs/passport": "*",
     "@nestjs/platform-express": "*",
-    "@nestjs/platform-socket.io": "^10.0.5",
+    "@nestjs/platform-socket.io": "^10.1.2",
     "@nestjs/serve-static": "^4.0.0",
     "@nestjs/swagger": "*",
     "@nestjs/websockets": "^10.0.5",
@@ -40,6 +40,7 @@
     "qrcode": "*",
     "reflect-metadata": "*",
     "rxjs": "*",
+    "socket.io": "^4.7.1",
     "speakeasy": "*",
     "uuid": "^9.0.0"
   },

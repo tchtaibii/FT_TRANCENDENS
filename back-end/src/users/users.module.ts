@@ -10,15 +10,15 @@ import { SettingController } from './controlers/setting.controller';
 import { SettingService } from './services/setting.service';
 import { FriendshipController } from './controlers/friendship.controller';
 import { FriendshipService } from './services/friendship.service';
-import { NotificationGateway } from 'src/events/notification/notification.gateway';
-import { EventsModule } from 'src/events/events.module';
+import { EventsGateway } from './events/events.gateway';
+import { EventsService } from './events/services/events.service';
 
 @Module({
-  providers: [UsersService, ProfileService, HomeService, SettingService, FriendshipService, NotificationGateway],
+  providers: [UsersService, ProfileService, HomeService, SettingService, FriendshipService, EventsGateway, EventsService],
   controllers: [UsersController, ProfileController, HomeController, SettingController, FriendshipController],
-  exports: [UsersService, NotificationGateway],
-  imports: [EventsModule] // Import the EventsModule here
+  exports: [UsersService],
 })
+
 export class UsersModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer

@@ -1,10 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { GameModule } from './game/game.module';
-// import { ChatModule } from './chat/chat.module';
 import { AuthModule } from './auth/auth.module';
 import * as cookieParser from 'cookie-parser';
 import { UsersModule } from './users/users.module';
-import { EventsModule } from './events/events.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { MessagesModule } from './chat/messages.module';
@@ -12,7 +10,7 @@ import { MessagesModule } from './chat/messages.module';
 
 
 @Module({
-  imports: [GameModule, MessagesModule, AuthModule, UsersModule, EventsModule, ServeStaticModule.forRoot({
+  imports: [GameModule, MessagesModule, AuthModule, UsersModule, ServeStaticModule.forRoot({
     rootPath: join(__dirname, '..', 'uploads'),
     serveRoot: '/uploads',
   }),],

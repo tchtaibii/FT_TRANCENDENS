@@ -3,14 +3,15 @@ import { PrismaClient, User, Game, notificationType } from '@prisma/client';
 import { GamesDTO, AllGames, topPlayers, RecentActivity, ProfileFriends, blockedlist, request } from '../dto/dto-classes';
 import { create } from 'domain';
 import { type } from 'os';
-import { NotificationGateway } from 'src/events/notification/notification.gateway';
-// import { v4 as uuidv4 } from 'uuid';
+// import { NotificationGateway } from ;
+import { v4 as uuidv4 } from 'uuid';
+import { EventsGateway } from '../events/events.gateway';
 
 
 @Injectable()
 export class FriendshipService {
     prisma = new PrismaClient();
-	constructor(private readonly NotificationGateway : NotificationGateway){}
+	constructor(private readonly NotificationGateway : EventsGateway){}
 
     async sendRequest(User : User, receiverId : string)
     {
@@ -53,7 +54,7 @@ export class FriendshipService {
         }
 
         invite.sender.avatar =  invite.sender.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !invite.sender.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + invite.sender.avatar : invite.sender.avatar;
-        console.log(invite.sender.avatar);
+        // console.log(invite.sender.avatar);
         const final = {
             friendshipId : invite.FriendshipId,
             UserId : invite.sender.UserId,
@@ -121,14 +122,14 @@ export class FriendshipService {
 
         this.NotificationGateway.handleNotification(notification.receiverId, websocketNotifiation);
 
-        // const RoomNAme = uuidv4();
+        const RoomNAme = uuidv4();
 
         const check = await this.checkRoom(notification.receiverId, notification.senderId);
     
         if (!check)
         {
             await this.prisma.$transaction(async (prisma) => {
-                const room = await prisma.room.create({ data: { RoomNAme : "" } });
+                const room = await prisma.room.create({ data: { RoomNAme } });
                 await prisma.membership.createMany({ data: [ { RoomId: room.RoomId, UserId : notification.receiverId },
                                                             { RoomId: room.RoomId, UserId : notification.senderId } ]
                 });

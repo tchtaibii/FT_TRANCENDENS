@@ -152,7 +152,7 @@ function ChatContent(params: any) {
 							{
 								threDots && params.roomData &&
 								<div className="threedots">
-									{params.roomData.isChannel === false && <button>Invite to play</button>}
+									{params.roomData.isChannel === false && <button className='threeD'>Invite to play</button>}
 									{params.roomData.isChannel === false && <button>invite Profile</button>}
 									{params.roomData.isChannel === false && <button onClick={async () => {
 										await axios.post('/Profile/blockUser', {
@@ -165,11 +165,14 @@ function ChatContent(params: any) {
 									{params.roomData.isChannel === true && <button onClick={() => {
 										params.setIsPop(true);
 										params.setisMembers(true);
-									}} >Members</button>}
+									}} className='threeD'>Members</button>}
 									{(params.roomData.isChannel === true && params.roomData.Type === 'protected' && (params.roomData.UserRole === 'Owner' || params.roomData.UserRole === 'Admin')) && <button onClick={() => {
 
 									}} className='Securite'>Securité</button>}
-									{(params.roomData.isChannel === true) && <button onClick={() => {
+									{(params.roomData.isChannel === true) && <button onClick={async () => {
+										await axios.delete(`/room/${params.roomData.RoomId}/leave/${myData.UserId}`);
+										navigate('/');
+										window.location.reload();
 									}} className='Block'>Leave Room</button>}
 
 								</div>
@@ -227,11 +230,28 @@ function UserMember({ e, UserId, UserRole }: any) {
 	return (
 		<div ref={userRef} style={{ cursor: 'pointer', position: 'relative' }} onClick={() => {
 			setUserO(!UserO);
-		}} className="userSection">
-			{UserO && UserId !== e.member.UserId && (UserRole === 'Owner' || UserRole === 'Admin') && <div key={e.member.UserId + '-options'} className="optionsUser">
-				<h3 className={e.isMuted ? '' : 'Danger'}>{e.isMuted ? 'Unmute' : 'Mute'}</h3>
-				<h3 className='Danger'>Kick</h3>
-				<h3 className={e.isBanned ? '' : 'Danger'}>{e.isBanned ? 'Unbanne' : 'Banne'}</h3>
+		}} className={e.isBanned ? "userSection banned" : "userSection"}>
+			{UserO && UserId !== e.member.UserId && (UserRole === 'Owner' || UserRole === 'Admin') && <div key={e.member.UserId + '-options'} className="optionsUser ">
+				<h3 onClick={async () => {
+					if (!e.isMuted)
+						await axios.delete(`/room/${UserId}/mute/${e.member.MembershipId}`);
+					else
+						await axios.delete(`/room/${UserId}/umute/${e.member.MembershipId}`);
+					window.location.reload();
+				}} className={e.isMuted ? '' : 'Danger'}>{e.isMuted ? 'Unmute' : 'Mute'}</h3>
+				{/* kick */}
+				<h3 className='Danger' onClick={async () => {
+					await axios.delete(`/room/${UserId}/kick/${e.member.UserId}`);
+					window.location.reload();
+				}}>Kick</h3>
+				{/* banne */}
+				<h3 onClick={async () => {
+					if (!e.isBanned)
+						await axios.delete(`/room/${UserId}/ban/${e.member.MembershipId}`);
+					else
+						await axios.delete(`/room/${UserId}/unban/${e.member.MembershipId}`);
+					window.location.reload();
+				}} className={e.isBanned ? '' : 'Danger'}>{e.isBanned ? 'Unbanne' : 'Banne'}</h3>
 				{(e.Role !== 'Owner' || e.Role !== 'Admin') && <h3>Set Admin</h3>}
 			</div>}
 			<div className="contUserSect">

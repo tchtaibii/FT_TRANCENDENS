@@ -410,13 +410,48 @@
     .Block {
         font-weight: 500;
         color: #ED5152;
+        transition: all 0.2s ease-in-out;
+
+        transform-origin: left;
+
+        &:hover {
+            transform: scale(1.1);
+            text-shadow:
+                0 0 toRem(2) #a60a0a,
+                0 0 toRem(2) #a60a0a;
+        }
     }
 
     .Securite {
         font-weight: 500;
         color: #00887A;
+        transition: all 0.2s ease-in-out;
+        transform-origin: left;
+
+        &:hover {
+            transform: scale(1.1);
+            text-shadow:
+                0 0 toRem(2) #a60a0a,
+                0 0 toRem(2) #a60a0a;
+        }
     }
 
+
+
+}
+
+.threeD {
+    font-weight: 500;
+    color: white;
+    transition: all 0.2s ease-in-out;
+    transform-origin: left;
+
+    &:hover {
+        transform: scale(1.1);
+        text-shadow:
+            0 0 toRem(2) #ffffff,
+            0 0 toRem(2) #ffffff;
+    }
 }
 
 .popupChat {
@@ -780,6 +815,9 @@
         line-height: normal;
     }
 }
+.banned{
+    filter: saturate(0);
+}
 
 .optionsUser {
     position: absolute;
@@ -795,6 +833,8 @@
     border: #ED5152 toRem(0.5) solid;
     top: 0;
     transform: translate(toRem(10), toRem(25));
+    // padding-inline: 0;
+
 
     h3 {
         color: #FFF;
@@ -802,8 +842,23 @@
         font-style: normal;
         font-weight: 400;
         line-height: normal;
+        // background-color: #252527;
+        transition: all 0.2s ease-in-out;
+        // width: 100%;
+        // background-color: #17AFA0;
+        // border-radius: toRem(10);
+        // padding-inline: toRem(11);
+        transform-origin: left;
+
+        &:hover {
+            transform: scale(1.1);
+            text-shadow:
+                0 0 toRem(2) #a60a0a,
+                0 0 toRem(2) #a60a0a;
+        }
     }
-    .Danger{
+
+    .Danger {
         color: #ED5152;
     }
 }

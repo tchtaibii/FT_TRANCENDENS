@@ -158,7 +158,7 @@ function App() {
 	const [Socket, theSocket] = useState<any>(null)
 	useEffect(() => {
 		if (token) {
-			const socket = io('http://localhost:3001/', {
+			const socket = io('http://localhost:3001/notification', {
 				extraHeaders: {
 					Authorization: `Bearer ${token}`,
 				}

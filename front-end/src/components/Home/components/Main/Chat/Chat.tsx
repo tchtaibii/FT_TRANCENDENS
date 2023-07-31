@@ -67,12 +67,44 @@ function ChatContent(params: any) {
 	const [Socket, setSocket] = useState<any>(null);
 	const [Data, setData] = useState<any>({ isChannel: false, avatar: '', name: '', status: false, type: '' });
 	const ref = useRef(null)
-	// const token = useSelector((state: any) => state.token);
+	const token = useSelector((state: any) => state.token).token;
+	useEffect(() => {
+		if (token) {
+			const socket = io('http://localhost:3001/chat', {
+				extraHeaders: {
+					Authorization: `Bearer ${token}`,
+				}
+			});
+			setSocket(socket);
+		}
+	}, [token, params.userId]);
+	useEffect(() => {
+		if (Socket) {
+			Socket.on('connect', () => {
+				console.log('chat is connected')
+			});
+			Socket.emit('joinRoom', params.userId);
 
+			Socket.on('message', (data: any) => {
+
+				console.log('Received notification:', data);
+
+			});
+
+			Socket.on('disconnect', () => {
+				console.log('Socket.IO disconnected.');
+			});
+			return () => {
+				Socket.disconnect();
+			};
+		}
+
+
+	}, [Socket])
 	const handleClickOutside = () => { setThreDots(false) }
 	useOnClickOutside(ref, handleClickOutside)
 	const handleButtonClick = () => {
-		Socket.emit('message', { message: messageTyping, roomId: params.userId, UserId: myData.UserId });
+		Socket.emit('message', { RoomId: params.userId, message: messageTyping });
 	};
 	const [messageTyping, setMessageTyping] = useState<string>('');
 	const handleKeyPress = (event: any) => {
@@ -100,29 +132,6 @@ function ChatContent(params: any) {
 	}, [Checker, Data])
 	console.log(Checker);
 
-	useEffect(() => {
-
-		const socket = io('http://localhost:3001');
-		setSocket(socket);
-		// socket.on('connect', () => {
-		// 	// socket.emit('joinRoom', { roomId: params.userId });
-		// });
-		// socket.on('message', (data: any) => {
-
-		// });
-	}, [])
-
-	useEffect(() => {
-		if (Socket) {
-			Socket.on('connect', () => {
-				console.log('connected');
-				Socket.emit('joinRoom', params.userId);
-			});
-			// Socket.on('message', (data: any) => {
-
-			// });
-		}
-	}, [Socket])
 
 	useEffect(() => {
 		const FetchData = async () => {
@@ -166,7 +175,7 @@ function ChatContent(params: any) {
 										params.setisMembers(true);
 									}} >Members</button>}
 									{(params.roomData.isChannel === true && params.roomData.Type === 'protected' && (params.roomData.UserRole === 'Owner' || params.roomData.UserRole === 'Admin')) && <button onClick={() => {
-										
+
 									}} className='Securite'>Securité</button>}
 									{(params.roomData.isChannel === true) && <button onClick={() => {
 									}} className='Block'>Leave Room</button>}

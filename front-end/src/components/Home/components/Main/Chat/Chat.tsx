@@ -63,7 +63,7 @@ function ChatContent(params: any) {
 	const myData = useSelector((state: any) => state.admin);
 	const [Checker, setCheck] = useState<boolean | null>(null);
 	const [threDots, setThreDots] = useState(false);
-	const [AllMsgs, setMessages] = useState([]);
+	const [AllMsgs, setMessages] = useState<any>([]);
 	const [Socket, setSocket] = useState<any>(null);
 	const [Data, setData] = useState<any>({ isChannel: false, avatar: '', name: '', status: false, type: '' });
 	const ref = useRef(null)
@@ -84,29 +84,23 @@ function ChatContent(params: any) {
 				console.log('chat is connected')
 			});
 			Socket.emit('joinRoom', params.userId);
-
 			Socket.on('message', (data: any) => {
-
-				console.log('Received notification:', data);
-
+				setMessages((state: any) => [data, ...state]);
 			});
-
 			Socket.on('disconnect', () => {
-				console.log('Socket.IO disconnected.');
 			});
 			return () => {
 				Socket.disconnect();
 			};
 		}
-
-
 	}, [Socket])
 	const handleClickOutside = () => { setThreDots(false) }
 	useOnClickOutside(ref, handleClickOutside)
-	const handleButtonClick = () => {
-		Socket.emit('message', { RoomId: params.userId, message: messageTyping });
-	};
 	const [messageTyping, setMessageTyping] = useState<string>('');
+	const handleButtonClick = () => {
+		if (Socket)
+			Socket.emit('message', { RoomId: params.userId, message: messageTyping });
+	};
 	const handleKeyPress = (event: any) => {
 		if (event.key === 'Enter' && !event.shiftKey) {
 			event.preventDefault();
@@ -114,7 +108,6 @@ function ChatContent(params: any) {
 				handleButtonClick();
 				setMessageTyping('');
 			}
-
 		}
 	}
 
@@ -130,7 +123,6 @@ function ChatContent(params: any) {
 			params.setDisplay({ display: true, name: Data.name, roomId: params.userId, type: Data.type, password: null });
 		}
 	}, [Checker, Data])
-	console.log(Checker);
 
 
 	useEffect(() => {
@@ -243,8 +235,8 @@ function Chat(props: any) {
 	const [isMemeber, setmember] = useState(false);
 	const [shouldJoin, setShouldJoin] = useState<DisplayIt>({ display: false, name: '', roomId: '', type: '', password: null });
 	const [typeGroup, setType] = useState({ protected: true, private: false, public: false });
-	function truncateString(str: string): string {
-		if (str.length > 30) {
+	function truncateString(str: string): string | null {
+		if (str && str.length > 30) {
 			return str.slice(0, 30 - 3) + '...';
 		}
 		return str;
@@ -278,6 +270,7 @@ function Chat(props: any) {
 		}
 		FetchDms();
 	}, [])
+	console.log(Grps);
 	const [RoomData, setRoomData] = useState<any | null>(null)
 	useEffect(() => {
 		if (props.params) {
@@ -355,7 +348,6 @@ function Chat(props: any) {
 														{/* to={'/chat/' + e.roomid}  */}
 														<button onClick={async () => {
 															await axios.post(`/room/checkmember/${e.roomid}`).then((rsp) => {
-																console.log('checkmember', rsp.data);
 																if (rsp.data) {
 																	navigate('/chat/' + e.roomid);
 																}
@@ -369,7 +361,7 @@ function Chat(props: any) {
 															<img src={grpsImg} />
 															<div className="textUserChat">
 																<h1>{e.name}</h1>
-																<p>{!e.lastMessage ? `Say Hi to ${e.name}` : truncateString(e.lastMessage)}</p>
+																<p>{`Say in ${e.name}`}</p>
 															</div>
 														</button>
 													</motion.div>
@@ -409,7 +401,6 @@ function Chat(props: any) {
 															</div>
 															<div className="buttonNewGroup">
 																<button onClick={async () => {
-																	console.log(CreateRoom);
 																	await axios.post('/room/create', { room: CreateRoom }).then(async (resp) => {
 																		if (resp) {
 																			// await axios.get('/room/rooms').then((resp: any) => setGrps(resp.data));
@@ -454,7 +445,6 @@ function Chat(props: any) {
 															<div className="buttonNewGroup">
 																<button onClick={async () => {
 																	await axios.post(`/room/${shouldJoin.roomId}/joinroom`, { roomId: shouldJoin.roomId, password: shouldJoin.password }).then((rsp) => {
-																		console.log('is :', rsp.data);
 																		if (rsp.data.is) {
 																			setShouldJoin({ display: false, name: '', roomId: '', type: '', password: null });
 																			setPopUp(false);

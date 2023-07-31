@@ -722,6 +722,8 @@ export class MessagesService {
                select : {
                     MembershipId : true,
                     Role : true,
+                    isBanned : true,
+                    isMuted : true,
                     member : {
                         select : {
                             avatar : true,

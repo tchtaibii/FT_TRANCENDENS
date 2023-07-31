@@ -233,6 +233,10 @@ function Chat(props: any) {
 	const [isError, setError] = useState(false);
 	const [isPopup, setPopUp] = useState(false);
 	const [isMemeber, setmember] = useState(false);
+	const [UsernameAddMember, setUsernameAddMember] = useState<any>('');
+	const [ADDmember, setAddMember] = useState(false);
+	const [UserO, setUserO] = useState(false);
+	
 	const [shouldJoin, setShouldJoin] = useState<DisplayIt>({ display: false, name: '', roomId: '', type: '', password: null });
 	const [typeGroup, setType] = useState({ protected: true, private: false, public: false });
 	function truncateString(str: string): string | null {
@@ -279,7 +283,7 @@ function Chat(props: any) {
 			}
 			FetchData();
 		}
-	}, [userId])
+	}, [userId, isMemeber])
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
 			<GradienBox mywidth="1201px" myheight="850px" myborder="40px">
@@ -491,8 +495,16 @@ function Chat(props: any) {
 														<div className="membersEdit">
 															<div className="members">
 																{
-																	RoomData.members.map((e: any, i: number) => (
-																		<div key={e.member.UserId} className="userSection">
+																	RoomData.members.map((e: any) => (
+																		<div style={{cursor: 'pointer', position: 'relative'}} key={e.member.UserId} onClick={() =>{
+																			setUserO(true);
+																		}} className="userSection">
+																			{UserO && (RoomData.UserRole === 'Owner' || RoomData.UserRole === 'Admin')  && <div key={e.member.UserId + '-options'} className="optionsUser">
+																				<h3>{Mute}</h3>
+																				<h3>Kick</h3>
+																				<h3>Ban</h3>
+																				<h3>Set Admin</h3>
+																			</div>}
 																			<div className="contUserSect">
 																				<img src={e.member.avatar} />
 																				<p>{e.member.username}</p>
@@ -501,10 +513,53 @@ function Chat(props: any) {
 																	))
 																}
 															</div>
-															{(RoomData.UserRole === "Owner" || RoomData.UserRole === "Admin") && <div className="butnsAdd"><button>Add Member</button></div>}
+															{(RoomData.UserRole === "Owner" || RoomData.UserRole === "Admin") && <div className="butnsAdd">
+																<button onClick={() => {
+																	setmember(false);
+																	setAddMember(true);
+																}}>Add Member</button>
+															</div>}
 														</div>
 													</div>
 
+												</motion.div>
+											}
+											{
+												ADDmember &&
+												<motion.div
+													key='setting-popup'
+													initial={{ scale: 0 }}
+													animate={{ scale: 1 }}
+													exit={{ scale: 0 }}
+													className="newGroup"
+													style={{ width: '26.25rem', height: '15rem' }}
+												>
+													<div className="addMember">
+														<h2>Add New Member!</h2>
+														<div className="inputContainer2"><input onChange={(e: any) => {
+															setUsernameAddMember(e.target.value);
+														}} type="text" placeholder='Username..' /></div>
+														<div className="btnsAdding">
+															<button disabled={UsernameAddMember.length <= 0} onClick={async () => {
+																// UsernameAddMember
+																await axios.post(`/room/${userId}/addmember`, { userName: UsernameAddMember }).then((rsp) => {
+																	if (rsp.data) {
+																		setAddMember(false);
+																		setmember(true);
+																	}
+																	else {
+																		setError(true);
+																	}
+																})
+
+															}}>Add</button>
+															{isError && <p className='Error statusInput ChatError'>Something Wrong!</p>}
+															<button style={{ background: '#ED5152' }} onClick={() => {
+																setAddMember(false);
+																setmember(true);
+															}}>Cancel</button>
+														</div>
+													</div>
 												</motion.div>
 											}
 										</motion.div>

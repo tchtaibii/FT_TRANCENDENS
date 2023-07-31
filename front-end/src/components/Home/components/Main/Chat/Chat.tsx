@@ -216,6 +216,32 @@ type CreateRoomT = {
 	password: string | null,
 	type: string
 }
+
+function UserMember({ e, UserId, UserRole }: any) {
+	const userRef = useRef(null);
+	const handleClickOutside = () => {
+		setUserO(false);
+	}
+	useOnClickOutside(userRef, handleClickOutside);
+	const [UserO, setUserO] = useState(false);
+	return (
+		<div ref={userRef} style={{ cursor: 'pointer', position: 'relative' }} onClick={() => {
+			setUserO(!UserO);
+		}} className="userSection">
+			{UserO && UserId !== e.member.UserId && (UserRole === 'Owner' || UserRole === 'Admin') && <div key={e.member.UserId + '-options'} className="optionsUser">
+				<h3 className={e.isMuted ? '' : 'Danger'}>{e.isMuted ? 'Unmute' : 'Mute'}</h3>
+				<h3 className='Danger'>Kick</h3>
+				<h3 className={e.isBanned ? '' : 'Danger'}>{e.isBanned ? 'Unbanne' : 'Banne'}</h3>
+				{(e.Role !== 'Owner' || e.Role !== 'Admin') && <h3>Set Admin</h3>}
+			</div>}
+			<div className="contUserSect">
+				<img src={e.member.avatar} />
+				<p>{e.member.username}</p>
+			</div>
+		</div>
+	)
+}
+
 function Chat(props: any) {
 	type DisplayIt = {
 		display: boolean,
@@ -235,8 +261,9 @@ function Chat(props: any) {
 	const [isMemeber, setmember] = useState(false);
 	const [UsernameAddMember, setUsernameAddMember] = useState<any>('');
 	const [ADDmember, setAddMember] = useState(false);
-	const [UserO, setUserO] = useState(false);
-	
+
+	const myData = useSelector((state: any) => state.admin);
+
 	const [shouldJoin, setShouldJoin] = useState<DisplayIt>({ display: false, name: '', roomId: '', type: '', password: null });
 	const [typeGroup, setType] = useState({ protected: true, private: false, public: false });
 	function truncateString(str: string): string | null {
@@ -284,6 +311,7 @@ function Chat(props: any) {
 			FetchData();
 		}
 	}, [userId, isMemeber])
+
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
 			<GradienBox mywidth="1201px" myheight="850px" myborder="40px">
@@ -496,19 +524,8 @@ function Chat(props: any) {
 															<div className="members">
 																{
 																	RoomData.members.map((e: any) => (
-																		<div style={{cursor: 'pointer', position: 'relative'}} key={e.member.UserId} onClick={() =>{
-																			setUserO(true);
-																		}} className="userSection">
-																			{UserO && (RoomData.UserRole === 'Owner' || RoomData.UserRole === 'Admin')  && <div key={e.member.UserId + '-options'} className="optionsUser">
-																				<h3>{Mute}</h3>
-																				<h3>Kick</h3>
-																				<h3>Ban</h3>
-																				<h3>Set Admin</h3>
-																			</div>}
-																			<div className="contUserSect">
-																				<img src={e.member.avatar} />
-																				<p>{e.member.username}</p>
-																			</div>
+																		<div key={e.member.UserId} >
+																			<UserMember e={e} UserId={myData.UserId} UserRole={RoomData.UserRole} />
 																		</div>
 																	))
 																}

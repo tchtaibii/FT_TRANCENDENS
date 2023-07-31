@@ -158,13 +158,18 @@ function ChatContent(params: any) {
 											blockedUser: Data.name
 										})
 										navigate('/');
-										window.location.reload(false);
+										window.location.reload();
 
 									}} className='Block'>Block</button>}
 									{params.roomData.isChannel === true && <button onClick={() => {
 										params.setIsPop(true);
 										params.setisMembers(true);
 									}} >Members</button>}
+									{(params.roomData.isChannel === true && params.roomData.Type === 'protected' && (params.roomData.UserRole === 'Owner' || params.roomData.UserRole === 'Admin')) && <button onClick={() => {
+										
+									}} className='Securite'>Securité</button>}
+									{(params.roomData.isChannel === true) && <button onClick={() => {
+									}} className='Block'>Leave Room</button>}
 
 								</div>
 							}
@@ -401,7 +406,7 @@ function Chat(props: any) {
 																			// await axios.get('/room/rooms').then((resp: any) => setGrps(resp.data));
 																			setNewGroup(false);
 																			setPopUp(false);
-																			window.location.reload(false);
+																			window.location.reload();
 																		}
 																		else {
 																			setError(true);
@@ -445,7 +450,7 @@ function Chat(props: any) {
 																			setShouldJoin({ display: false, name: '', roomId: '', type: '', password: null });
 																			setPopUp(false);
 																			setError(false);
-																			window.location.reload(false);
+																			window.location.reload();
 																		}
 																		else {
 																			setError(true);

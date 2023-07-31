@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import "./MsgNot.scss"
 import inviFriend from "../../../../assets/img/invitation-friend.svg"
 import BellImg from "../../../../assets/img/bell.svg"
@@ -9,8 +9,6 @@ import { useOnClickOutside } from 'usehooks-ts'
 import { ReactSVG } from 'react-svg';
 import axios from '../../../../Interceptor/Interceptor'
 import LogoutImg from "../../../../assets/img/Logout.svg";
-// import 'badge' from "../../../../assets/img/'badge'-noti.svg";
-// remember??
 import HomeImg from "../../../../assets/img/Home.svg";
 import ProfImg from "../../../../assets/img/profile.svg";
 import SetfImg from "../../../../assets/img/Settings.svg";
@@ -20,7 +18,8 @@ import Stream from "../../../../assets/img/stream.svg";
 import LeaderBoard from "../../../../assets/img/leaderBoard.svg";
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom';
-import {nanoid} from 'nanoid'
+import { nanoid } from 'nanoid'
+
 function MsgNot(props: any) {
 	const [isVisible, setIsVisible] = useState(false);
 	const [isVisibleI, setIsVisibleI] = useState(false);
@@ -28,7 +27,7 @@ function MsgNot(props: any) {
 	const ref = useRef(null)
 	const refI = useRef(null)
 	const [Login, setLogin] = useState('')
-	const [isFull, setIsfull] = useState(0);
+	
 	useEffect(() => {
 		axios.get('/Home/Hero').then((response) => setLogin(response.data))
 	}, [])
@@ -41,7 +40,13 @@ function MsgNot(props: any) {
 		setIsVisibleI(false)
 
 	}
-
+	useEffect(() => {
+		const FecthIsfull = async () => {
+			await axios.get('/isRequest').then((rsp) => props.setIsfull(rsp.data));
+			await axios.get('/noticationState').then((rsp) => props.setIsfullN(rsp.data));
+		}
+		FecthIsfull();
+	}, [])
 	useOnClickOutside(ref, handleClickOutside);
 	useOnClickOutside(refI, handleClickOutsideI);
 	return (
@@ -54,7 +59,7 @@ function MsgNot(props: any) {
 					}
 					} className='btn-msgnot'>
 						<img style={{ width: '1.5rem', fill: 'red', transform: 'translateX(0.156rem)' }} src={inviFriend} alt='' />
-						{isFull > 0 && <div className="isFull"></div>}
+						{props.isFull && <div className="isFull"></div>}
 					</button>
 				</GradienBox>
 				<AnimatePresence mode='wait'>
@@ -65,7 +70,7 @@ function MsgNot(props: any) {
 							animate={{ scale: 1, }}
 							exit={{ scale: 0 }}
 							key={'invitations'}
-							transition={{ ease: "easeInOut"}}
+							transition={{ ease: "easeInOut" }}
 							style={{ position: 'absolute', top: '3.5rem', width: 'fit-content', transform: 'translateX(-15rem)' }}>
 							<NotificationCont isN={false} />
 						</motion.div>
@@ -74,7 +79,11 @@ function MsgNot(props: any) {
 			</div>
 			<div ref={ref}>
 				<GradienBox mywidth="49px" myheight="49px" myborder="10px">
-					<button onClick={() => setIsVisible(!isVisible)} className='btn-msgnot'><img style={{ width: '1.5rem' }} alt='' src={BellImg} /></button>
+					<button onClick={() => setIsVisible(!isVisible)} className='btn-msgnot'><img style={{ width: '1.5rem' }} alt='' src={BellImg} />
+						{
+							props.isFullN && <div className="isFull"></div>
+						}
+					</button>
 				</GradienBox>
 				<AnimatePresence mode='wait'>
 					{
@@ -84,7 +93,7 @@ function MsgNot(props: any) {
 							animate={{ scale: 1, }}
 							exit={{ scale: 0 }}
 							key={'notifi'}
-							transition={{ ease: "easeInOut"}}
+							transition={{ ease: "easeInOut" }}
 							style={{ position: 'absolute', top: '3.5rem', left: '5rem', width: 'fit-content' }}>
 							<NotificationCont data={props.noti} isN={true} />
 						</motion.div>
@@ -95,7 +104,7 @@ function MsgNot(props: any) {
 
 			<div onClick={() => setNavMo(true)} className='burger'>
 				<GradienBox mywidth="49px" myheight="49px" myborder="10px">
-					<button className='btn-msgnot'><img style={{ width: '1.5rem' }} src={burger} alt='' />{isFull > 0 && <div className="isFull"></div>}</button>
+					<button className='btn-msgnot'><img style={{ width: '1.5rem' }} src={burger} alt='' /></button>
 				</GradienBox>
 			</div>
 			<AnimatePresence mode='wait'>

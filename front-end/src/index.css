@@ -106,32 +106,28 @@ canvas {
 }
 
 @media screen and (max-width: 770px) {
-
-  .main,
-  .profileDown {
+  .main, .profileDown{
     margin-left: 0;
   }
-
-  .bar-left {
+  .bar-left{
     display: none !important;
 
   }
-
-  .profileDown {
+  .profileDown{
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     position: relative;
     transform: translate(-27.5rem, 6rem);
-
+    
   }
 
-  .login-container {
+  .login-container{
     width: 100vw;
     height: 100vh;
   }
-
+  
   .login-container .log {
     background-size: cover;
     padding: 0;
@@ -140,11 +136,10 @@ canvas {
     justify-content: center;
     align-items: center;
     margin-bottom: 0;
-
+    
     overflow: hidden;
   }
-
-  .login-container .log .content-log .title-log h1::after {
+  .login-container .log .content-log .title-log h1::after{
     content: none;
   }
 
@@ -155,46 +150,37 @@ canvas {
     margin-left: 0;
     transform: scale(1.5);
   }
-
   .login-container .log .logo {
     position: relative;
     top: -12rem;
     transform: scale(1.5);
   }
-
-  .ProfileComponent-Activity-Friends {
+  .ProfileComponent-Activity-Friends{
     flex-direction: column;
   }
-
-  .profileDown .AchivementsProfile,
-  .profileDown .UpgradeProfile {
+  .profileDown  .AchivementsProfile, .profileDown  .UpgradeProfile{
     display: none;
 
   }
-
-  .profileDown {
+  .profileDown{
     margin-top: 2rem;
     /* flex-wrap: wrap;
     width: 100%;
     flex-direction: row-reverse;
     overflow-y: scroll; */
   }
-
-  .ProfileComponent-Activity-Friends {
+  .ProfileComponent-Activity-Friends{ 
     margin-top: 2rem;
     position: relative;
     top: 31rem;
   }
-
-  .ProfileComponent-Activity-Friends .profile-hol {
+  .ProfileComponent-Activity-Friends .profile-hol{
     display: none;
   }
-
-  .profileRE {
+  .profileRE{
     position: relative;
     top: -47rem;
   }
-
   .nav-mobile {
     display: block;
   }
@@ -226,18 +212,14 @@ canvas {
   .gamesmodeCont-mobile {
     display: flex;
   }
-
-  .ProfileComponent-Activity-Friends .fa-Profile {
-    position: relative;
-    top: 32rem;
-    transform: translateX(17rem);
-  }
-
-  .ProfileComponent-Activity-Friends .fa-Profile .textActive,
-  .ProfileComponent-Activity-Friends .fa-Profile .graph {
-    transform: translateX(17rem);
-  }
-
+.ProfileComponent-Activity-Friends .fa-Profile {
+  position: relative;
+  top: 32rem;
+  transform: translateX(17rem);
+}
+.ProfileComponent-Activity-Friends .fa-Profile .textActive, .ProfileComponent-Activity-Friends .fa-Profile .graph{
+  transform: translateX(17rem);
+}
   .emojies {
     display: none;
   }

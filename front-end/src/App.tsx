@@ -61,6 +61,7 @@ function Invitation({ state, data }: InvitationFunc) {
 		state(e);
 	}
 	return (
+		
 		<motion.div
 			initial={{ y: '-100vh', opacity: 0 }}
 			animate={{ y: 0, opacity: 1 }}
@@ -68,7 +69,7 @@ function Invitation({ state, data }: InvitationFunc) {
 			transition={{ duration: 0.5 }}
 			className="invitation-container">
 			<GradienBox zIndex={100000} mywidth="397px" myheight="157.02px" myborder="20px">
-				<div className="invitation">
+				{data && <div className="invitation">
 					<div className="close-invi" onClick={() => {
 						setTimeout(() => {
 							stater(false);
@@ -79,14 +80,14 @@ function Invitation({ state, data }: InvitationFunc) {
 						</svg>
 					</div>
 					<div className="invitation-content">
-						<img className='img-invitation' src={data.sender.avatar} alt="" />
-						<p>{`${data.sender.username} has sent you a friend request! Accept or decline the invitation now.`}</p>
+						<img className='img-invitation' src={data.sender && data.sender.avatar} alt="" />
+						<p>{`${data.sender && data.sender.username} has sent you a friend request! Accept or decline the invitation now.`}</p>
 					</div>
 					<div className="footer-onvitation">
 						<SlideButton set={stater} data={data.FriendshipId} isAccept={1} />
 						<SlideButton set={stater} data={data.FriendshipId} isAccept={0} />
 					</div>
-				</div>
+				</div>}
 			</GradienBox>
 		</motion.div>
 	);
@@ -155,6 +156,9 @@ function App() {
 		}
 		GetToken();
 	}, [isLogin])
+
+	const [isFull, setIsfull] = useState(false);
+	const [isFullN, setIsfullN] = useState(false);
 	const [Socket, theSocket] = useState<any>(null)
 	useEffect(() => {
 		if (token) {
@@ -169,11 +173,23 @@ function App() {
 			});
 
 			socket.on('request', (data: invitationRequest) => {
+				setIsfull(true);
 				setInviRequest(data);
 				setInvit(true);
 				setTimeout(() => {
 					setInvit(false);
 				}, 30000)
+				console.log('Received notification:', data);
+
+			});
+
+			socket.on('notification', (data: invitationRequest) => {
+				// setIsfullN(true);
+				// setInviRequest(data);
+				// setInvit(true);
+				// setTimeout(() => {
+				// 	setInvit(false);
+				// }, 30000)
 				console.log('Received notification:', data);
 
 			});
@@ -193,7 +209,7 @@ function App() {
 			<Particle />
 			{
 				isDown ? <Loading /> :
-					!isLogin ? <Login /> : (!isSecure ? <><Home socketInvi={setInvit} /><AnimatePresence mode='wait'>{invit && <Invitation data={invitationRequest} state={setInvit} />}</AnimatePresence></> : <Secure setSec={setSecure} />)
+					!isLogin ? <Login /> : (!isSecure ? <><Home isFull={isFull} setIsfull={setIsfull} isFullN={isFullN} setIsfullN={setIsfullN} socketInvi={setInvit} /><AnimatePresence mode='wait'>{invit && <Invitation data={invitationRequest} state={setInvit} />}</AnimatePresence></> : <Secure setSec={setSecure} />)
 			}
 			{/* </Suspense> */}
 		</div>

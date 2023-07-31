@@ -53,7 +53,7 @@ function Main(props: any) {
 				<div className="side1">
 					<div className='top'>
 						<Search />
-						<MsgNot socketInvi={props.socketInvi} />
+						<MsgNot isFull={props.isFull} setIsfull={props.setIsfull} isFullN={props.isFullN} setIsfullN={props.setIsfullN}  socketInvi={props.socketInvi}  />
 					</div>
 					<Routes>
 						<Route path="/" element={<AnimatePresence mode='wait'><Hero /><GamesMode /><BestPlayers /></AnimatePresence>} />

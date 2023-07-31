@@ -6,6 +6,8 @@ import { SocketIOMIDDELWARE } from 'src/auth/auth-services/ws';
 @WebSocketGateway({cors : true, namespace : 'chat'})
 export class ChatGateway implements OnGatewayConnection{
     @WebSocketServer() server: Server;
+    private rooms: { [roomName: string]: Socket[] } = {};
+
   constructor(private readonly ChatService : MessagesService)
   {}
 
@@ -15,20 +17,38 @@ export class ChatGateway implements OnGatewayConnection{
     }
 
     async handleConnection(client: Socket) {
-        
         console.log('chat connected');
-
     }
+
+    handleDisconnect(client)
+    {
+        for (const roomName in this.rooms) {
+            this.rooms[roomName] = this.rooms[roomName].filter((socket) => socket.id !== client.id);
+            if (this.rooms[roomName].length === 0) {
+                delete this.rooms[roomName];
+            }
+        }
+    }
+
     @SubscribeMessage('joinRoom')
     handleJoinRoom(client: Socket, roomId: string) {
+
+        if (!this.rooms[roomId]) {
+            this.rooms[roomId] = [];
+        }
+
+        this.rooms[roomId].push(client);
+
         client.join(roomId);
+
         console.log(`Client ${client.id} joined room ${roomId}`);
     }
 
     @SubscribeMessage('message')
     async handleMessage(client: Socket, payload: { RoomId: string, message: string }) {
-        console.log(payload.message);
+
         const message = await this.ChatService.sendMessage(payload.message, client.data.playload.userId, payload.RoomId);
+        
         this.server.to(payload.RoomId).emit('message', message);
     }
 

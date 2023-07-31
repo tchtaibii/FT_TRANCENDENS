@@ -3,7 +3,6 @@ import { PrismaClient, User, Game, notificationType, Prisma } from '@prisma/clie
 import { GamesDTO, AllGames, topPlayers, RecentActivity, ProfileFriends, blockedlist, notification } from '../dto/dto-classes';
 import { create } from 'domain';
 import { type } from 'os';
-import { NotificationGateway } from 'src/events/notification/notification.gateway';
 
 
 @Injectable()

@@ -1,9 +1,9 @@
-import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { OnGatewayConnection, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 
-@WebSocketGateway({cors : true})
-export class GameGateway {
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+@WebSocketGateway({cors : true, namespace : 'game'})
+export class GameGateway implements OnGatewayConnection{
+ 
+  handleConnection(client: any, ...args: any[]) {
+    console.log('connected');
   }
 }

@@ -1,26 +1,34 @@
 import { SubscribeMessage, WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { MessagesService } from './messages.service';
-// import { ChatService } from './chat.service';
+import { SocketIOMIDDELWARE } from 'src/auth/auth-services/ws';
 
-@WebSocketGateway({cors : true})
-export class ChatGateway {
+@WebSocketGateway({cors : true, namespace : 'chat'})
+export class ChatGateway implements OnGatewayConnection{
   @WebSocketServer() server: Server;
   constructor(private readonly ChatService : MessagesService)
   {}
 
+    afterInit(client : Socket)
+    {
+        client.use(SocketIOMIDDELWARE() as any);
+    }
+
+    handleConnection(client: any, ...args: any[]) {
+        console.log('chat connected')
+    }
+
     @SubscribeMessage('joinRoom')
     handleJoinRoom(client: Socket, roomId: string) {
+        console.log('here');
         client.join(roomId);
-        // client.emit('message', `You have joined room: ${roomId}`);
         console.log(`Client ${client.id} joined room ${roomId}`);
     }
 
     @SubscribeMessage('message')
     handleMessage(client: Socket, payload: { RoomId: string, message: string }) {
-
         this.ChatService.sendMessage(payload.message, client.data.playload.userId, payload.RoomId);
-        this.server.to(payload.RoomId).emit('message', payload.message);
+        this.server.to(payload.RoomId).emit('message', { message: payload.message, UserId: client.data.playload.userId });
     }
 
     @SubscribeMessage('leaveRoom')

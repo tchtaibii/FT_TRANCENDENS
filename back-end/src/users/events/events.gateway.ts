@@ -5,13 +5,13 @@ import { Server, Socket } from "socket.io"
 import { Client } from 'socket.io/dist/client';
 import { SocketIOMIDDELWARE } from 'src/auth/auth-services/ws';
 import * as cookie from 'cookie';
-import { EventsService } from '../services/events.service';
 import { UsersService } from 'src/users/services/users.service';
 import { PrismaClient } from '@prisma/client';
 import { threadId } from 'worker_threads';
+import { EventsService } from './services/events.service';
 
 
-@WebSocketGateway({cors : true})
+@WebSocketGateway({cors : true, namespace : 'notification'})
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private readonly socketService : EventsService){}
   prisma = new PrismaClient();
@@ -33,22 +33,30 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			where : { UserId : client.data.playload.userId },
 			data : { status : true},
 		})
+
 		this.socketService.storeSocket(client.data.playload.userId, client);
 	}
 
 	async handleDisconnect(client :Socket) {
-		const user = await this.prisma.user.findUnique({
-			where : {UserId : client.data.playload.userId}
-		})
-
-		if (!user)
-			return ;
 
 		await this.prisma.user.update({
-			where : { UserId : user.UserId },
+			where : { UserId : client.data.playload.userId },
 			data : { status : false},
 		})
+
 		this.socketService.removeSocket(client.data.playload.userId, client);
+	}
+
+  	@SubscribeMessage('notification')
+	handleNotification(clientId, data)
+	{
+		this.socketService.emitToClient(clientId, 'notification', data);
+	}
+
+	@SubscribeMessage('request')
+	handleInvitation(clientId, data)
+	{
+		this.socketService.emitToClient(clientId, 'request', data);
 	}
 
 }

@@ -29,7 +29,7 @@ function StartChat() {
 	return (
 		<div className="chatContent">
 			<div className="startChat">
-				hello
+				Welcome to Chat page!<br/>
 			</div>
 		</div>
 	)
@@ -276,18 +276,21 @@ function UserMember({ e, UserId, UserRole }: any) {
 			setUserO(!UserO);
 		}} className={e.isBanned ? "userSection banned" : "userSection"}>
 			{UserO && UserId !== e.member.UserId && (UserRole === 'Owner' || UserRole === 'Admin') && <div key={e.member.UserId + '-options'} className="optionsUser ">
-				<h3 onClick={async () => {
-					if (!e.isMuted)
-						await axios.delete(`/room/${UserId}/mute/${e.member.MembershipId}`);
-					else
-						await axios.delete(`/room/${UserId}/umute/${e.member.MembershipId}`);
-					window.location.reload();
-				}} className={e.isMuted ? '' : 'Danger'}>{e.isMuted ? 'Unmute' : 'Mute'}</h3>
-				{/* kick */}
-				<h3 className='Danger' onClick={async () => {
-					await axios.delete(`/room/${UserId}/kick/${e.member.UserId}`);
-					window.location.reload();
-				}}>Kick</h3>
+				{
+					!e.isBanned &&
+					<>
+						<h3 onClick={async () => {
+							if (!e.isMuted)
+								await axios.delete(`/room/${UserId}/mute/${e.member.MembershipId}`);
+							else
+								await axios.delete(`/room/${UserId}/umute/${e.member.MembershipId}`);
+							window.location.reload();
+						}} className={e.isMuted ? '' : 'Danger'}>{e.isMuted ? 'Unmute' : 'Mute'}</h3>
+						<h3 className='Danger' onClick={async () => {
+							await axios.delete(`/room/${UserId}/kick/${e.member.UserId}`);
+							window.location.reload();
+						}}>Kick</h3></>
+				}
 				{/* banne */}
 				<h3 onClick={async () => {
 					if (!e.isBanned)
@@ -557,7 +560,7 @@ function Chat(props: any) {
 																	setPopUp(false);
 																	setError(false);
 																}} className='btnNewGrp cancel'>Cancel</button>
-																{isError && <p className='Error statusInput ChatError'>Something Wrong!</p>}
+																{isError && <p style={{ transform: 'translate(2.8rem, -7rem)' }} className='Error statusInput ChatError '>Something Wrong!</p>}
 															</div>
 														</div>
 													</div>

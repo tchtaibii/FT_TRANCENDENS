@@ -68,10 +68,7 @@ export class RoomsController {
     const { username } = addmemberdto;
 
     const createnewmember = await this.messagesservice.addMemberToRoom(roomId, username, req.user.UserId);
-    return {
-      membership: createnewmember,
-      message: 'Member added',
-    };
+    return true;
   }
   //should be admin or owner
   @Post(':roomId/mute/:membershipid') //should impliment with socket

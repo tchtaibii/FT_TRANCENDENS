@@ -71,7 +71,7 @@ export class ChatGateway implements OnGatewayConnection{
 
         const message = await this.ChatService.sendMessage(payload.message, client.data.playload.userId, payload.RoomId);
         
-        if (!message.ischannel)
+        if (!message.ischannel || !message.blocked.length)
             this.server.to(payload.RoomId).emit('message', message.send);
         else 
         {

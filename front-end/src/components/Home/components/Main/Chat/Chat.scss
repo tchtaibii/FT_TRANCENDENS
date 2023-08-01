@@ -442,8 +442,8 @@
         &:hover {
             transform: scale(1.1);
             text-shadow:
-                0 0 toRem(2) #a60a0a,
-                0 0 toRem(2) #a60a0a;
+                0 0 toRem(2) #00887A,
+                0 0 toRem(2) #00887A;
         }
     }
 
@@ -529,33 +529,6 @@
                 font-size: toRem(14);
             }
 
-            .inputContainer {
-                width: toRem(250);
-                height: toRem(35);
-                border-radius: toRem(40);
-                background: rgb(237, 81, 82);
-                background: linear-gradient(298deg, rgba(237, 81, 82, 1) 0%, rgba(86, 153, 174, 1) 100%);
-                padding: toRem(1);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                input[type=text],
-                input[type=password] {
-                    width: 100%;
-                    height: 100%;
-                    border-radius: toRem(40);
-                    background: rgba(18, 18, 19, 1);
-                    padding-left: toRem(12);
-                    padding-right: toRem(8);
-                    color: rgba(255, 255, 255, 0.70);
-                    font-size: toRem(11);
-                    font-style: normal;
-                    font-weight: 300;
-                    line-height: normal;
-                }
-            }
-
             .typeGroup {
                 display: flex;
                 align-items: center;
@@ -604,29 +577,7 @@
                 }
             }
 
-            .buttonNewGroup {
-                display: flex;
-                gap: toRem(23);
-
-                button {
-                    width: toRem(80);
-                    height: toRem(30);
-                    background-color: #17AFA0;
-                    border-radius: toRem(19);
-                    font-size: toRem(14);
-                    transition: all 0.5s ease-in-out;
-
-                    &:disabled {
-                        cursor: not-allowed;
-                        background-color: #13655d;
-                    }
-                }
-
-                .cancel {
-                    background-color: #ED5152;
-                }
-
-            }
+          
         }
     }
 }
@@ -882,4 +833,94 @@
 
 .isAdmin {
     box-shadow: 0px 0px toRem(10) toRem(-3) #36CFBF;
+}
+
+.securiteSection {
+    width: toRem(107);
+    height: toRem(37);
+    border-radius: toRem(19);
+    background: #171717;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: toRem(14);
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.securityButtons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: toRem(9);
+
+    button {
+        width: toRem(185);
+        height: toRem(38);
+        font-size: toRem(15);
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #00887A;
+        border-radius: toRem(19);
+    }
+
+    .DeleteP {
+        background-color: #ED5152;
+    }
+}
+.inputContainer {
+    width: toRem(250);
+    height: toRem(35);
+    border-radius: toRem(40);
+    background: rgb(237, 81, 82);
+    background: linear-gradient(298deg, rgba(237, 81, 82, 1) 0%, rgba(86, 153, 174, 1) 100%);
+    padding: toRem(1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    input[type=text],
+    input[type=password] {
+        width: 100%;
+        height: 100%;
+        border-radius: toRem(40);
+        background: rgba(18, 18, 19, 1);
+        padding-left: toRem(12);
+        padding-right: toRem(8);
+        color: rgba(255, 255, 255, 0.70);
+        font-size: toRem(11);
+        font-style: normal;
+        font-weight: 300;
+        line-height: normal;
+    }
+}
+.buttonNewGroup {
+    display: flex;
+    gap: toRem(23);
+
+    button {
+        width: toRem(80);
+        height: toRem(30);
+        background-color: #17AFA0;
+        border-radius: toRem(19);
+        font-size: toRem(14);
+        transition: all 0.5s ease-in-out;
+
+        &:disabled {
+            cursor: not-allowed;
+            background-color: #13655d;
+        }
+    }
+
+    .cancel {
+        background-color: #ED5152;
+    }
+
 }

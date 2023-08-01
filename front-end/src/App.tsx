@@ -76,6 +76,8 @@ function Invitation({ state, data, wichOne }: InvitationFunc) {
 					return `Check your Inbox Chat, ${data.username} has invited you in a Group!`;
 				case "Achievement":
 					return `Congratulations! You have been awarded a new Archievement.`
+				case "Achievement":
+					return `${data.username} sent you a Message.`
 				default:
 					return '';
 			}

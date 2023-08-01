@@ -78,7 +78,7 @@ export class HomeService {
 		});
 
 		const blockedUserIds = blockedUser.map(friendship =>
-			friendship.SenderId === user.UserId ? friendship.ReceiverId : friendship.SenderId
+			friendship.SenderId === user ? friendship.ReceiverId : friendship.SenderId
 		);
 	
 		return blockedUserIds;

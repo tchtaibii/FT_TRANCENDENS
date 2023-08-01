@@ -361,6 +361,9 @@ export class MessagesService {
                 },
             }
         });
+        messages.map((msg) => {
+            msg.user.avatar = msg.user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !msg.user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + msg.user.avatar : msg.user.avatar;
+        })
         return messages;
     }
 
@@ -402,7 +405,7 @@ export class MessagesService {
         return {
             type: infos.Type,
             isChannel: infos.ischannel,
-            avatar,
+            avatar : avatar && avatar.search("https://cdn.intra.42.fr/users/") === -1 && !avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + avatar : avatar,
             name,
             status,
         }
@@ -589,8 +592,9 @@ export class MessagesService {
 			}
 		});
 
+
 		const blockedUserIds = blockedUser.map(friendship =>
-			friendship.SenderId === user.UserId ? friendship.ReceiverId : friendship.SenderId
+			friendship.SenderId === user ? friendship.ReceiverId : friendship.SenderId
 		);
 	
 		return blockedUserIds;
@@ -624,6 +628,7 @@ export class MessagesService {
         var blocked = [];
         if (send.room.ischannel)
             blocked = await this.getBlockeduserIds(send.UserId);
+        send.user.avatar =  send.user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !send.user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + send.user.avatar : send.user.avatar;
         return {
             send, blocked, ischannel : send.room.ischannel
         };
@@ -635,8 +640,15 @@ export class MessagesService {
                 members: {
                     some: {
                         member: {
-                            OR: [
-                                {
+                            UserId : userid,
+                        },
+                    },
+                },
+                OR: [
+                    {
+                        members: {
+                            some: {
+                                member: {
                                     ReceiverFriendships: {
                                         some: {
                                             Accepted: true,
@@ -648,7 +660,13 @@ export class MessagesService {
                                         },
                                     },
                                 },
-                                {
+                            },
+                        },
+                    },
+                    {
+                        members: {
+                            some: {
+                                member: {
                                     SenderFriendships: {
                                         some: {
                                             Accepted: true,
@@ -660,10 +678,10 @@ export class MessagesService {
                                         },
                                     },
                                 },
-                            ],
+                            },
                         },
                     },
-                },
+                ],
                 ischannel: false,
             },
             include: {
@@ -671,7 +689,7 @@ export class MessagesService {
                     orderBy: {
                         SendTime: 'desc',
                     },
-                    take: 1
+                    take: 1,
                 },
                 members: {
                     include: {
@@ -687,13 +705,29 @@ export class MessagesService {
                 },
             },
         })
+        const msg = messages.map((room) => {
+            
+            let check = {name: room.members[0].member.UserId === userid ? room.members[1].member.username : room.members[0].member.username,
+                avatar: room.members[0].member.UserId === userid ? room.members[1].member.avatar : room.members[0].member.avatar,
+                status: room.members[0].member.UserId === userid ? room.members[1].member.status : room.members[0].member.status,
+                userid: room.members[0].member.UserId === userid ? room.members[1].member.UserId : room.members[0].member.UserId,
+                roomid: room.RoomId,
+                lastMessage: room.Message.length > 0 ? {
+                content: room.Message[0].Content,
+                } : null,
+            }
+            check.avatar = check.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !check.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + check.avatar : check.avatar;
+            return check;
+          }
+        )
+        ;
         return messages;
     }
 
 
 
     async joinroom(userid: string, roomid: number, password: string) {
-        console.log(password)
+
         const userexist = await this.prisma.membership.findFirst({
             where: {
                 UserId: userid,
@@ -790,6 +824,10 @@ export class MessagesService {
             }
         }
       });
+
+      roomDetails.members.map((member) => {
+        member.member.avatar = member.member.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !member.member.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + member.member.avatar : member.member.avatar;
+      })
 
       const final = {
         RoomId : roomDetails.RoomId,

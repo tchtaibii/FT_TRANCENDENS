@@ -129,18 +129,20 @@ export class RoomsController {
   async getdms(@Req() req) {
     const userId = req.user.UserId;
     const messages = await this.messagesservice.getroomsdms(userId);
-    const msg = messages.map(room => ({
-      name: room.members[0].member.UserId === req.user.UserId ? room.members[1].member.username : room.members[0].member.username,
-      avatar: room.members[0].member.UserId === req.user.UserId ? room.members[1].member.avatar : room.members[0].member.avatar,
-      status: room.members[0].member.UserId === req.user.UserId ? room.members[1].member.status : room.members[0].member.status,
-      userid: room.members[0].member.UserId === req.user.UserId ? room.members[1].member.UserId : room.members[0].member.UserId,
-      roomid: room.RoomId,
-      lastMessage: room.Message.length > 0 ? {
-        content: room.Message[0].Content,
-      } : null,
-    }
-    )
-    );
+    const msg = messages.map((room) => {
+            
+      let check = {name: room.members[0].member.UserId === req.user.UserId ? room.members[1].member.username : room.members[0].member.username,
+          avatar: room.members[0].member.UserId === req.user.UserId ? room.members[1].member.avatar : room.members[0].member.avatar,
+          status: room.members[0].member.UserId === req.user.UserId ? room.members[1].member.status : room.members[0].member.status,
+          userid: room.members[0].member.UserId === req.user.UserId ? room.members[1].member.UserId : room.members[0].member.UserId,
+          roomid: room.RoomId,
+          lastMessage: room.Message.length > 0 ? {
+          content: room.Message[0].Content,
+          } : null,
+      }
+      check.avatar = check.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !check.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + check.avatar : check.avatar;
+      return check;
+    });
     return msg;
   }
 

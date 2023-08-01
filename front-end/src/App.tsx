@@ -54,25 +54,47 @@ function SlideButton(props: any) {
 }
 type InvitationFunc = {
 	state: any,
-	data: invitationRequest
+	data: any;
+	wichOne: number;
 }
-function Invitation({ state, data }: InvitationFunc) {
-	const stater = (e: boolean) => {
+function Invitation({ state, data, wichOne }: InvitationFunc) {
+	const stater = (e: number) => {
 		state(e);
 	}
+	const [text, setText] = useState('');
+	useEffect(() => {
+		setText(Ftext());
+	}, [])
+	const Ftext = () => {
+		if (wichOne === 2) {
+			switch (data.Type) {
+				case "Accepted_request":
+					return `${data.username} has accept your request. You are friends now!`;
+				case "game_invitation":
+					return `${data.username} has invited you to a game of Ping Pong! Accept or decline the invitation now.`
+				case "GroupInvitation":
+					return `Check your Inbox Chat, ${data.username} has invited you in a Group!`;
+				case "Achievement":
+					return `Congratulations! You have been awarded a new Archievement.`
+				default:
+					return '';
+			}
+		}
+		return '';
+	}
 	return (
-		
+
 		<motion.div
 			initial={{ y: '-100vh', opacity: 0 }}
 			animate={{ y: 0, opacity: 1 }}
 			exit={{ opacity: 0 }}
 			transition={{ duration: 0.5 }}
 			className="invitation-container">
-			<GradienBox zIndex={100000} mywidth="397px" myheight="157.02px" myborder="20px">
+			<GradienBox zIndex={100000} mywidth="397px" myheight={wichOne === 1 ? "157.02px" : "100px"} myborder="20px">
 				{data && <div className="invitation">
 					<div className="close-invi" onClick={() => {
 						setTimeout(() => {
-							stater(false);
+							stater(0);
 						}, 300)
 					}}>
 						<svg width="0.563rem" height="0.563rem" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -80,33 +102,37 @@ function Invitation({ state, data }: InvitationFunc) {
 						</svg>
 					</div>
 					<div className="invitation-content">
-						<img className='img-invitation' src={data.sender && data.sender.avatar} alt="" />
-						<p>{`${data.sender && data.sender.username} has sent you a friend request! Accept or decline the invitation now.`}</p>
+						<img className='img-invitation' src={wichOne === 1 ? (data.sender && data.sender.avatar) : data.avatar} alt="" />
+						<p>{wichOne === 1 ? `${data.sender && data.sender.username} has sent you a friend request! Accept or decline the invitation now.` : text}</p>
 					</div>
-					<div className="footer-onvitation">
-						<SlideButton set={stater} data={data.FriendshipId} isAccept={1} />
-						<SlideButton set={stater} data={data.FriendshipId} isAccept={0} />
-					</div>
+					{
+						wichOne === 1 &&
+						<div className="footer-onvitation">
+							<SlideButton set={stater} data={data.FriendshipId} isAccept={1} />
+							<SlideButton set={stater} data={data.FriendshipId} isAccept={0} />
+						</div>
+					}
+
 				</div>}
 			</GradienBox>
 		</motion.div>
 	);
 }
 
-type invitationRequest = {
-	FriendshipId: number;
-	ReceiverId: string;
-	sender: {
-		UserId: string,
-		avatar: string,
-		username: string,
-	}
+// type invitationRequest = {
+// 	FriendshipId: number;
+// 	ReceiverId: string;
+// 	sender: {
+// 		UserId: string,
+// 		avatar: string,
+// 		username: string,
+// 	}
 
-}
+// }
 
 function App() {
 	// const data:any = useSelector((state:any) => state.admin)
-	const [invit, setInvit] = useState(false)
+	const [invit, setInvit] = useState(0)
 	const dispatch: AppDispatch = useDispatch()
 	const [isLogin, setisLogin] = useState(false);
 	const [isSecure, setSecure] = useState(false);
@@ -114,9 +140,7 @@ function App() {
 	const isDownState = useSelector((state: any) => state.isDown);
 	const tokenTest = useSelector((state: any) => state.token);
 	const [token, setToken] = useState(tokenTest);
-	const [invitationRequest, setInviRequest] = useState<invitationRequest>({ FriendshipId: 0, ReceiverId: '0', sender: { UserId: '', avatar: '', username: '', } });
-
-
+	const [invitationRequest, setInviRequest] = useState<any>({ FriendshipId: 0, ReceiverId: '0', sender: { UserId: '', avatar: '', username: '', } });
 	useEffect(() => {
 		const tesServer = async () => {
 			if (isDownState.isDown === true) {
@@ -159,7 +183,6 @@ function App() {
 
 	const [isFull, setIsfull] = useState(false);
 	const [isFullN, setIsfullN] = useState(false);
-	const [Socket, theSocket] = useState<any>(null)
 	useEffect(() => {
 		if (token) {
 			const socket = io('http://localhost:3001/notification', {
@@ -169,28 +192,28 @@ function App() {
 			});
 			socket.on('connect', () => {
 				// console.log('socket is connected')
-				theSocket(socket);
+				
 			});
 
-			socket.on('request', (data: invitationRequest) => {
+			socket.on('request', (data:any) => {
 				setIsfull(true);
 				setInviRequest(data);
-				setInvit(true);
+				setInvit(1);
 				setTimeout(() => {
-					setInvit(false);
+					setInvit(0);
 				}, 30000)
 				console.log('Received notification:', data);
 
 			});
 
-			socket.on('notification', (data: invitationRequest) => {
-				// setIsfullN(true);
-				// setInviRequest(data);
-				// setInvit(true);
-				// setTimeout(() => {
-				// 	setInvit(false);
-				// }, 30000)
-				console.log('Received notification:', data);
+			socket.on('notification', (data:any) => {
+				setInvit(2);
+				setInviRequest(data);
+				setIsfullN(true)
+				setTimeout(() => {
+					setInvit(0);
+				}, 30000)
+				console.log('notification:', data);
 
 			});
 
@@ -209,7 +232,10 @@ function App() {
 			<Particle />
 			{
 				isDown ? <Loading /> :
-					!isLogin ? <Login /> : (!isSecure ? <><Home isFull={isFull} setIsfull={setIsfull} isFullN={isFullN} setIsfullN={setIsfullN} socketInvi={setInvit} /><AnimatePresence mode='wait'>{invit && <Invitation data={invitationRequest} state={setInvit} />}</AnimatePresence></> : <Secure setSec={setSecure} />)
+					!isLogin ? <Login /> : (!isSecure ? <><Home isFull={isFull} setIsfull={setIsfull} isFullN={isFullN} setIsfullN={setIsfullN} socketInvi={setInvit} /><AnimatePresence mode='wait'>
+						{invit && <Invitation wichOne={invit} data={invitationRequest} state={setInvit} />}
+					</AnimatePresence>
+					</> : <Secure setSec={setSecure} />)
 			}
 			{/* </Suspense> */}
 		</div>

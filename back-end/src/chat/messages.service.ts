@@ -857,7 +857,7 @@ export class MessagesService {
 
         return {
             avatar : user.avatar,
-            userame : user.username,
+            username : user.username,
             Type : "Message",
         }
     }

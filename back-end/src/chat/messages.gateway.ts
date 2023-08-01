@@ -58,9 +58,9 @@ export class ChatGateway implements OnGatewayConnection{
             if (!message.ischannel)
             {
                 const receiver = this.rooms[payload.RoomId].filter((socket) => socket.data.playload.userId !== client.data.playload.userId)
-                if (receiver)
+                if (receiver.length)
                 {
-                    const notification = await this.ChatService.getMessageNotificationInfo(receiver[0].data.playload.userId);
+                    const notification = await this.ChatService.getMessageNotificationInfo(client.data.playload.userId);
                     receiver.map((user) => {
                         this.Notification.handleMessages(user, notification, user.data.playload.userId);
                     })

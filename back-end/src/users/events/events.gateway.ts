@@ -59,4 +59,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.socketService.emitToClient(clientId, 'request', data);
 	}
 
+	handleMessages(client, data, clientId)
+	{
+		console.log(data);
+		this.socketService.emitToClient(clientId, 'notification', data);
+	}
 }

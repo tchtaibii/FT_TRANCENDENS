@@ -92,6 +92,7 @@ enum notificationType {
   game_invitation
   Achievement
   GroupInvitation
+  Message
 }
 
 model Notification {

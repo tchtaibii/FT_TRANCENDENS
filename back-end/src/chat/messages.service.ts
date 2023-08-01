@@ -195,6 +195,8 @@ export class MessagesService {
                 username : username,
             }
         })
+        if (!member)
+            throw new NotFoundException('not found');
 
         const checkmember = await this.prisma.membership.findFirst({
             where: {

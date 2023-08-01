@@ -65,9 +65,9 @@ export class RoomsController {
   //should be admin or owner
   @Post(':roomId/addmember')
   async addMemberToRoom(@Req() req, @Param('roomId', ParseIntPipe) roomId: number, @Body() addmemberdto: AddMemberDto) {
-    const { userId } = addmemberdto;
+    const { username } = addmemberdto;
 
-    const createnewmember = await this.messagesservice.addMemberToRoom(roomId, userId, req.user.UserId);
+    const createnewmember = await this.messagesservice.addMemberToRoom(roomId, username, req.user.UserId);
     return {
       membership: createnewmember,
       message: 'Member added',

@@ -45,6 +45,7 @@
                     font-style: normal;
                     font-weight: 400;
                     line-height: normal;
+                    
                 }
 
                 .score {
@@ -76,13 +77,15 @@
         }
     }
 }
-.Tablecont{
+
+.Tablecont {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
-    .TableC{
+
+    .TableC {
         width: toRem(1168);
         height: toRem(663);
     }

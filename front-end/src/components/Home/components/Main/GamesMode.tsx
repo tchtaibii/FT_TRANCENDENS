@@ -9,6 +9,7 @@ import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom'
 
 function BOxGameMob(props: any) {
 	return (
@@ -40,11 +41,11 @@ function BOxGame(props: any) {
 					<div className='Mode1'>
 						<h2>{props.titleB}</h2>
 						<p>{props.StitleB}</p>
-						<a href={props.linkB} id={props.idA}>
+						<Link to={props.linkB} id={props.idA}>
 							<GradienBox mywidth="120px" myheight="40px" myborder="15px">
 								<div className="playnowbtn">Play now</div>
 							</GradienBox>
-						</a>
+						</Link>
 					</div>
 					<div className={props.classB + ' photoMode'}>
 						<img id={props.imgID} src={props.imgB} alt="" />
@@ -59,7 +60,7 @@ function BOxGame(props: any) {
 function GamesMode() {
 	const GameModesArr = [
 		<BOxGame key='classicA' idA='classicA' imgID='classicIMG' classB="classic" titleB="Classic" StitleB='Challenge the computer' linkB="#" imgB={classicI} />,
-		<BOxGame key='aiA' idA='aiA' imgID='aiIMG' classB="ai" titleB="AI Mode" StitleB='Traditional gameplay' linkB="#" imgB={aiI} />,
+		<BOxGame key='aiA' idA='aiA' imgID='aiIMG' classB="ai" titleB="HK-47 Mode" StitleB='Traditional gameplay' linkB="/game" imgB={aiI} />,
 		<BOxGame key='Foot' idA='Foot' imgID='FootIMG' classB="FOOT" titleB="Football Mode" StitleB='Play like a Football Player' linkB="#" imgB={footBall} />,
 		<BOxGame key='BlackHole' idA='BlackHole' imgID='BlackHoleIMG' classB="BLACKHOLE" titleB="Black Hole" StitleB='Play and challenge the blackholes' linkB="#" imgB={blackHole} />,
 		<BOxGame key='friendA' idA='friendA' imgID='friendIMG' classB="friend" titleB="Friends Mode" StitleB='Social play, easy invites' linkB="#" imgB={friendI} />,

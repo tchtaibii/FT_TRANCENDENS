@@ -112,7 +112,6 @@ export class RoomsController {
     if (rooms === null) {
       return { message: 'u re banned' };
     }
-    // const otherrooms = rooms.filter(room => room['members']?.some(member => member.UserId === userId && !member.isBanned));
 
     const msg = rooms.map(room => ({
       type: room.Type,

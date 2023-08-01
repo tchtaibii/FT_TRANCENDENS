@@ -7,7 +7,6 @@ import { SocketIOMIDDELWARE } from 'src/auth/auth-services/ws';
 export class ChatGateway implements OnGatewayConnection{
     @WebSocketServer() server: Server;
     private rooms: { [roomName: string]: Socket[] } = {};
-    private socketsMap: Map<string, Socket[]> = new Map();
 
 
   constructor(private readonly ChatService : MessagesService)
@@ -19,25 +18,12 @@ export class ChatGateway implements OnGatewayConnection{
     }
 
     async handleConnection(client: Socket) {
-        const sockets = this.socketsMap.get(client.data.playload.userId) || [];
-        sockets.push(client);
-        this.socketsMap.set(client.data.playload.userId, sockets);
         console.log('chat connected');
     }
 
     handleDisconnect(client)
     {
         console.log('discoonected');
-        const sockets = this.socketsMap.get(client.data.playload.userId);
-        if (sockets) {
-			const index = sockets.indexOf(client);
-			if (index !== -1) {
-				sockets.splice(index, 1);
-				if (sockets.length === 0) {
-				this.socketsMap.delete(client.data.playload.userId);
-				}
-			}
-		}
         for (const roomName in this.rooms) {
             this.rooms[roomName] = this.rooms[roomName].filter((socket) => socket.id !== client.id);
             if (this.rooms[roomName].length === 0) {
@@ -53,12 +39,6 @@ export class ChatGateway implements OnGatewayConnection{
             this.rooms[roomId] = [];
         }
 
-        const sockets = this.socketsMap.get(client.data.playload.userId);
-
-        // sockets.forEach(socket => {
-        //     this.rooms[roomId].push(socket);
-        //     socket.join(roomId);
-        // });
         this.rooms[roomId].push(client);
 
         client.join(roomId);

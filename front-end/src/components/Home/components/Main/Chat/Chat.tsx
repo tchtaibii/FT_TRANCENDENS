@@ -583,7 +583,7 @@ function Chat(props: any) {
 															<div className="members">
 																{
 																	RoomData.members.map((e: any) => (
-																		<div style={{padding: '1rem' }} key={e.member.UserId} >
+																		<div  key={e.member.UserId} >
 																			<UserMember e={e} UserId={myData.UserId} UserRole={RoomData.UserRole} />
 																		</div>
 																	))

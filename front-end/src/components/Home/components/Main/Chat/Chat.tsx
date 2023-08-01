@@ -180,7 +180,8 @@ function ChatContent(params: any) {
 										params.setisMembers(true);
 									}} className='threeD'>Members</button>}
 									{(params.roomData.isChannel === true && params.roomData.Type === 'protected' && (params.roomData.UserRole === 'Owner' || params.roomData.UserRole === 'Admin')) && <button onClick={() => {
-
+										params.setIsPop(true);
+										params.setSecurity({ isSecurity: true, changeP: false, setP: false, passsword: { oldP: '', newP: '' } })
 									}} className='Securite'>Securité</button>}
 									{(params.roomData.isChannel === true) && <button onClick={async () => {
 										await axios.delete(`/room/${params.roomData.RoomId}/leave/${myData.UserId}`);
@@ -264,7 +265,7 @@ function UserMember({ e, UserId, UserRole }: any) {
 	useOnClickOutside(userRef, handleClickOutside);
 	const [UserO, setUserO] = useState(false);
 	return (
-		<div ref={userRef} style={{ cursor: 'pointer', position: 'relative'}} onClick={() => {
+		<div ref={userRef} style={{ cursor: 'pointer', position: 'relative' }} onClick={() => {
 			setUserO(!UserO);
 		}} className={e.isBanned ? "userSection banned" : (e.Role === 'Admin' || e.Role === 'Owner') ? "isAdmin userSection" : "userSection"}>
 			{UserO && UserId !== e.member.UserId && (UserRole === 'Owner' || UserRole === 'Admin') && <div key={e.member.UserId + '-options'} className="optionsUser ">
@@ -371,6 +372,8 @@ function Chat(props: any) {
 		}
 	}, [userId, isMemeber, setmember])
 
+	const [PasswordSecurity, setSecurity] = useState({ isSecurity: false, changeP: false, setP: false, passsword: { oldP: '', newP: '' } });
+
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
 			<GradienBox mywidth="1201px" myheight="850px" myborder="40px">
@@ -473,6 +476,7 @@ function Chat(props: any) {
 													initial={{ scale: 0 }}
 													animate={{ scale: 1 }}
 													exit={{ scale: 0 }}
+													key={'new-popup'}
 													className="newGroup">
 													<div className="newGroupC">
 														<div onClick={() => {
@@ -522,6 +526,7 @@ function Chat(props: any) {
 													initial={{ scale: 0 }}
 													animate={{ scale: 1 }}
 													exit={{ scale: 0 }}
+													key={'join-popup'}
 													className="newGroup displayIt">
 													<div className="newGroupC displayitC">
 														<div className="contentNewGroup">
@@ -561,7 +566,7 @@ function Chat(props: any) {
 											{
 												isMemeber && RoomData &&
 												<motion.div
-													key='setting-popup'
+													key='member-popup'
 													initial={{ scale: 0 }}
 													animate={{ scale: 1 }}
 													exit={{ scale: 0 }}
@@ -583,7 +588,7 @@ function Chat(props: any) {
 															<div className="members">
 																{
 																	RoomData.members.map((e: any) => (
-																		<div  key={e.member.UserId} >
+																		<div key={e.member.UserId} >
 																			<UserMember e={e} UserId={myData.UserId} UserRole={RoomData.UserRole} />
 																		</div>
 																	))
@@ -603,7 +608,7 @@ function Chat(props: any) {
 											{
 												ADDmember &&
 												<motion.div
-													key='setting-popup'
+													key='sett-popup'
 													initial={{ scale: 0 }}
 													animate={{ scale: 1 }}
 													exit={{ scale: 0 }}
@@ -638,6 +643,99 @@ function Chat(props: any) {
 													</div>
 												</motion.div>
 											}
+											{
+												PasswordSecurity.isSecurity &&
+												<motion.div
+													key='securite-popup'
+													initial={{ scale: 0 }}
+													animate={{ scale: 1 }}
+													exit={{ scale: 0 }}
+													className="newGroup"
+													style={{ width: '20.875rem', height: 'fit-content' }}
+												>
+													<div style={{ padding: '0.5rem', alignItems: 'center', gap: '1rem' }} className="addMember">
+														<div className="securiteSection">Security</div>
+														<div className="securityButtons">
+															{
+																!PasswordSecurity.changeP && !PasswordSecurity.setP &&
+																<>
+																	{
+																		RoomData.Type === 'protected' &&
+																		<>
+																			<button onClick={() => {
+																				setSecurity({ isSecurity: true, changeP: true, setP: false, passsword: { oldP: '', newP: '' } })
+																			}}>Change Password</button>
+																			<button className='DeleteP'>Delete Password</button>
+																		</>
+																	}
+																	{
+																		RoomData.Type === 'public' &&
+																		<button onClick={() => {
+																			setSecurity({ isSecurity: true, changeP: false, setP: true, passsword: { oldP: '', newP: '' } })
+																		}}>Set Password</button>
+																	}
+																</>
+															}
+															{
+																PasswordSecurity.changeP &&
+																<>
+																	<div className="inputContainer"><input onChange={(e: any) => {
+																		setSecurity((state) => {
+																			return {
+																				...state,
+																				passsword: {
+																					...state.passsword,
+																					oldP: e.target.value,
+																				},
+																			};
+																		});
+																	}} type="password" placeholder='Old Password' /></div>
+																	<div className="inputContainer"><input onChange={(e: any) => {
+																		setSecurity((state) => {
+																			return {
+																				...state,
+																				passsword: {
+																					...state.passsword,
+																					newP: e.target.value,
+																				},
+																			};
+																		});
+																	}} type="password" placeholder='New Password' /></div>
+																</>
+															}
+															{
+																PasswordSecurity.setP &&
+																<div className="inputContainer"><input onChange={(e: any) => {
+																	setSecurity((state) => {
+																		return {
+																			...state,
+																			passsword: {
+																				...state.passsword,
+																				newP: e.target.value,
+																			},
+																		};
+																	});
+																}} type="password" placeholder='New Password' /></div>
+															}
+														</div>
+														{
+															<div className="buttonNewGroup">
+																{
+																	(PasswordSecurity.changeP || PasswordSecurity.setP) &&
+																	<button onClick={async () => {
+																	}} className='btnNewGrp'>Done</button>
+																}
+																<button onClick={() => {
+																	setSecurity({ isSecurity: false, changeP: false, setP: false, passsword: { oldP: '', newP: '' } })
+																	setPopUp(false)
+																}} className='btnNewGrp cancel'>Cancel</button>
+																{isError && <p className='Error statusInput ChatError'>Something Wrong!</p>}
+															</div>
+														}
+
+													</div>
+												</motion.div>
+											}
 										</motion.div>
 									}
 								</AnimatePresence>
@@ -646,7 +744,7 @@ function Chat(props: any) {
 						</div>
 					</div>
 					{
-						props.params == false ? <StartChat /> : <ChatContent setIsPop={setPopUp} setisMembers={setmember} roomData={RoomData} userId={userId} setPop={setPopUp} setDisplay={setShouldJoin} />
+						props.params == false ? <StartChat /> : <ChatContent setSecurity={setSecurity} setIsPop={setPopUp} setisMembers={setmember} roomData={RoomData} userId={userId} setPop={setPopUp} setDisplay={setShouldJoin} />
 					}
 				</div>
 			</GradienBox>

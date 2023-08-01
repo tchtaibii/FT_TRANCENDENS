@@ -855,8 +855,9 @@ export class MessagesService {
             }
         })
 
+
         return {
-            avatar : user.avatar,
+            avatar : user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + user.avatar : user.avatar,
             username : user.username,
             Type : "Message",
         }

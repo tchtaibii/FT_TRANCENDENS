@@ -199,6 +199,8 @@ export class FriendshipService {
             where : {
                 ReceiverId : User.UserId,
                 Accepted : false,
+                blockedByReceiver : false,
+                blockedBySender : false,
             },
             select : {
                 FriendshipId : true,

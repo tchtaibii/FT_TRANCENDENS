@@ -173,7 +173,7 @@ export class MessagesService {
         });
     }
 
-    async addMemberToRoom(roomId: number, userId: string, userIDmin: string) {
+    async addMemberToRoom(roomId: number, username: string, userIDmin: string) {
         const membership = await this.prisma.membership.findFirst({
             where: {
                 AND: [
@@ -189,23 +189,30 @@ export class MessagesService {
         if (membership.Role !== 'Owner' && membership.Role !== 'Admin') {
             throw new UnauthorizedException('u dont have the right to add');
         }
+
+        const member = await this.prisma.user.findUnique({
+            where : {
+                username : username,
+            }
+        })
+
         const checkmember = await this.prisma.membership.findFirst({
             where: {
                 AND: [
                     { RoomId: roomId },
-                    { UserId: userId },
+                    { UserId: member.UserId },
                 ],
             },
         });
 
-        if (checkmember) {
+        if (checkmember || checkmember.isBanned) {
             throw new NotFoundException('User deja kayen f room!');
         }
 
         const addmembership = await this.prisma.membership.create({
             data: {
                 RoomId: roomId,
-                UserId: userId,
+                UserId: member.UserId,
                 isBanned: false,
                 isMuted: false,
                 Role: 'Member',
@@ -552,6 +559,40 @@ export class MessagesService {
         return messages;
     }
 
+    async getBlockeduserIds(user)
+	{
+		const blockedUser = await this.prisma.friendship.findMany({
+			where : {
+				OR : [
+					{
+						SenderId : user,
+						OR : [
+								{blockedBySender : true},
+								{blockedByReceiver : true},
+						]
+					},
+					{
+						ReceiverId : user,
+						OR : [
+							{blockedBySender : true},
+							{blockedByReceiver : true},
+						]
+					},	
+				]
+			},
+			select : {
+				SenderId : true,
+				ReceiverId : true,
+			}
+		});
+
+		const blockedUserIds = blockedUser.map(friendship =>
+			friendship.SenderId === user.UserId ? friendship.ReceiverId : friendship.SenderId
+		);
+	
+		return blockedUserIds;
+	}
+
     async sendMessage(content: string, UserId: string, roomId: string) {
         const RoomId = parseInt(roomId);
         console.log(RoomId, UserId, content);
@@ -568,11 +609,21 @@ export class MessagesService {
                         avatar: true,
                         username: true,
                     }
+                },
+                room : {
+                    select : {
+                        ischannel : true,
+                    }
                 }
             }
         })
 
-        return send;
+        var blocked = [];
+        if (send.room.ischannel)
+            blocked = await this.getBlockeduserIds(send.UserId);
+        return {
+            send, blocked, ischannel : send.room.ischannel
+        };
     }
 
     async getroomsdms(userid: string) {

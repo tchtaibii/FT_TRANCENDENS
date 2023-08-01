@@ -106,27 +106,40 @@ export class ProfileService {
 			level  	 		: user.level,
 			xp       		: user.XP,
 			username 		: user.username,
+			RoomId 			: RoomId,
 		});
 	}
 
 	async getRoomId(AuthUser : User, User : User)
 	{
 		const Room = await this.prisma.room.findMany({
-			// where : {
-			// 	members : {
-			// 		AND : [
-			// 			{UserId : User.UserId},
-			// 			{UserId : AuthUser.UserId},
-			// 		]
-			// 	},
-			// 	ischannel : false,
-			// },
-			// select : {
-			// 	RoomId : true,
-			// },
-			// take : 1,
-		})
-		return Room[0];
+			where: {
+			  AND: [
+				{
+				  members: {
+					some: {
+					  UserId: User.UserId,
+					},
+				  },
+				},
+				{
+				  members: {
+					some: {
+					  UserId: AuthUser.UserId,
+					},
+				  },
+				},
+				{
+				  ischannel: false,
+				},
+			  ],
+			},
+			select: {
+			  RoomId: true,
+			},
+			take: 1,
+		});
+		return Room[0] ? Room[0].RoomId : undefined;
 	}
 
 	async blockUser(user : User, targetUser : User)

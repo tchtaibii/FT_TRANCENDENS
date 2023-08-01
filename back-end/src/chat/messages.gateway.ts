@@ -55,16 +55,11 @@ export class ChatGateway implements OnGatewayConnection{
         if (!message.ischannel || !message.blocked.length)
         {
             this.server.to(payload.RoomId).emit('message', message.send);
-            if (!message.ischannel)
+            const receiver = this.rooms[payload.RoomId].filter((user) => user.data.playload.userId !== client.data.playload.userId);
+            if (!message.ischannel && !receiver.length)
             {
-                const receiver = this.rooms[payload.RoomId].filter((socket) => socket.data.playload.userId !== client.data.playload.userId)
-                if (receiver.length)
-                {
-                    const notification = await this.ChatService.getMessageNotificationInfo(client.data.playload.userId);
-                    receiver.map((user) => {
-                        this.Notification.handleMessages(user, notification, user.data.playload.userId);
-                    })
-                }
+                const notification = await this.ChatService.getMessageNotificationInfo(client.data.playload.userId, payload.RoomId);
+                this.Notification.handleMessages(notification.receiver, notification, notification.receiver);
             }
         }
         else 

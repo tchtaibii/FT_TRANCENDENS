@@ -13,23 +13,15 @@ import grpsImg from '../../../../../assets/img/groups.jpeg'
 import { useSelector } from 'react-redux'
 import { io } from 'socket.io-client'
 import { useNavigate } from "react-router-dom";
-import EmojiPicker, {
-	EmojiStyle,
-	SkinTones,
-	Theme,
-	Categories,
-	EmojiClickData,
-	Emoji,
-	SuggestionMode,
-	SkinTonePickerLocation
-} from "emoji-picker-react";
+import EmojiPicker, { EmojiStyle, Theme, EmojiClickData } from "emoji-picker-react";
 
 
 function StartChat() {
 	return (
 		<div className="chatContent">
 			<div className="startChat">
-				Welcome to Chat page!<br/>
+				Welcome to Chat page!
+				{/* <br /> */}
 			</div>
 		</div>
 	)
@@ -272,9 +264,9 @@ function UserMember({ e, UserId, UserRole }: any) {
 	useOnClickOutside(userRef, handleClickOutside);
 	const [UserO, setUserO] = useState(false);
 	return (
-		<div ref={userRef} style={{ cursor: 'pointer', position: 'relative' }} onClick={() => {
+		<div ref={userRef} style={{ cursor: 'pointer', position: 'relative'}} onClick={() => {
 			setUserO(!UserO);
-		}} className={e.isBanned ? "userSection banned" : "userSection"}>
+		}} className={e.isBanned ? "userSection banned" : (e.Role === 'Admin' || e.Role === 'Owner') ? "isAdmin userSection" : "userSection"}>
 			{UserO && UserId !== e.member.UserId && (UserRole === 'Owner' || UserRole === 'Admin') && <div key={e.member.UserId + '-options'} className="optionsUser ">
 				{
 					!e.isBanned &&
@@ -377,7 +369,7 @@ function Chat(props: any) {
 			}
 			FetchData();
 		}
-	}, [userId, isMemeber])
+	}, [userId, isMemeber, setmember])
 
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
@@ -591,7 +583,7 @@ function Chat(props: any) {
 															<div className="members">
 																{
 																	RoomData.members.map((e: any) => (
-																		<div key={e.member.UserId} >
+																		<div style={{padding: '1rem' }} key={e.member.UserId} >
 																			<UserMember e={e} UserId={myData.UserId} UserRole={RoomData.UserRole} />
 																		</div>
 																	))
@@ -626,7 +618,7 @@ function Chat(props: any) {
 														<div className="btnsAdding">
 															<button disabled={UsernameAddMember.length <= 0} onClick={async () => {
 																// UsernameAddMember
-																await axios.post(`/room/${userId}/addmember`, { userName: UsernameAddMember }).then((rsp) => {
+																await axios.post(`/room/${userId}/addmember`, { username: UsernameAddMember }).then((rsp) => {
 																	if (rsp.data) {
 																		setAddMember(false);
 																		setmember(true);

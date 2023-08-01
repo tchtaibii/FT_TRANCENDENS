@@ -602,7 +602,7 @@ export class MessagesService {
 
     async sendMessage(content: string, UserId: string, roomId: string) {
         const RoomId = parseInt(roomId);
-        console.log(RoomId, UserId, content);
+        // console.log(RoomId, UserId, content);
         const send = await this.prisma.message.create({
             data: {
                 UserId: UserId,
@@ -843,7 +843,7 @@ export class MessagesService {
       return final;
     }
     
-    async getMessageNotificationInfo(UserId)
+    async getMessageNotificationInfo(UserId, roomId)
     {
         const user = await this.prisma.user.findUnique({
             where : {
@@ -855,10 +855,31 @@ export class MessagesService {
             }
         })
 
+        const RoomId = parseInt(roomId);
+
+        const room = await this.prisma.room.findUnique({
+            where: {
+              RoomId: RoomId,
+            },
+            include: {
+              members: {
+                where: {
+                  UserId: {
+                    not: UserId, 
+                  },
+                },
+                select: {
+                  UserId: true,  
+                },
+              },
+            },
+        });
+            
         return {
-            avatar : user.avatar,
-            userame : user.username,
+            avatar : user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + user.avatar : user.avatar,
+            username : user.username,
             Type : "Message",
+            receiver : room.members[0].UserId,
         }
     }
 }

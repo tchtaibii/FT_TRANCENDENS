@@ -76,6 +76,7 @@ export class ProfileService {
 		var isFriend = false;
 		var friend;
 		var friendshipId = 0;
+		var RoomId;
 
 		if (!Isowner)
 		{
@@ -83,6 +84,7 @@ export class ProfileService {
 			isSent = friend.length ? true : false;
 			isFriend = isSent ? friend[0].Accepted : false;
 			friendshipId = isSent || isFriend ? friend[0].FriendshipId : 0;
+			RoomId = await this.getRoomId(User, user);
 		}
 
 		user.avatar =  user.avatar.search("https://cdn.intra.42.fr/users/") == -1 && !user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
@@ -91,7 +93,6 @@ export class ProfileService {
 
 		const rank = await this.playerRank(user);
 
-	
 		return ({
 			isOwner : Isowner,
 			isSent : isSent,
@@ -105,8 +106,42 @@ export class ProfileService {
 			level  	 		: user.level,
 			xp       		: user.XP,
 			username 		: user.username,
+			RoomId 			: RoomId,
 		});
 	}
+
+	async getRoomId(AuthUser : User, User : User)
+	{
+		const Room = await this.prisma.room.findMany({
+			where: {
+			  AND: [
+				{
+				  members: {
+					some: {
+					  UserId: User.UserId,
+					},
+				  },
+				},
+				{
+				  members: {
+					some: {
+					  UserId: AuthUser.UserId,
+					},
+				  },
+				},
+				{
+				  ischannel: false,
+				},
+			  ],
+			},
+			select: {
+			  RoomId: true,
+			},
+			take: 1,
+		});
+		return Room[0] ? Room[0].RoomId : undefined;
+	}
+
 	async blockUser(user : User, targetUser : User)
 	{
 		var friend = await this.prisma.friendship.findFirst({

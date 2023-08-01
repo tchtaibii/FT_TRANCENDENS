@@ -36,7 +36,7 @@ function Activity() {
 	}, [])
 	const calc = 555;
 
-
+	
 	return (<motion.div
 		initial={{ x: '100vw' }}
 		animate={{ x: 0 }}
@@ -56,7 +56,7 @@ function Activity() {
 
 						</div>
 						<div className="activity-content">
-							<AnimatePresence mode='sync'>
+							<AnimatePresence key={'Act-mode'} mode='sync'>
 								{
 									isAll.boolAll ?
 										(data && data.map((e: any, i) => {

@@ -192,9 +192,7 @@ function App() {
 					Authorization: `Bearer ${token}`,
 				}
 			});
-			socket.on('connect', () => {
-				// console.log('socket is connected')
-				
+			socket.on('connect', () => {				
 			});
 
 			socket.on('request', (data:any) => {
@@ -204,8 +202,6 @@ function App() {
 				setTimeout(() => {
 					setInvit(0);
 				}, 30000)
-				console.log('Received notification:', data);
-
 			});
 
 			socket.on('notification', (data:any) => {
@@ -215,12 +211,10 @@ function App() {
 				setTimeout(() => {
 					setInvit(0);
 				}, 30000)
-				console.log('notification:', data);
 
 			});
 
 			socket.on('disconnect', () => {
-				console.log('Socket.IO disconnected.');
 			});
 
 			return () => {

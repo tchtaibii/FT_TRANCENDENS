@@ -80,14 +80,15 @@ function ChatContent(params: any) {
 			setSocket(socket);
 		}
 	}, [token, params.userId]);
+	const [lastMessage, setLastMessage] = useState('')
 	useEffect(() => {
 		if (Socket) {
 			Socket.on('connect', () => {
-				console.log('chat is connected')
 			});
 			Socket.emit('joinRoom', params.userId);
 			Socket.on('message', (data: any) => {
 				setMessages((state: any) => [data, ...state]);
+				setLastMessage(data.Content)
 			});
 			Socket.on('disconnect', () => {
 			});
@@ -96,6 +97,15 @@ function ChatContent(params: any) {
 			};
 		}
 	}, [Socket])
+
+	useEffect(() => {
+		params.setDmsLast((prevState: Map<number, string>) => {
+			const newState = new Map(prevState);
+			newState.set(parseInt(params.userId), lastMessage);
+			return newState;
+		});
+	}, [AllMsgs]);
+
 	const handleClickOutside = () => { setThreDots(false) }
 	useOnClickOutside(ref, handleClickOutside)
 	const [messageTyping, setMessageTyping] = useState<string>('');
@@ -312,8 +322,8 @@ function Chat(props: any) {
 	}
 	const { userId } = useParams();
 	const navigate = useNavigate();
-	const [Dms, setTheDms] = useState([]);
-	const [Grps, setGrps] = useState([]);
+	const [Dms, setTheDms] = useState<any>([]);
+	const [Grps, setGrps] = useState<any>([]);
 	const [isNewGroup, setNewGroup] = useState(false)
 	const [isDm, setDm] = useState(true);
 	const [isError, setError] = useState(false);
@@ -321,6 +331,7 @@ function Chat(props: any) {
 	const [isMemeber, setmember] = useState(false);
 	const [UsernameAddMember, setUsernameAddMember] = useState<any>('');
 	const [ADDmember, setAddMember] = useState(false);
+
 
 	const myData = useSelector((state: any) => state.admin);
 
@@ -361,7 +372,6 @@ function Chat(props: any) {
 		}
 		FetchDms();
 	}, [])
-	console.log(Grps);
 	const [RoomData, setRoomData] = useState<any | null>(null)
 	useEffect(() => {
 		if (props.params) {
@@ -372,7 +382,15 @@ function Chat(props: any) {
 		}
 	}, [userId, isMemeber, setmember])
 
-	const [PasswordSecurity, setSecurity] = useState({ isSecurity: false, changeP: false, setP: false, passsword: { oldP: '', newP: '' } });
+	const [PasswordSecurity, setSecurity] = useState({ isSecurity: false, changeP: false, setP: false, passsword: { oldP: '', newP: '' } })
+	const [DmsLast, setDmsLast] = useState<Map<number, string>>(new Map<number, string>());
+	useEffect(() => {
+		var map = new Map();
+		for (var i = 0; i < Dms.length; i++) {
+			map.set(Dms[i].roomid, (!Dms[i].lastMessage ? `Say Hi to ${Dms[i].name}` : truncateString(Dms[i].lastMessage.content)));
+		}
+		setDmsLast(map);
+	}, [Dms])
 
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
@@ -418,7 +436,7 @@ function Chat(props: any) {
 															<img src={e.avatar ? e.avatar : ''} />
 															<div className="textUserChat">
 																<h1>{e.name}</h1>
-																<p>{!e.lastMessage ? `Say Hi to ${e.name}` : truncateString(e.lastMessage.content)}</p>
+																<p>{!e.lastMessage ? `Say Hi to ${e.name}` : DmsLast.get(e.roomid)}</p>
 															</div>
 														</Link>
 													</motion.div>
@@ -744,7 +762,7 @@ function Chat(props: any) {
 						</div>
 					</div>
 					{
-						props.params == false ? <StartChat /> : <ChatContent setSecurity={setSecurity} setIsPop={setPopUp} setisMembers={setmember} roomData={RoomData} userId={userId} setPop={setPopUp} setDisplay={setShouldJoin} />
+						props.params == false ? <StartChat /> : <ChatContent setDmsLast={setDmsLast} setSecurity={setSecurity} setIsPop={setPopUp} setisMembers={setmember} roomData={RoomData} userId={userId} setPop={setPopUp} setDisplay={setShouldJoin} />
 					}
 				</div>
 			</GradienBox>

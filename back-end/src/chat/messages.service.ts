@@ -207,7 +207,8 @@ export class MessagesService {
             },
         });
 
-        if (checkmember || checkmember.isBanned) {
+
+        if (checkmember || (checkmember && checkmember.isBanned)) {
             throw new NotFoundException('User deja kayen f room!');
         }
 

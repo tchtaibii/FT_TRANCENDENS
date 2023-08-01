@@ -55,12 +55,10 @@ export class ChatGateway implements OnGatewayConnection{
             this.server.to(payload.RoomId).emit('message', message.send);
         else 
         {
-            console.log(message.blocked);
             var room = this.rooms[payload.RoomId].filter((socket) => !message.blocked.includes(socket.data.playload.userId));
 
             room.map((client) =>
             {
-                console.log(client.data.playload.userId);
                 this.server.to(client.id).emit('message', message.send);
             })
         }

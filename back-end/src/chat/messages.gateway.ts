@@ -2,6 +2,7 @@ import { SubscribeMessage, WebSocketGateway, WebSocketServer, OnGatewayConnectio
 import { Socket, Server } from 'socket.io';
 import { MessagesService } from './messages.service';
 import { SocketIOMIDDELWARE } from 'src/auth/auth-services/ws';
+import { EventsGateway } from 'src/users/events/events.gateway';
 
 @WebSocketGateway({cors : true, namespace : 'chat'})
 export class ChatGateway implements OnGatewayConnection{
@@ -9,7 +10,7 @@ export class ChatGateway implements OnGatewayConnection{
     private rooms: { [roomName: string]: Socket[] } = {};
 
 
-  constructor(private readonly ChatService : MessagesService)
+  constructor(private readonly ChatService : MessagesService, private readonly Notification : EventsGateway)
   {}
 
     afterInit(client : Socket)
@@ -52,10 +53,23 @@ export class ChatGateway implements OnGatewayConnection{
         const message = await this.ChatService.sendMessage(payload.message, client.data.playload.userId, payload.RoomId);
         
         if (!message.ischannel || !message.blocked.length)
+        {
             this.server.to(payload.RoomId).emit('message', message.send);
+            if (!message.ischannel)
+            {
+                const receiver = this.rooms[payload.RoomId].filter((socket) => socket.data.playload.userId !== client.data.playload.userId)
+                if (receiver)
+                {
+                    const notification = await this.ChatService.getMessageNotificationInfo(receiver[0].data.playload.userId);
+                    receiver.map((user) => {
+                        this.Notification.handleMessages(user, notification, user.data.playload.userId);
+                    })
+                }
+            }
+        }
         else 
         {
-            var room = this.rooms[payload.RoomId].filter((socket) => !message.blocked.includes(socket.data.playload.userId));
+            const room = this.rooms[payload.RoomId].filter((socket) => !message.blocked.includes(socket.data.playload.userId));
 
             room.map((client) =>
             {

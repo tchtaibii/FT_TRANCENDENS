@@ -843,5 +843,22 @@ export class MessagesService {
       return final;
     }
     
+    async getMessageNotificationInfo(UserId)
+    {
+        const user = await this.prisma.user.findUnique({
+            where : {
+                UserId,
+            },
+            select : {
+                avatar : true,
+                username : true,
+            }
+        })
 
+        return {
+            avatar : user.avatar,
+            userame : user.username,
+            Type : "Message",
+        }
+    }
 }

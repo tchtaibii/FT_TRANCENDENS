@@ -3,10 +3,12 @@ import { MessagesService } from './messages.service';
 import { RoomsController } from './messages.controller';
 import { PrismaClient } from '@prisma/client';
 import { ChatGateway } from './messages.gateway';
+import { EventsGateway } from 'src/users/events/events.gateway';
+import { EventsService } from 'src/users/events/services/events.service';
 
 
 @Module({
-  providers: [MessagesService, PrismaClient, ChatGateway],
+  providers: [MessagesService, PrismaClient, ChatGateway, EventsGateway, EventsService],
   controllers: [RoomsController]
 })
 export class MessagesModule {}

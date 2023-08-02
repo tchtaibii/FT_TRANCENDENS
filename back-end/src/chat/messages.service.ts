@@ -99,8 +99,6 @@ export class MessagesService {
 
     async kickFromRoom(roomId: number, userId: string, userIDmin: string) {
 
-        console.log('here');
-
         const membership = await this.prisma.membership.findFirst({
             where: {
                 AND: [
@@ -124,7 +122,6 @@ export class MessagesService {
             },
         });
 
-        this.ChatGateaway.kickuser(roomId, userId);
     }
 
     async leaveRoom(roomId: number, userId: string) {
@@ -168,7 +165,6 @@ export class MessagesService {
             },
         });
 
-        this.ChatGateaway.kickuser(roomId, userId);
     }
 
     async addMemberToRoom(roomId: number, username: string, userIDmin: string) {
@@ -252,16 +248,18 @@ export class MessagesService {
             },
         });
         
-        this.ChatGateaway.kickuser(roomid, userId);
     }
 
     async BannedMember(userId: string, membershipId: number, roomid: number) {
 
+
         const membership = await this.prisma.membership.findFirst({
             where: {
                     UserId: userId,
+                    RoomId : roomid,
             },
         });
+
 
         if (!membership) {
             throw new UnauthorizedException('Membership does not exist.');
@@ -270,6 +268,8 @@ export class MessagesService {
         if (membership.Role !== 'Owner' && membership.Role !== 'Admin') {
             throw new UnauthorizedException("You don't have the right to ban.");
         }
+
+        console.log('here');
 
         await this.prisma.membership.update({
             where: {
@@ -315,7 +315,10 @@ export class MessagesService {
         const membership = await this.prisma.membership.findFirst({
             where: {
                 AND: [
-                    { UserId: userId },
+                    { 
+                        UserId: userId,
+                        RoomId : roomid,
+                    },
                 ],
             },
         });
@@ -353,6 +356,7 @@ export class MessagesService {
                 },
             }
         });
+
         messages.map((msg) => {
             msg.user.avatar = msg.user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !msg.user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + msg.user.avatar : msg.user.avatar;
         })
@@ -408,40 +412,34 @@ export class MessagesService {
         const rooms = await this.prisma.room.findMany({
             where: {
               ischannel: true,
-              AND: [
+              members : {
+                none : {
+                    UserId : userid,
+                    isBanned : true,
+                }
+                },
+                OR: [
                 {
-                  members: {
-                    some: {
-                      UserId: userid,
-                      isBanned: false
-                    }
-                  }
+                    Type: 'public',
                 },
                 {
-                  OR: [
+                    Type: 'protected'
+                },
+                {
+                    AND: [
                     {
-                      Type: 'public'
+                        Type: 'private'
                     },
                     {
-                      Type: 'protected'
-                    },
-                    {
-                      AND: [
-                        {
-                          Type: 'private'
-                        },
-                        {
-                          members: {
-                            some: {
-                              UserId: userid
-                            }
-                          }
+                        members: {
+                        some : {
+                            UserId: userid
                         }
-                      ]
+                        }
                     }
-                  ]
+                    ]
                 }
-              ]
+                ]
             },
             include: {
               Message: {
@@ -449,10 +447,16 @@ export class MessagesService {
                   SendTime: 'desc'
                 },
                 take: 1
+              },
+              members : {
+                select : {
+                    isBanned : true,
+                    UserId : true,
+                }
               }
             }
         });
-          
+    
         return rooms;
     }
 
@@ -681,18 +685,33 @@ export class MessagesService {
             },
         });
 
-        users.map(async (user) => {
-            if (user.unmuteUntil < new Date())
-            {
-                await this.prisma.membership.update({
-                    where : {
-                        MembershipId : user.MembershipId
-                    },
-                    data : {
-                        isMuted : false,
-                    }
-                })
+        if (users)
+            users.map(async (user) => {
+                if (user.unmuteUntil < new Date())
+                {
+                    await this.prisma.membership.update({
+                        where : {
+                            MembershipId : user.MembershipId
+                        },
+                        data : {
+                            isMuted : false,
+                        }
+                    })
+                }
+            });
+    }
+
+    async setAdmin(membershipId : number)
+    {
+        const done = await this.prisma.membership.update({
+            where : {
+                MembershipId : membershipId,
+            },
+            data : {
+                Role : "Admin",
             }
-        });
+        })
+
+        return true;
     }
 }

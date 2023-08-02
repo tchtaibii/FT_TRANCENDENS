@@ -85,15 +85,4 @@ export class ChatGateway implements OnGatewayConnection{
         client.leave(roomId);
         console.log(`Client ${client.id} left room ${roomId}`);
     }
-
-    async kickuser(roomId, UserId)
-    {
-        // this.rooms[roomId].map((user) => {
-        //     if (user.data.playload.userId === UserId)
-        //     {
-        //         console.log('here again\n');
-        //         user.leave(roomId);
-        //     }
-        // })
-    }
 }

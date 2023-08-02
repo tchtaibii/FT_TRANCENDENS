@@ -94,6 +94,8 @@ export class RoomsController {
   @Post(':roomId/ban/:membershipid') //should impliment with socket
   async BannedMember(@Req() req, @Param('membershipid', ParseIntPipe) membershipid: number, @Param('roomId', ParseIntPipe) roomId: number) {
 
+    console.log(membershipid, roomId);
+
     await this.messagesservice.BannedMember(req.user.UserId, membershipid, roomId);
 
     return { message: 'Member banned' };
@@ -114,6 +116,12 @@ export class RoomsController {
 
     return { message: 'Member unbanned' };
   };
+
+	@Post('setAdmin/:membershipid')
+	async setAdmin(@Req() req, @Param('membershipid', ParseIntPipe) membershipid: number)
+	{
+		return await this.messagesservice.setAdmin(membershipid);
+	}
 
 
   @Get('/rooms')

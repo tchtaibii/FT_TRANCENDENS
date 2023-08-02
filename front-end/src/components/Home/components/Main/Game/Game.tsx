@@ -5,7 +5,7 @@ import GradienBox from '../../../../../tools/GradienBox'
 import { useSelector } from 'react-redux'
 import { useState, useEffect } from 'react'
 
-function Game() {
+function Game({isBlackHole} : {isBlackHole : boolean}) {
 
     const admin = useSelector((state: any) => state.admin);
     const [leftscore, setLeftScore] = useState(0);
@@ -59,7 +59,7 @@ function Game() {
                     </div>
                     <div className="Tablecont">
                         <div className="TableC">
-                            <Table isBlackHole={true} leftscore={leftscore} setLeftScore={setLeftScore} rightscore={rightscore} setRightScore={setRightScore} />
+                            <Table isBlackHole={isBlackHole} leftscore={leftscore} setLeftScore={setLeftScore} rightscore={rightscore} setRightScore={setRightScore} />
                         </div>
                     </div>
                 </div>

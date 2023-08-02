@@ -62,7 +62,8 @@ function Main(props: any) {
 						<Route path="profile/:login" element={<><Profile /></>} />
 						<Route path="settings/" element={<><Settings /></>} />
 						<Route path="/leaderBoard" element={<LeaderBoard />} />
-						<Route path="/game" element={<Game />} />
+						<Route path="/game" element={<Game isBlackHole={false} />} />
+						<Route path="/game/blackhole" element={<Game isBlackHole={true} />} />
 						<Route path="/404" element={<Error404 />} />
 						<Route path="*" element={<Error404 />} />
 

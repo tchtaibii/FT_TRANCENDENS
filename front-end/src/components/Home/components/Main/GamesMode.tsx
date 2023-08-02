@@ -62,7 +62,7 @@ function GamesMode() {
 		<BOxGame key='classicA' idA='classicA' imgID='classicIMG' classB="classic" titleB="Classic" StitleB='Challenge the computer' linkB="#" imgB={classicI} />,
 		<BOxGame key='aiA' idA='aiA' imgID='aiIMG' classB="ai" titleB="HK-47 Mode" StitleB='Traditional gameplay' linkB="/game" imgB={aiI} />,
 		<BOxGame key='Foot' idA='Foot' imgID='FootIMG' classB="FOOT" titleB="Football Mode" StitleB='Play like a Football Player' linkB="#" imgB={footBall} />,
-		<BOxGame key='BlackHole' idA='BlackHole' imgID='BlackHoleIMG' classB="BLACKHOLE" titleB="Black Hole" StitleB='Play and challenge the blackholes' linkB="#" imgB={blackHole} />,
+		<BOxGame key='BlackHole' idA='BlackHole' imgID='BlackHoleIMG' classB="BLACKHOLE" titleB="Black Hole" StitleB='Play and challenge the blackholes' linkB="/game/blackhole" imgB={blackHole} />,
 		<BOxGame key='friendA' idA='friendA' imgID='friendIMG' classB="friend" titleB="Friends Mode" StitleB='Social play, easy invites' linkB="#" imgB={friendI} />,
 	];
 	return (

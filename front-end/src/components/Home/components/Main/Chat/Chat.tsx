@@ -267,7 +267,7 @@ type CreateRoomT = {
 	type: string
 }
 
-function UserMember({ e, UserId, UserRole, RoomID }: any) {
+function UserMember({ MyUserID, e, UserId, UserRole, RoomID }: any) {
 	const userRef = useRef(null);
 	const handleClickOutside = () => {
 		setUserO(false);
@@ -279,7 +279,7 @@ function UserMember({ e, UserId, UserRole, RoomID }: any) {
 		<div ref={userRef} style={{ cursor: 'pointer', position: 'relative' }} onClick={() => {
 			setUserO(!UserO);
 		}} className={e.isBanned ? "userSection banned" : (e.Role === 'Admin' || e.Role === 'Owner') ? "isAdmin userSection" : "userSection"}>
-			{UserO && UserId !== e.member.UserId && (UserRole === 'Owner' || UserRole === 'Admin') && <div key={e.member.UserId + '-options'} className="optionsUser ">
+			{UserO && MyUserID !== e.member.UserId && (UserRole === 'Owner' || UserRole === 'Admin') && <div key={e.member.UserId + '-options'} className="optionsUser ">
 				{
 					!e.isBanned &&
 					<>
@@ -295,7 +295,6 @@ function UserMember({ e, UserId, UserRole, RoomID }: any) {
 							window.location.reload();
 						}}>Kick</h3></>
 				}
-				{/* banne */}
 				<h3 onClick={async () => {
 					if (!e.isBanned)
 						await axios.delete(`/room/${UserId}/ban/${e.member.MembershipId}`);
@@ -608,7 +607,7 @@ function Chat(props: any) {
 																{
 																	RoomData.members.map((e: any) => (
 																		<div key={e.member.UserId} >
-																			<UserMember e={e} RoomID={userId} UserRole={RoomData.UserRole} />
+																			< UserMember e={e} MyUserID={myData.UserId} RoomID={userId} UserRole={RoomData.UserRole} />
 																		</div>
 																	))
 																}

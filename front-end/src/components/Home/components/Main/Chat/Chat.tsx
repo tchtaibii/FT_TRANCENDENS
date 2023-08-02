@@ -267,11 +267,12 @@ type CreateRoomT = {
 	type: string
 }
 
-function UserMember({ e, UserId, UserRole }: any) {
+function UserMember({ e, UserId, UserRole, RoomID }: any) {
 	const userRef = useRef(null);
 	const handleClickOutside = () => {
 		setUserO(false);
 	}
+	console.log(e, UserId);
 	useOnClickOutside(userRef, handleClickOutside);
 	const [UserO, setUserO] = useState(false);
 	return (
@@ -290,7 +291,7 @@ function UserMember({ e, UserId, UserRole }: any) {
 							window.location.reload();
 						}} className={e.isMuted ? '' : 'Danger'}>{e.isMuted ? 'Unmute' : 'Mute'}</h3>
 						<h3 className='Danger' onClick={async () => {
-							await axios.delete(`/room/${UserId}/kick/${e.member.UserId}`);
+							await axios.delete(`/room/${RoomID}/kick/${e.member.UserId}`);
 							window.location.reload();
 						}}>Kick</h3></>
 				}
@@ -607,7 +608,7 @@ function Chat(props: any) {
 																{
 																	RoomData.members.map((e: any) => (
 																		<div key={e.member.UserId} >
-																			<UserMember e={e} UserId={myData.UserId} UserRole={RoomData.UserRole} />
+																			<UserMember e={e} RoomID={userId} UserRole={RoomData.UserRole} />
 																		</div>
 																	))
 																}

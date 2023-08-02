@@ -1,10 +1,17 @@
 import React from 'react';
+import blackholeImg from '../../../../../assets/img/blackholeImg.svg'
 
 let paddlepos1: number;
 let paddlepos2: number = 0;
-let halfpaddle = 2.5;
+let halfpaddle = 3;
 let ballposy: number;
 let ballposx: number;
+let lasthit: number = 1;
+
+function removeDecimalPart(number: number): number {
+  return Math.floor(number);
+}
+
 
 const Score = ({ leftScore, rightScore }: { leftScore: number; rightScore: number }) => {
   const leftScoreStyle: React.CSSProperties = {
@@ -62,7 +69,7 @@ const Paddle = ({ color, pos }: { color: string; pos: string }) => {
   return <div style={paddleStyle}></div>;
 };
 
-const Ball = ({ color, setLeftScore, setRightScore, Ballspeed, setBallspeed, setGameOver, gameOver }: { color: string, setLeftScore: any, setRightScore: any, Ballspeed: number, setBallspeed: any, setGameOver: any, gameOver: any }) => {
+const Ball = ({ isBlackHole, color, setLeftScore, setRightScore, Ballspeed, setBallspeed, setGameOver, gameOver }: { isBlackHole: boolean, color: string, setLeftScore: any, setRightScore: any, Ballspeed: number, setBallspeed: any, setGameOver: any, gameOver: any }) => {
   const [ballPos, setBallPos] = React.useState({ x: 0, y: 0 });
   const moveAngle = React.useRef(Math.PI / 4);  // direction of the ball in radians
   const animationFrameId = React.useRef<number>();
@@ -92,15 +99,17 @@ const Ball = ({ color, setLeftScore, setRightScore, Ballspeed, setBallspeed, set
           let newY = prevPos.y - (ballSpeedRef.current * Math.sin(moveAngle.current));
           ballposy = newY;
           ballposx = newX;
-          if (newX < -515 / 16 && (newY < paddlepos1 + halfpaddle && newY > paddlepos1 - halfpaddle)) {
-            newX = -515 / 16;
+          if (newX < -535 / 16 && (newY < paddlepos1 + halfpaddle && newY > paddlepos1 - halfpaddle)) {
+            newX = -535 / 16;
             moveAngle.current = Math.PI - moveAngle.current;
-            setBallspeed((prevspeed: number) => prevspeed + 0.3 / 16);
+            setBallspeed((prevspeed: number) => prevspeed + 0.5 / 16);
+            lasthit = 1;
           }
-          if (newX > 515 / 16 && (newY < paddlepos2 + halfpaddle && newY > paddlepos2 - halfpaddle)) {
-            newX = 515 / 16;
+          if (newX > 540 / 16 && (newY < paddlepos2 + halfpaddle && newY > paddlepos2 - halfpaddle)) {
+            newX = 540 / 16;
             moveAngle.current = Math.PI - moveAngle.current;
-            setBallspeed((prevspeed: number) => prevspeed + 0.3 / 16);
+            setBallspeed((prevspeed: number) => prevspeed + 0.5 / 16);
+            lasthit = 2;
           }
           // han fin katmarka koraaaaaaaaa
           if ((newX < -575 / 16 || newX > 580 / 16)) {
@@ -112,7 +121,7 @@ const Ball = ({ color, setLeftScore, setRightScore, Ballspeed, setBallspeed, set
                 }
                 return newScore;
               });
-              setBallspeed(() => 0.7);
+              setBallspeed(() => 5 / 16);
             }
             else if (newX > 580 / 16) {
               setLeftScore((prevScore: number) => {
@@ -122,7 +131,7 @@ const Ball = ({ color, setLeftScore, setRightScore, Ballspeed, setBallspeed, set
                 }
                 return newScore;
               });
-              setBallspeed(() => 0.7);
+              setBallspeed(() => 5 / 16);
             }
             newX = 0;
             newY = 0;
@@ -131,7 +140,29 @@ const Ball = ({ color, setLeftScore, setRightScore, Ballspeed, setBallspeed, set
           if (newY < -320 / 16 || newY > 325 / 16) {
             newY = newY < -320 / 16 ? -320 / 16 : 325 / 16;
             moveAngle.current = -moveAngle.current;
-            setBallspeed((prevspeed: number) => prevspeed + 0.3 / 16);
+            setBallspeed((prevspeed: number) => prevspeed + 0.5 / 16);
+          }
+
+          if (newY <= 17 && newY >= 13 && newX >= 23 && newX <= 27 && isBlackHole === true) {
+            if (lasthit == 2) {
+              newX = -28;
+              newY = -18;
+            }
+            else {
+              newX = -22;
+              newY = -12;
+            }
+          }
+
+          if (newY >= -17 && newY <= -13 && newX <= -23 && newX >= -27 && isBlackHole === true) {
+            if (lasthit == 2) {
+              newX = 22;
+              newY = 12;
+            }
+            else {
+              newX = 28;
+              newY = 18;
+            }
           }
 
           return { x: newX, y: newY };
@@ -154,23 +185,25 @@ const Ball = ({ color, setLeftScore, setRightScore, Ballspeed, setBallspeed, set
 };
 
 
-function Table({ leftscore, setLeftScore, rightscore, setRightScore }:any) {
+function App({ leftscore, setLeftScore, rightscore, setRightScore, isBlackHole }: any) {
+
+
+
   const [firstPaddlePos, setFirstPaddlePos] = React.useState(0);
+
   const movePaddle = React.useRef(0);
 
   const [secondPaddlePos, setSecondPaddlePos] = React.useState(0);
 
-
-
-  const [Ballspeed, setBallspeed] = React.useState(0.7);
+  const [Ballspeed, setBallspeed] = React.useState(5 / 16);
 
   const [gameOver, setGameOver] = React.useState(false);
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'ArrowUp' || e.key === 'w') {
-      movePaddle.current = -1;
+      movePaddle.current = -0.2;
     } else if (e.key === 'ArrowDown' || e.key === 's') {
-      movePaddle.current = 1;
+      movePaddle.current = 0.2;
     }
   };
 
@@ -211,7 +244,7 @@ function Table({ leftscore, setLeftScore, rightscore, setRightScore }:any) {
       if (!gameOver) {
         setSecondPaddlePos(() => {
           let newPosition;
-          let cpuspeed: number = 0.8; // 7px
+          let cpuspeed: number = 0.4375; // 7px
           newPosition = secondPaddlePos;
           if (ballposx > 0)
             if (secondPaddlePos < ballposy) {
@@ -237,18 +270,29 @@ function Table({ leftscore, setLeftScore, rightscore, setRightScore }:any) {
     };
     requestAnimationFrame(updateSecondPaddlePosition);
   }, [gameOver, ballposy]);
-
+  const BlackHole = () => {
+    return (
+      isBlackHole === true ? <><img className='BlackHole' src={blackholeImg} alt="black hole" width={`120rem`} /></> : <></>
+    );
+  };
 
   return (
     <div className='table'>
       <Paddle color="#E15253" pos={`${firstPaddlePos}rem`} />
-      <Ball color='white' setLeftScore={setLeftScore} setRightScore={setRightScore} Ballspeed={Ballspeed} setBallspeed={setBallspeed} setGameOver={setGameOver} gameOver={gameOver} />
+      <Ball isBlackHole={isBlackHole} color='white' setLeftScore={setLeftScore} setRightScore={setRightScore} Ballspeed={Ballspeed} setBallspeed={setBallspeed} setGameOver={setGameOver} gameOver={gameOver} />
       <Paddle color="#5699AF" pos={`${secondPaddlePos}rem`} />
-      <Score leftScore={leftscore / 2} rightScore={rightscore / 2} />
+      <Score leftScore={removeDecimalPart(leftscore / 2)} rightScore={removeDecimalPart(rightscore / 2)} />
       <div className="lineC">
         <div className="line"></div>
+      </div>
+      <div className='black1'>
+        <BlackHole />
+      </div>
+      <div className='black2'>
+        <BlackHole />
       </div>
     </div>
   );
 }
-export default Table
+
+export default App;

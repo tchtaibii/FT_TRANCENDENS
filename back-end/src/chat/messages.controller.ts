@@ -51,6 +51,7 @@ export class RoomsController {
   //should be admin or owner
   @Delete(':roomId/kick/:userId')
   async kickUserFromRoom(@Req() req, @Param('roomId', ParseIntPipe) roomId: number, @Param('userId') userId: string,) {
+    console.log(roomId, userId);
     await this.messagesservice.kickFromRoom(roomId, userId, req.user.UserId);
     return { message: 'User Kicked' };
   }

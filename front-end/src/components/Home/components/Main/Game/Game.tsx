@@ -59,7 +59,7 @@ function Game() {
                     </div>
                     <div className="Tablecont">
                         <div className="TableC">
-                            <Table leftscore={leftscore} setLeftScore={setLeftScore} rightscore={rightscore} setRightScore={setRightScore} />
+                            <Table isBlackHole={true} leftscore={leftscore} setLeftScore={setLeftScore} rightscore={rightscore} setRightScore={setRightScore} />
                         </div>
                     </div>
                 </div>

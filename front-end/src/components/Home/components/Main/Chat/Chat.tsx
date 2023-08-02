@@ -283,25 +283,27 @@ function UserMember({ MyUserID, e, UserId, UserRole, RoomID }: any) {
 					!e.isBanned &&
 					<>
 						<h3 onClick={async () => {
+							console.log(e)
 							if (!e.isMuted)
-								await axios.delete(`/room/${RoomID}/mute/${e.member.MembershipId}`);
+								await axios.post(`/room/${RoomID}/mute/${e.MembershipId}`).then((rsp)=> console.log(rsp));
 							else
-								await axios.delete(`/room/${RoomID}/umute/${e.member.MembershipId}`);
+								await axios.post(`/room/${RoomID}/umute/${e.MembershipId}`).then((rsp)=> console.log(rsp));
 							window.location.reload();
 						}} className={e.isMuted ? '' : 'Danger'}>{e.isMuted ? 'Unmute' : 'Mute'}</h3>
 						<h3 className='Danger' onClick={async () => {
 							await axios.delete(`/room/${RoomID}/kick/${e.member.UserId}`);
 							window.location.reload();
-						}}>Kick</h3></>
+						}}>Kick</h3>
+						{(e.Role !== 'Owner' || e.Role !== 'Admin') && <h3>Set Admin</h3>}</>
 				}
 				<h3 onClick={async () => {
-					if (!e.isBanned)
-						await axios.delete(`/room/${RoomID}/ban/${e.member.MembershipId}`);
-					else
-						await axios.delete(`/room/${RoomID}/unban/${e.member.MembershipId}`);
-					window.location.reload();
-				}} className={e.isBanned ? '' : 'Danger'}>{e.isBanned ? 'Unbanne' : 'Banne'}</h3>
-				{(e.Role !== 'Owner' || e.Role !== 'Admin') && <h3>Set Admin</h3>}
+							if (!e.isBanned)
+								await axios.post(`/room/${RoomID}/ban/${e.MembershipId}`);
+							else
+								await axios.post(`/room/${RoomID}/unban/${e.MembershipId}`);
+							window.location.reload();
+						}} className={e.isBanned ? '' : 'Danger'}>{e.isBanned ? 'Unbanne' : 'Banne'}</h3>
+				
 			</div>}
 			<div className="contUserSect">
 				<img src={e.member.avatar} />

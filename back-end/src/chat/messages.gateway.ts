@@ -3,6 +3,8 @@ import { Socket, Server } from 'socket.io';
 import { MessagesService } from './messages.service';
 import { SocketIOMIDDELWARE } from 'src/auth/auth-services/ws';
 import { EventsGateway } from 'src/users/events/events.gateway';
+import { ChatService } from './chat.service';
+import { exit } from 'process';
 
 @WebSocketGateway({cors : true, namespace : 'chat'})
 export class ChatGateway implements OnGatewayConnection{
@@ -10,7 +12,7 @@ export class ChatGateway implements OnGatewayConnection{
     private rooms: { [roomName: string]: Socket[] } = {};
 
 
-  constructor(private readonly ChatService : MessagesService, private readonly Notification : EventsGateway)
+  constructor(private readonly ChatService : ChatService, private readonly Notification : EventsGateway)
   {}
 
     afterInit(client : Socket)
@@ -50,26 +52,31 @@ export class ChatGateway implements OnGatewayConnection{
     @SubscribeMessage('message')
     async handleMessage(client: Socket, payload: { RoomId: string, message: string }) {
 
-        const message = await this.ChatService.sendMessage(payload.message, client.data.playload.userId, payload.RoomId);
+        const exist = await this.ChatService.check(payload.RoomId, client.data.playload.userId);
         
-        if (!message.ischannel || !message.blocked.length)
+        if (exist && this.rooms[payload.RoomId])
         {
-            this.server.to(payload.RoomId).emit('message', message.send);
-            const receiver = this.rooms[payload.RoomId].filter((user) => user.data.playload.userId !== client.data.playload.userId);
-            if (!message.ischannel && !receiver.length)
+            const message = await this.ChatService.sendMessage(payload.message, client.data.playload.userId, payload.RoomId);
+            
+            if (!message.ischannel || !message.blocked.length)
             {
-                const notification = await this.ChatService.getMessageNotificationInfo(client.data.playload.userId, payload.RoomId);
-                this.Notification.handleMessages(notification.receiver, notification, notification.receiver);
+                this.server.to(payload.RoomId).emit('message', message.send);
+                const receiver = this.rooms[payload.RoomId].filter((user) => user.data.playload.userId !== client.data.playload.userId);
+                if (!message.ischannel && !receiver.length)
+                {
+                    const notification = await this.ChatService.getMessageNotificationInfo(client.data.playload.userId, payload.RoomId);
+                    this.Notification.handleMessages(notification.receiver, notification, notification.receiver);
+                }
             }
-        }
-        else 
-        {
-            const room = this.rooms[payload.RoomId].filter((socket) => !message.blocked.includes(socket.data.playload.userId));
-
-            room.map((client) =>
+            else 
             {
-                this.server.to(client.id).emit('message', message.send);
-            })
+                const room = this.rooms[payload.RoomId].filter((socket) => !message.blocked.includes(socket.data.playload.userId));
+
+                room.map((client) =>
+                {
+                    this.server.to(client.id).emit('message', message.send);
+                })
+            }
         }
     }
 
@@ -79,4 +86,14 @@ export class ChatGateway implements OnGatewayConnection{
         console.log(`Client ${client.id} left room ${roomId}`);
     }
 
+    async kickuser(roomId, UserId)
+    {
+        this.rooms[roomId].map((user) => {
+            if (user.data.playload.userId === UserId)
+            {
+                console.log('here again\n');
+                user.leave(roomId);
+            }
+        })
+    }
 }

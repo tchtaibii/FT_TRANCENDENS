@@ -112,7 +112,7 @@ model Membership {
   RoomId       Int
   member       User     @relation(name: "MembershipGroupUsers", fields: [UserId], references: [UserId])
   UserId       String
-  Role         String   @default("USER")
+  Role         String   @default("Member")
   isBanned     Boolean  @default(false)
   isMuted      Boolean  @default(false)
   CreationTime DateTime @default(now())

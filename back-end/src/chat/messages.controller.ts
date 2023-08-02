@@ -75,6 +75,7 @@ export class RoomsController {
   @Post(':roomId/mute/:membershipid') //should impliment with socket
   async muteMember(@Req() req, @Param('membershipid', ParseIntPipe) membershipid: number, @Param('roomId', ParseIntPipe) roomId: number) {
 
+    console.log('here', membershipid, roomId);
     await this.messagesservice.muteMember(req.user.UserId, membershipid, roomId);
 
     return { message: 'Member muted' };

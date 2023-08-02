@@ -6,11 +6,12 @@ import { PrismaClient, User } from '@prisma/client';
 import { CreateMembershipDto, CreateRoomDto } from './dto/room.dto';
 import { StringDecoder } from 'string_decoder';
 import * as bcrypt from 'bcrypt'
+import { ChatGateway } from './messages.gateway';
 
 @Injectable()
 export class MessagesService {
 
-    constructor(private readonly prisma: PrismaClient) { }
+    constructor(private readonly prisma: PrismaClient, private readonly ChatGateaway : ChatGateway) { }
 
     async createRoom(createRoomDto: CreateRoomDto) {
 
@@ -57,19 +58,6 @@ export class MessagesService {
         return membership;
     }
 
-    async storeMessage(messageDto: MessageDto) {
-        const { roomId, userId, Content } = messageDto;
-
-        const texts = await this.prisma.message.create({
-            data: {
-                room: { connect: { RoomId: roomId } },
-                user: { connect: { UserId: userId } },
-                Content: Content,
-            },
-        });
-        return texts;
-    }
-
     async deleteRoom(roomId: number, userId: string) {
 
         const membership = await this.prisma.membership.findFirst({
@@ -89,26 +77,30 @@ export class MessagesService {
         }
 
 
-        await this.prisma.message.deleteMany({
-            where: {
-                room: { RoomId: roomId },
-            },
-        });
-        await this.prisma.membership.deleteMany({
-            where: {
-                room: { RoomId: roomId },
-            },
-        });
-
-        return this.prisma.room.delete({
-            where: {
-                RoomId: roomId,
-            },
-        });
+        const deleted = await this.prisma.$transaction(async (prisma) => {
+            await prisma.message.deleteMany({
+                where : {
+                    RoomId : roomId,
+                }
+            }),
+            await prisma.membership.deleteMany({
+                where : {
+                    RoomId : roomId,
+                }
+            }),
+            await prisma.room.delete({
+                where : {
+                    RoomId : roomId,
+                }
+            })
+        })
 
     }
 
     async kickFromRoom(roomId: number, userId: string, userIDmin: string) {
+
+        console.log('here');
+
         const membership = await this.prisma.membership.findFirst({
             where: {
                 AND: [
@@ -125,12 +117,14 @@ export class MessagesService {
             throw new UnauthorizedException('u dont have the right to kick');
         }
 
-        await this.prisma.membership.deleteMany({
+        const deleted = await this.prisma.membership.deleteMany({
             where: {
                 RoomId: roomId,
                 UserId: userId,
             },
         });
+
+        this.ChatGateaway.kickuser(roomId, userId);
     }
 
     async leaveRoom(roomId: number, userId: string) {
@@ -142,6 +136,7 @@ export class MessagesService {
                 ],
             },
         });
+
         if (!membership)
             return { message: 'membership doesnt found' };
         if (membership.Role === 'Owner') {
@@ -165,12 +160,15 @@ export class MessagesService {
                 });
             }
         }
+
         await this.prisma.membership.deleteMany({
             where: {
                 RoomId: roomId,
                 UserId: userId,
             },
         });
+
+        this.ChatGateaway.kickuser(roomId, userId);
     }
 
     async addMemberToRoom(roomId: number, username: string, userIDmin: string) {
@@ -228,11 +226,7 @@ export class MessagesService {
 
     async muteMember(userId: string, membershipId: number, roomid: number) {
         const membership = await this.prisma.membership.findFirst({
-            where: {
-                AND: [
-                    { UserId: userId },
-                ],
-            },
+            where: { UserId: userId, },
         });
 
         if (!membership) {
@@ -252,15 +246,15 @@ export class MessagesService {
                 isMuted: true,
             },
         });
+        
+        this.ChatGateaway.kickuser(roomid, userId);
     }
 
     async BannedMember(userId: string, membershipId: number, roomid: number) {
 
         const membership = await this.prisma.membership.findFirst({
             where: {
-                AND: [
-                    { UserId: userId },
-                ],
+                    UserId: userId,
             },
         });
 
@@ -281,13 +275,6 @@ export class MessagesService {
                 isBanned: true,
             },
         });
-        await this.prisma.membership.deleteMany({
-            where: {
-                RoomId: roomid,
-                UserId: userId,
-            },
-        });
-
     }
 
     async unmuteMember(userId: string, membershipId: number, roomid: number) {
@@ -411,228 +398,60 @@ export class MessagesService {
         }
     }
 
-    // async getRooms() {
-
-    //     const messages = await this.prisma.room.findMany({
-    //         where: {
-    //             ischannel: true,
-    //         },
-    //         include: {
-    //             Message: {
-    //                 orderBy: {
-    //                     SendTime: 'desc',
-    //                 },
-    //                 take: 1
-    //             },
-    //         },
-    //     })
-    //     // if (messages[userid].isBanned)
-    //     //   return null;
-    //     return messages;
-    // }
-    // async getroomsdms(userid: string) {
-    //     const messages = await this.prisma.room.findMany({
-    //         where: {
-    //             members: {
-    //                 some: {
-    //                     UserId: userid,
-    //                 },
-    //             },
-    //             ischannel: false,
-    //         },
-    //         include: {
-    //             Message: {
-    //                 select: {
-    //                     RoomId: true,
-    //                     Content: true,
-    //                 },
-    //                 orderBy: {
-    //                     SendTime: 'desc',
-    //                 },
-    //                 take: 1
-    //             },
-    //             members: {
-    //                 include: {
-    //                     member: {
-    //                         select: {
-    //                             avatar: true,
-    //                             username: true,
-    //                             status: true,
-    //                             UserId: true,
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-
-    //     })
-    //     return messages;
-    // }
-
-
-
-    // async joinroom(userid: string, roomid: number, password: string) {
-    //     const userexist = await this.prisma.membership.findFirst({
-    //         where: {
-    //             UserId: userid,
-    //             RoomId: roomid,
-    //         },
-    //     });
-
-    //     if (userexist) {
-    //         return null;
-    //     }
-    //     const room = await this.prisma.room.findUnique({
-    //         where: {
-    //             RoomId: roomid,
-    //         },
-    //     });
-    //     if (!room)
-    //         return { message: 'room mnot found' };
-    //     if (room[userid].isBanned)
-    //         return {
-    //             message: 'U re banned to join this room',
-    //         };
-    //     if (room.Type === 'protected') {
-    //         const joinpprivateroom = await this.checkpassword(roomid, password);
-    //         if (!joinpprivateroom)
-    //             return null
-    //     }
-
-    //     const join = await this.prisma.membership.create({
-    //         data: {
-    //             UserId: userid,
-    //             RoomId: roomid,
-    //             Role: 'member',
-    //             isBanned: false,
-    //             isMuted: false,
-    //         },
-    //     });
-
-    //     return join;
-    // }
-    // async checkpassword(roomid: number, password: string) {
-    //     const room = await this.prisma.room.findUnique({
-    //         where: {
-    //             RoomId: roomid,
-    //         },
-    //     });
-    //     if (room.Type !== 'protected') {
-    //         return false
-    //     }
-    //     if (room.Password !== password)
-    //         return false
-    //     else {
-    //         return room.Password === password;
-    //     }
-    // }
-
     async getRooms(userid: string) {
 
-        const messages = await this.prisma.room.findMany({
+        const rooms = await this.prisma.room.findMany({
             where: {
-                ischannel: true,
-                OR: [
+              ischannel: true,
+              AND: [
+                {
+                  members: {
+                    some: {
+                      UserId: userid,
+                      isBanned: false
+                    }
+                  }
+                },
+                {
+                  OR: [
                     {
-                        members: {
+                      Type: 'public'
+                    },
+                    {
+                      Type: 'protected'
+                    },
+                    {
+                      AND: [
+                        {
+                          Type: 'private'
+                        },
+                        {
+                          members: {
                             some: {
-                                UserId: userid,
-                            },
-                        },
-                    },
-                    {
-                        Type: {
-                            in: ['public', 'protected'],
-                        },
-                    },
-                ],
+                              UserId: userid
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             },
             include: {
-                Message: {
-                    orderBy: {
-                        SendTime: 'desc',
-                    },
-                    take: 1,
+              Message: {
+                orderBy: {
+                  SendTime: 'desc'
                 },
-            },
-        });
-        // const rooms = messages;
-        // for (const room of rooms) {
-        //   if (room['members']?.some(member => member.UserId === userid && member.isBanned)) {
-        //     return null;
-        //   }
-        // }
-        return messages;
-    }
-
-    async getBlockeduserIds(user)
-	{
-		const blockedUser = await this.prisma.friendship.findMany({
-			where : {
-				OR : [
-					{
-						SenderId : user,
-						OR : [
-								{blockedBySender : true},
-								{blockedByReceiver : true},
-						]
-					},
-					{
-						ReceiverId : user,
-						OR : [
-							{blockedBySender : true},
-							{blockedByReceiver : true},
-						]
-					},	
-				]
-			},
-			select : {
-				SenderId : true,
-				ReceiverId : true,
-			}
-		});
-
-
-		const blockedUserIds = blockedUser.map(friendship =>
-			friendship.SenderId === user ? friendship.ReceiverId : friendship.SenderId
-		);
-	
-		return blockedUserIds;
-	}
-
-    async sendMessage(content: string, UserId: string, roomId: string) {
-        const RoomId = parseInt(roomId);
-        // console.log(RoomId, UserId, content);
-        const send = await this.prisma.message.create({
-            data: {
-                UserId: UserId,
-                Content: content,
-                RoomId: RoomId,
-            },
-            include : {
-                user: {
-                    select:
-                    {
-                        avatar: true,
-                        username: true,
-                    }
-                },
-                room : {
-                    select : {
-                        ischannel : true,
-                    }
-                }
+                take: 1
+              }
             }
-        })
-
-        var blocked = [];
-        if (send.room.ischannel)
-            blocked = await this.getBlockeduserIds(send.UserId);
-        send.user.avatar =  send.user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !send.user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + send.user.avatar : send.user.avatar;
-        return {
-            send, blocked, ischannel : send.room.ischannel
-        };
+        });
+          
+        return rooms;
     }
+
+   
 
     async getroomsdms(userid: string) {
         const messages = await this.prisma.room.findMany({
@@ -761,7 +580,7 @@ export class MessagesService {
             data: {
                 UserId: userid,
                 RoomId: roomid,
-                Role: 'member',
+                Role: 'Member',
                 isBanned: false,
                 isMuted: false,
             },
@@ -826,7 +645,9 @@ export class MessagesService {
       });
 
       roomDetails.members.map((member) => {
-        member.member.avatar = member.member.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !member.member.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + member.member.avatar : member.member.avatar;
+        member.member.avatar = member.member.avatar.search("https://cdn.intra.42.fr/users/") === -1
+            && !member.member.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + member.member.avatar
+                : member.member.avatar;
       })
 
       const final = {
@@ -843,43 +664,4 @@ export class MessagesService {
       return final;
     }
     
-    async getMessageNotificationInfo(UserId, roomId)
-    {
-        const user = await this.prisma.user.findUnique({
-            where : {
-                UserId,
-            },
-            select : {
-                avatar : true,
-                username : true,
-            }
-        })
-
-        const RoomId = parseInt(roomId);
-
-        const room = await this.prisma.room.findUnique({
-            where: {
-              RoomId: RoomId,
-            },
-            include: {
-              members: {
-                where: {
-                  UserId: {
-                    not: UserId, 
-                  },
-                },
-                select: {
-                  UserId: true,  
-                },
-              },
-            },
-        });
-            
-        return {
-            avatar : user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + user.avatar : user.avatar,
-            username : user.username,
-            Type : "Message",
-            receiver : room.members[0].UserId,
-        }
-    }
 }

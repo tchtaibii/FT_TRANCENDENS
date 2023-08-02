@@ -8,6 +8,12 @@ let ballposy: number;
 let ballposx: number;
 let lasthit: number = 1;
 
+
+const BlackHole = ({isBlackHole}) : {isBlackHole:boolean} => {
+  return (
+    isBlackHole === true ? <><img className='BlackHole' src={blackholeImg} alt="black hole" width={`120rem`} /></> : <></>
+  );
+};
 function removeDecimalPart(number: number): number {
   return Math.floor(number);
 }
@@ -99,16 +105,16 @@ const Ball = ({ isBlackHole, color, setLeftScore, setRightScore, Ballspeed, setB
           let newY = prevPos.y - (ballSpeedRef.current * Math.sin(moveAngle.current));
           ballposy = newY;
           ballposx = newX;
-          if (newX < -535 / 16 && (newY < paddlepos1 + halfpaddle && newY > paddlepos1 - halfpaddle)) {
-            newX = -535 / 16;
+          if (newX < -520 / 16 && (newY < paddlepos1 + halfpaddle && newY > paddlepos1 - halfpaddle)) {
+            newX = -520 / 16;
             moveAngle.current = Math.PI - moveAngle.current;
-            setBallspeed((prevspeed: number) => prevspeed + 0.5 / 16);
+            setBallspeed((prevspeed: number) => prevspeed + 1 / 16);
             lasthit = 1;
           }
-          if (newX > 540 / 16 && (newY < paddlepos2 + halfpaddle && newY > paddlepos2 - halfpaddle)) {
-            newX = 540 / 16;
+          if (newX > 520 / 16 && (newY < paddlepos2 + halfpaddle && newY > paddlepos2 - halfpaddle)) {
+            newX = 520 / 16;
             moveAngle.current = Math.PI - moveAngle.current;
-            setBallspeed((prevspeed: number) => prevspeed + 0.5 / 16);
+            setBallspeed((prevspeed: number) => prevspeed + 1 / 16);
             lasthit = 2;
           }
           // han fin katmarka koraaaaaaaaa
@@ -121,7 +127,7 @@ const Ball = ({ isBlackHole, color, setLeftScore, setRightScore, Ballspeed, setB
                 }
                 return newScore;
               });
-              setBallspeed(() => 5 / 16);
+              setBallspeed(() => 8 / 16);
             }
             else if (newX > 580 / 16) {
               setLeftScore((prevScore: number) => {
@@ -131,7 +137,7 @@ const Ball = ({ isBlackHole, color, setLeftScore, setRightScore, Ballspeed, setB
                 }
                 return newScore;
               });
-              setBallspeed(() => 5 / 16);
+              setBallspeed(() => 8 / 16);
             }
             newX = 0;
             newY = 0;
@@ -195,15 +201,15 @@ function App({ leftscore, setLeftScore, rightscore, setRightScore, isBlackHole }
 
   const [secondPaddlePos, setSecondPaddlePos] = React.useState(0);
 
-  const [Ballspeed, setBallspeed] = React.useState(5 / 16);
+  const [Ballspeed, setBallspeed] = React.useState(8 / 16);
 
   const [gameOver, setGameOver] = React.useState(false);
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'ArrowUp' || e.key === 'w') {
-      movePaddle.current = -0.2;
+      movePaddle.current = -0.4;
     } else if (e.key === 'ArrowDown' || e.key === 's') {
-      movePaddle.current = 0.2;
+      movePaddle.current = 0.4;
     }
   };
 
@@ -244,7 +250,7 @@ function App({ leftscore, setLeftScore, rightscore, setRightScore, isBlackHole }
       if (!gameOver) {
         setSecondPaddlePos(() => {
           let newPosition;
-          let cpuspeed: number = 0.4375; // 7px
+          let cpuspeed: number = 0.6; // 7px
           newPosition = secondPaddlePos;
           if (ballposx > 0)
             if (secondPaddlePos < ballposy) {
@@ -270,11 +276,6 @@ function App({ leftscore, setLeftScore, rightscore, setRightScore, isBlackHole }
     };
     requestAnimationFrame(updateSecondPaddlePosition);
   }, [gameOver, ballposy]);
-  const BlackHole = () => {
-    return (
-      isBlackHole === true ? <><img className='BlackHole' src={blackholeImg} alt="black hole" width={`120rem`} /></> : <></>
-    );
-  };
 
   return (
     <div className='table'>
@@ -286,10 +287,10 @@ function App({ leftscore, setLeftScore, rightscore, setRightScore, isBlackHole }
         <div className="line"></div>
       </div>
       <div className='black1'>
-        <BlackHole />
+        <BlackHole isBlackHole={isBlackHole} />
       </div>
       <div className='black2'>
-        <BlackHole />
+        <BlackHole isBlackHole={isBlackHole} />
       </div>
     </div>
   );

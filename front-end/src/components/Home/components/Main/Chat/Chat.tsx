@@ -168,7 +168,7 @@ function ChatContent(params: any) {
 							<div style={{ backgroundImage: `url(${!Data.isChannel ? Data.avatar : grpsImg})` }} className="img"></div>
 							<div className="nameAndStatus">
 								<h1>{Data.name}<span className={!Data.isChannel ? (Data.status === true ? 'activeUser' : '') : 'room'}></span></h1>
-								<p>{!Data.isChannel ? (Data.status === true ? 'Active Now' : 'Disconnected') : ''}</p>
+								<p>{!Data.isChannel ? (Data.status === true ? 'Active Now' : 'Disconnected') : params.roomData.Type}</p>
 							</div>
 						</div>
 						<div ref={ref} >
@@ -294,7 +294,7 @@ function UserMember({ MyUserID, e, UserId, UserRole, RoomID }: any) {
 							await axios.delete(`/room/${RoomID}/kick/${e.member.UserId}`);
 							window.location.reload();
 						}}>Kick</h3>
-						{(e.Role !== 'Owner' || e.Role !== 'Admin') && <h3>Set Admin</h3>}</>
+						{(e.Role !== 'Owner' || e.Role !== 'Admin') && (e.Role !== 'Admin' || e.Role !== 'Owner') && <h3>Set Admin</h3>}</>
 				}
 				<h3 onClick={async () => {
 							if (!e.isBanned)

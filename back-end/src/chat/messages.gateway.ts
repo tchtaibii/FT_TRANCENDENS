@@ -88,12 +88,12 @@ export class ChatGateway implements OnGatewayConnection{
 
     async kickuser(roomId, UserId)
     {
-        this.rooms[roomId].map((user) => {
-            if (user.data.playload.userId === UserId)
-            {
-                console.log('here again\n');
-                user.leave(roomId);
-            }
-        })
+        // this.rooms[roomId].map((user) => {
+        //     if (user.data.playload.userId === UserId)
+        //     {
+        //         console.log('here again\n');
+        //         user.leave(roomId);
+        //     }
+        // })
     }
 }

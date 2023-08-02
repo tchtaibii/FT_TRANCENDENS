@@ -4,7 +4,8 @@ import { AddMemberDto, CreateRoomDto, CreateRoomwithMemebrs } from './dto/room.d
 import { MessagesService } from "./messages.service";
 import { MessageDto } from "./dto/create-message.dto";
 import { JwtAuthGuard } from "src/auth/auth-guard/jwt-guard";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiTags } from "@nestjs/swagger";
+import { Cron } from "@nestjs/schedule";
 
 
 
@@ -73,10 +74,19 @@ export class RoomsController {
   }
   //should be admin or owner
   @Post(':roomId/mute/:membershipid') //should impliment with socket
-  async muteMember(@Req() req, @Param('membershipid', ParseIntPipe) membershipid: number, @Param('roomId', ParseIntPipe) roomId: number) {
+  @ApiBody({ 
+    schema: {
+      type: 'object',
+      properties: {
+        time: {
+          type: 'string',
+        },
+      },
+    },
+})
+  async muteMember(@Req() req, @Param('membershipid', ParseIntPipe) membershipid: number, @Param('roomId', ParseIntPipe) roomId: number, @Body('time', ParseIntPipe) time : number) {
 
-    console.log('here', membershipid, roomId);
-    await this.messagesservice.muteMember(req.user.UserId, membershipid, roomId);
+    await this.messagesservice.muteMember(req.user.UserId, membershipid, roomId, time);
 
     return { message: 'Member muted' };
   };
@@ -148,19 +158,6 @@ export class RoomsController {
   }
 
 
-  // @Post('joinroom/:roomId')
-  // async joinroom(@Req() req, @Param('roomId', ParseIntPipe) roomId: number, @Param('password') password: string) {
-  //   const joinroom = await this.joinroom(req.user.UserId, roomId, password);
-  //   if (!joinroom) {
-  //     return { message: 'deja nta member or password incorrect' };
-  //   }
-
-  //   return {
-  //     membership: joinroom,
-  //     message: 'U re joined',
-  //   };
-  // }
-
   @Post('checkmember/:roomId')
   async checkismember(@Req() req, @Param('roomId', ParseIntPipe) roomId: number) {
     const userId = req.user.UserId;
@@ -192,5 +189,8 @@ export class RoomsController {
   }
 
 
-
+  @Cron('* * * * *')
+  async handleCron() {
+    await this.messagesservice.unmuteUsers();
+  }
 }

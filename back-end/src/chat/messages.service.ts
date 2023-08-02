@@ -224,7 +224,7 @@ export class MessagesService {
         return addmembership;
     }
 
-    async muteMember(userId: string, membershipId: number, roomid: number) {
+    async muteMember(userId: string, membershipId: number, roomid: number, time : number) {
         const membership = await this.prisma.membership.findFirst({
             where: { UserId: userId, },
         });
@@ -236,7 +236,11 @@ export class MessagesService {
         if (membership.Role !== 'Owner' && membership.Role !== 'Admin') {
             throw new UnauthorizedException("You don't have the right to mute.");
         }
+    
+        const newdate = new Date();
 
+        newdate.setHours(newdate.getHours() + time);
+    
         await this.prisma.membership.update({
             where: {
                 RoomId: roomid,
@@ -244,6 +248,7 @@ export class MessagesService {
             },
             data: {
                 isMuted: true,
+                unmuteUntil : newdate,
             },
         });
         
@@ -664,4 +669,30 @@ export class MessagesService {
       return final;
     }
     
+    async unmuteUsers()
+    {
+        const users = await this.prisma.membership.findMany({
+            where : {
+                isMuted : true,
+            },
+            select : {
+                unmuteUntil : true,
+                MembershipId : true,
+            },
+        });
+
+        users.map(async (user) => {
+            if (user.unmuteUntil < new Date())
+            {
+                await this.prisma.membership.update({
+                    where : {
+                        MembershipId : user.MembershipId
+                    },
+                    data : {
+                        isMuted : false,
+                    }
+                })
+            }
+        });
+    }
 }

@@ -115,6 +115,7 @@ model Membership {
   Role         String   @default("Member")
   isBanned     Boolean  @default(false)
   isMuted      Boolean  @default(false)
+  unmuteUntil  DateTime?
   CreationTime DateTime @default(now())
 }
 

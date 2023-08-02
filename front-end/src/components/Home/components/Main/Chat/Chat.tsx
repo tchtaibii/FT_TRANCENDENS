@@ -272,7 +272,6 @@ function UserMember({ MyUserID, e, UserId, UserRole, RoomID }: any) {
 	const handleClickOutside = () => {
 		setUserO(false);
 	}
-	console.log(e, UserId);
 	useOnClickOutside(userRef, handleClickOutside);
 	const [UserO, setUserO] = useState(false);
 	return (
@@ -285,9 +284,9 @@ function UserMember({ MyUserID, e, UserId, UserRole, RoomID }: any) {
 					<>
 						<h3 onClick={async () => {
 							if (!e.isMuted)
-								await axios.delete(`/room/${UserId}/mute/${e.member.MembershipId}`);
+								await axios.delete(`/room/${RoomID}/mute/${e.member.MembershipId}`);
 							else
-								await axios.delete(`/room/${UserId}/umute/${e.member.MembershipId}`);
+								await axios.delete(`/room/${RoomID}/umute/${e.member.MembershipId}`);
 							window.location.reload();
 						}} className={e.isMuted ? '' : 'Danger'}>{e.isMuted ? 'Unmute' : 'Mute'}</h3>
 						<h3 className='Danger' onClick={async () => {
@@ -297,9 +296,9 @@ function UserMember({ MyUserID, e, UserId, UserRole, RoomID }: any) {
 				}
 				<h3 onClick={async () => {
 					if (!e.isBanned)
-						await axios.delete(`/room/${UserId}/ban/${e.member.MembershipId}`);
+						await axios.delete(`/room/${RoomID}/ban/${e.member.MembershipId}`);
 					else
-						await axios.delete(`/room/${UserId}/unban/${e.member.MembershipId}`);
+						await axios.delete(`/room/${RoomID}/unban/${e.member.MembershipId}`);
 					window.location.reload();
 				}} className={e.isBanned ? '' : 'Danger'}>{e.isBanned ? 'Unbanne' : 'Banne'}</h3>
 				{(e.Role !== 'Owner' || e.Role !== 'Admin') && <h3>Set Admin</h3>}

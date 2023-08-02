@@ -14,6 +14,7 @@ function ActivityContent(props: any) {
 			exit={{ opacity: 0 }}
 			transition={{ delay: ((props.id / 10) + 0.1), duration: 0.1 }}
 			className="activity-x">
+
 			<div className="part1">
 				<Link to={'/profile/' + props.p1}><img src={props.avatar1} onError={(e: any) => {
 					e.target.src = defaultAvatar;
@@ -21,7 +22,6 @@ function ActivityContent(props: any) {
 				} alt="" /></Link>
 
 				<p>{props.p1}<span>{' ' + (props.isDraw === false ? 'won against ' : 'had a draw with ')}</span>{props.p2}</p>
-				{/* <img src={props.avatar2} alt="" /> */}
 			</div>
 			<div className="time-act">{(props.isDraw === true ? '+60pts' : '+120pts')}</div>
 		</motion.div>
@@ -36,7 +36,7 @@ function Activity() {
 	}, [])
 	const calc = 555;
 
-	
+
 	return (<motion.div
 		initial={{ x: '100vw' }}
 		animate={{ x: 0 }}
@@ -62,10 +62,10 @@ function Activity() {
 										(data && data.map((e: any, i) => {
 											return (
 												e.IsDraw === false ?
-													<ActivityContent side={'-'} id={i} key={'activity-' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+													<div key={'activity-' + i}><ActivityContent side={'-'} id={i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} /></div>
 													: <>
-														<ActivityContent side={'-'} id={i} key={'activity-draw' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
-														<ActivityContent side={'-'} id={i} key={'activity-draw2' + i} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
+														<div key={'activity-draw' + i}><ActivityContent side={'-'} id={i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} /></div>
+														<div key={'activity-draw2' + i} ><ActivityContent side={'-'} id={i} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} /></div>
 													</>
 											)
 										})) : (data && data.filter((e: any) => e.AreFriends === true)
@@ -75,10 +75,10 @@ function Activity() {
 													index = 6;
 												return (
 													e.IsDraw === false ?
-														<ActivityContent side={''} id={index} key={'activity-friend' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
+														<div key={'activity-friend' + i}><ActivityContent side={''} id={index} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} /></div>
 														: <>
-															<ActivityContent side={''} id={index} key={'activity-friend-draw' + i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} />
-															<ActivityContent side={''} id={index} key={'activity-friend-draw' + i} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} />
+															<div key={'activity-friend-draw' + i}><ActivityContent side={''} id={index} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} /></div>
+															<div key={'activity-friend-draw' + i} ><ActivityContent side={''} id={index} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} /></div>
 														</>
 												)
 											}

@@ -117,10 +117,10 @@ export class RoomsController {
     return { message: 'Member unbanned' };
   };
 
-	@Post('setAdmin/:membershipid')
-	async setAdmin(@Req() req, @Param('membershipid', ParseIntPipe) membershipid: number)
+	@Post(':roomId/setAdmin/:membershipid')
+	async setAdmin(@Req() req, @Param('membershipid', ParseIntPipe) membershipid: number,  @Param('roomId', ParseIntPipe) roomId: number)
 	{
-		return await this.messagesservice.setAdmin(membershipid);
+		return await this.messagesservice.setAdmin(membershipid, req.user, roomId);
 	}
 
 

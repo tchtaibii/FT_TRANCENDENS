@@ -222,7 +222,10 @@ export class MessagesService {
 
     async muteMember(userId: string, membershipId: number, roomid: number, time : number) {
         const membership = await this.prisma.membership.findFirst({
-            where: { UserId: userId, },
+            where: { 
+                UserId: userId, 
+                RoomId : roomid,    
+            },
         });
 
         if (!membership) {
@@ -285,9 +288,8 @@ export class MessagesService {
     async unmuteMember(userId: string, membershipId: number, roomid: number) {
         const membership = await this.prisma.membership.findFirst({
             where: {
-                AND: [
-                    { UserId: userId },
-                ],
+                    UserId: userId,
+                    RoomId : roomid,
             },
         });
 
@@ -314,12 +316,8 @@ export class MessagesService {
 
         const membership = await this.prisma.membership.findFirst({
             where: {
-                AND: [
-                    { 
                         UserId: userId,
                         RoomId : roomid,
-                    },
-                ],
             },
         });
 
@@ -701,8 +699,23 @@ export class MessagesService {
             });
     }
 
-    async setAdmin(membershipId : number)
+    async setAdmin(membershipId : number, User : User, roomId : number)
     {
+        const membership = await this.prisma.membership.findFirst({
+            where : {
+                UserId : User.UserId,
+                RoomId : roomId,
+            }
+        })
+    
+        if (!membership) {
+            throw new UnauthorizedException('Membership does not exist.');
+        }
+
+        if (membership.Role !== 'Owner') {
+            throw new UnauthorizedException("You don't have the right to mute.");
+        }
+
         const done = await this.prisma.membership.update({
             where : {
                 MembershipId : membershipId,
@@ -712,6 +725,6 @@ export class MessagesService {
             }
         })
 
-        return true;
+        return done ? true : false;
     }
 }

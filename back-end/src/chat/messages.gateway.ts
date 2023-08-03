@@ -85,4 +85,16 @@ export class ChatGateway implements OnGatewayConnection{
         client.leave(roomId);
         console.log(`Client ${client.id} left room ${roomId}`);
     }
+
+    async kickuser(roomId, UserId)
+    {
+        this.rooms[roomId] = this.rooms[roomId].filter((user) => {
+            if (user.data.playload.userId === UserId) {
+            console.log(user.data.playload.userId);
+              user.leave(roomId);
+              return false;
+            }
+            return true;
+        });
+    }
 }

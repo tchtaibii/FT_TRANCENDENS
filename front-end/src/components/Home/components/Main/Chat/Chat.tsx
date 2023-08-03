@@ -189,7 +189,7 @@ function ChatContent(params: any) {
 										params.setIsPop(true);
 										params.setisMembers(true);
 									}} className='threeD'>Members</button>}
-									{(params.roomData.isChannel === true && params.roomData.Type === 'protected' && (params.roomData.UserRole === 'Owner' || params.roomData.UserRole === 'Admin')) && <button onClick={() => {
+									{(params.roomData.isChannel === true && (params.roomData.Type === 'protected' || params.roomData.Type === 'public') && (params.roomData.UserRole === 'Owner')) && <button onClick={() => {
 										params.setIsPop(true);
 										params.setSecurity({ isSecurity: true, changeP: false, setP: false, passsword: { oldP: '', newP: '' } })
 									}} className='Securite'>Securité</button>}
@@ -278,32 +278,35 @@ function UserMember({ MyUserID, e, UserId, UserRole, RoomID }: any) {
 		<div ref={userRef} style={{ cursor: 'pointer', position: 'relative' }} onClick={() => {
 			setUserO(!UserO);
 		}} className={e.isBanned ? "userSection banned" : (e.Role === 'Admin' || e.Role === 'Owner') ? "isAdmin userSection" : "userSection"}>
-			{UserO && MyUserID !== e.member.UserId && (UserRole === 'Owner' || UserRole === 'Admin') && <div key={e.member.UserId + '-options'} className="optionsUser ">
+			{e.Role !== 'Owner' && UserO && MyUserID !== e.member.UserId && (UserRole === 'Owner' || UserRole === 'Admin') && <div key={e.member.UserId + '-options'} className="optionsUser ">
 				{
 					!e.isBanned &&
 					<>
 						<h3 onClick={async () => {
 							console.log(e)
 							if (!e.isMuted)
-								await axios.post(`/room/${RoomID}/mute/${e.MembershipId}`).then((rsp)=> console.log(rsp));
+								await axios.post(`/room/${RoomID}/mute/${e.MembershipId}`).then((rsp) => console.log(rsp));
 							else
-								await axios.post(`/room/${RoomID}/umute/${e.MembershipId}`).then((rsp)=> console.log(rsp));
+								await axios.post(`/room/${RoomID}/umute/${e.MembershipId}`).then((rsp) => console.log(rsp));
 							window.location.reload();
 						}} className={e.isMuted ? '' : 'Danger'}>{e.isMuted ? 'Unmute' : 'Mute'}</h3>
 						<h3 className='Danger' onClick={async () => {
 							await axios.delete(`/room/${RoomID}/kick/${e.member.UserId}`);
 							window.location.reload();
 						}}>Kick</h3>
-						{(e.Role !== 'Owner' || e.Role !== 'Admin') && (e.Role !== 'Admin' || e.Role !== 'Owner') && <h3>Set Admin</h3>}</>
+						{(UserRole === 'Owner' || UserRole === 'Admin') && (e.Role !== 'Admin' && e.Role !== 'Owner') && <h3 onClick={async () => {
+							await axios.post(`/room/${RoomID}/setAdmin/${e.MembershipId}`)
+							window.location.reload();
+						}}>Set Admin</h3>}</>
 				}
 				<h3 onClick={async () => {
-							if (!e.isBanned)
-								await axios.post(`/room/${RoomID}/ban/${e.MembershipId}`);
-							else
-								await axios.post(`/room/${RoomID}/unban/${e.MembershipId}`);
-							window.location.reload();
-						}} className={e.isBanned ? '' : 'Danger'}>{e.isBanned ? 'Unbanne' : 'Banne'}</h3>
-				
+					if (!e.isBanned)
+						await axios.post(`/room/${RoomID}/ban/${e.MembershipId}`);
+					else
+						await axios.post(`/room/${RoomID}/unban/${e.MembershipId}`);
+					window.location.reload();
+				}} className={e.isBanned ? '' : 'Danger'}>{e.isBanned ? 'Unbanne' : 'Banne'}</h3>
+
 			</div>}
 			<div className="contUserSect">
 				<img src={e.member.avatar} />
@@ -684,7 +687,14 @@ function Chat(props: any) {
 																			<button onClick={() => {
 																				setSecurity({ isSecurity: true, changeP: true, setP: false, passsword: { oldP: '', newP: '' } })
 																			}}>Change Password</button>
-																			<button className='DeleteP'>Delete Password</button>
+																			<button onClick={async () => {
+																				await axios.post(`/room/${userId}/removepassword`).then((rsp) => {
+																					if (rsp.data)
+																						window.location.reload();
+																					else
+																						setError(true);
+																				})
+																			}} className='DeleteP'>Delete Password</button>
 																		</>
 																	}
 																	{
@@ -742,6 +752,23 @@ function Chat(props: any) {
 																{
 																	(PasswordSecurity.changeP || PasswordSecurity.setP) &&
 																	<button onClick={async () => {
+																		if (PasswordSecurity.setP) {
+																			await axios.post(`/room/${userId}/setpassword`, { password: PasswordSecurity.passsword.newP }).then((rsp) => {
+																				if (rsp.data)
+																					window.location.reload();
+																				else
+																					setError(true);
+																			})
+																		}
+																		else if (PasswordSecurity.changeP) {
+																			await axios.post(`/room/${userId}/updatepassword`, { oldpassword: PasswordSecurity.passsword.oldP, password: PasswordSecurity.passsword.newP }).then((rsp) => {
+																				if (rsp.data)
+																					window.location.reload();
+																				else
+																					setError(true);
+																			})
+																		}
+
 																	}} className='btnNewGrp'>Done</button>
 																}
 																<button onClick={() => {

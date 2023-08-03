@@ -52,7 +52,7 @@ export class ChatService {
 
         var blocked = [];
         if (send.room.ischannel)
-            blocked = await this.getBlockeduserIds(send.UserId);
+            blocked = await this.getBlockeduserIds(send.UserId, RoomId);
         send.user.avatar =  send.user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !send.user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + send.user.avatar : send.user.avatar;
         return {
             send, blocked, ischannel : send.room.ischannel
@@ -99,7 +99,7 @@ export class ChatService {
         }
     }
 
-    async getBlockeduserIds(user)
+    async getBlockeduserIds(user, roomId)
 	{
 		const blockedUser = await this.prisma.friendship.findMany({
 			where : {
@@ -117,7 +117,8 @@ export class ChatService {
 							{blockedBySender : true},
 							{blockedByReceiver : true},
 						]
-					},	
+					},
+                    
 				]
 			},
 			select : {
@@ -126,11 +127,24 @@ export class ChatService {
 			}
 		});
 
+        const banned = await this.prisma.membership.findMany({
+            where : {
+                    RoomId : roomId,
+                    isBanned : true,
+            },
+            select : {
+                UserId : true,
+            }
+        })
 
-		const blockedUserIds = blockedUser.map(friendship =>
+		let blockedUserIds = blockedUser.map(friendship =>
 			friendship.SenderId === user ? friendship.ReceiverId : friendship.SenderId
 		);
 	
+        banned.map((user) => {
+            blockedUserIds.push(user.UserId);
+        })
+
 		return blockedUserIds;
 	}
 

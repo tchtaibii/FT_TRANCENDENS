@@ -1,7 +1,7 @@
 import Login from './components/Login/Login';
 import './App.scss';
 import Home from './components/Home/Home';
-import { useEffect, useState, Suspense, lazy } from 'react';
+import { useEffect, useState, lazy } from 'react';
 import Particle from './tools/ParticalComponent';
 import Cookies from 'js-cookie';
 import axios from './Interceptor/Interceptor'
@@ -18,7 +18,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 // const Home = lazy(() => import('./components/Home/Home'));
 const Secure = lazy(() => import('./Secure'));
 // const Particle = lazy(() => import('./tools/ParticalComponent'));
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
 
+console.error = () => { };
+console.warn = () => { };
 function SlideButton(props: any) {
 	const [slideChanger, SetSlideChange] = useState({ circle: props.isAccept ? 'sliderA' : 'sliderD' })
 	const handler = () => {
@@ -144,6 +148,7 @@ function App() {
 	const [token, setToken] = useState(tokenTest);
 	const [invitationRequest, setInviRequest] = useState<any>({ FriendshipId: 0, ReceiverId: '0', sender: { UserId: '', avatar: '', username: '', } });
 	useEffect(() => {
+
 		const tesServer = async () => {
 			if (isDownState.isDown === true) {
 				await axios.get('/').then((resp) => {
@@ -171,16 +176,19 @@ function App() {
 	}, [tokenTest])
 
 	useEffect(() => {
-		const CheckFa = async () => {
-			await axios.get('/auth/isFA-enabled').then((rsp) => setSecure(rsp.data.FA_ON))
-		}
-		CheckFa();
-		const GetToken = async () => {
-			if (isLogin) {
-				dispatch(getToken());
+		if (isLogin) {
+			const CheckFa = async () => {
+				await axios.get('/auth/isFA-enabled').then((rsp) => setSecure(rsp.data.FA_ON))
 			}
+			CheckFa();
+			const GetToken = async () => {
+				if (isLogin) {
+					dispatch(getToken());
+				}
+			}
+			GetToken();
 		}
-		GetToken();
+
 	}, [isLogin])
 
 	const [isFull, setIsfull] = useState(false);
@@ -192,10 +200,10 @@ function App() {
 					Authorization: `Bearer ${token}`,
 				}
 			});
-			socket.on('connect', () => {				
+			socket.on('connect', () => {
 			});
 
-			socket.on('request', (data:any) => {
+			socket.on('request', (data: any) => {
 				setIsfull(true);
 				setInviRequest(data);
 				setInvit(1);
@@ -204,7 +212,7 @@ function App() {
 				}, 30000)
 			});
 
-			socket.on('notification', (data:any) => {
+			socket.on('notification', (data: any) => {
 				setInvit(2);
 				setInviRequest(data);
 				setIsfullN(true)

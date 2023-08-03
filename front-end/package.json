@@ -28,8 +28,6 @@
     "react-router-dom": "^6.11.2",
     "react-svg": "^16.1.17",
     "react-tsparticles": "^2.9.3",
-    "react-type-animation": "^3.0.1",
-    "react-vfx": "^0.5.0",
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",
     "socket.io-client": "^4.7.1",

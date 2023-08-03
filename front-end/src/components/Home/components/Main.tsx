@@ -1,4 +1,4 @@
-import { lazy } from 'react'
+import { lazy, StrictMode } from 'react'
 import Search from './Main/Search'
 import MsgNot from './Main/MsgNot'
 // import GamesMode from './Main/GamesMode'
@@ -56,7 +56,13 @@ function Main(props: any) {
 						<MsgNot isFull={props.isFull} setIsfull={props.setIsfull} isFullN={props.isFullN} setIsfullN={props.setIsfullN}  socketInvi={props.socketInvi}  />
 					</div>
 					<Routes>
-						<Route path="/" element={<AnimatePresence mode='wait'><Hero /><GamesMode /><BestPlayers /></AnimatePresence>} />
+						<Route path="/" element={<AnimatePresence mode='wait'>
+							<Hero />
+							{/* <StrictMode> */}
+								<GamesMode />
+								{/* </StrictMode> */}
+								<BestPlayers />
+								</AnimatePresence>} />
 						<Route path="chat" element={<Chat params={false} />} />
 						<Route path="chat/:userId" element={<Chat params={true} />} />
 						<Route path="profile/:login" element={<><Profile /></>} />

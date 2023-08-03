@@ -63,10 +63,8 @@ function Activity() {
 											return (
 												e.IsDraw === false ?
 													<div key={'activity-' + i}><ActivityContent side={'-'} id={i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} /></div>
-													: <>
-														<div key={'activity-draw' + i}><ActivityContent side={'-'} id={i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} /></div>
-														<div key={'activity-draw2' + i} ><ActivityContent side={'-'} id={i} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} /></div>
-													</>
+													:
+													<div key={'activity-draw' + i}><ActivityContent side={'-'} id={i} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} /></div>
 											)
 										})) : (data && data.filter((e: any) => e.AreFriends === true)
 											.map((e: any, i) => {
@@ -76,10 +74,8 @@ function Activity() {
 												return (
 													e.IsDraw === false ?
 														<div key={'activity-friend' + i}><ActivityContent side={''} id={index} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} /></div>
-														: <>
-															<div key={'activity-friend-draw' + i}><ActivityContent side={''} id={index} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} /></div>
-															<div key={'activity-friend-draw' + i} ><ActivityContent side={''} id={index} p1={e.Player2} p2={e.Player1} isDraw={e.IsDraw} avatar1={e.Player2Avatar} /></div>
-														</>
+														:
+														<div key={'activity-friend-draw' + i}><ActivityContent side={''} id={index} p1={e.Player1} p2={e.Player2} isDraw={e.IsDraw} avatar1={e.Player1Avatar} /></div>
 												)
 											}
 											))

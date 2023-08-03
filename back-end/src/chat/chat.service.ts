@@ -127,23 +127,23 @@ export class ChatService {
 			}
 		});
 
-        const banned = await this.prisma.membership.findMany({
-            where : {
-                    RoomId : roomId,
-                    isBanned : true,
-            },
-            select : {
-                UserId : true,
-            }
-        })
+        // const banned = await this.prisma.membership.findMany({
+        //     where : {
+        //             RoomId : roomId,
+        //             isBanned : true,
+        //     },
+        //     select : {
+        //         UserId : true,
+        //     }
+        // })
 
 		let blockedUserIds = blockedUser.map(friendship =>
 			friendship.SenderId === user ? friendship.ReceiverId : friendship.SenderId
 		);
 	
-        banned.map((user) => {
-            blockedUserIds.push(user.UserId);
-        })
+        // banned.map((user) => {
+        //     blockedUserIds.push(user.UserId);
+        // })
 
 		return blockedUserIds;
 	}

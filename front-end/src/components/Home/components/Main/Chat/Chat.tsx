@@ -125,7 +125,7 @@ function ChatContent(params: any) {
 
 	useEffect(() => {
 		const checkMember = async () => {
-			await axios.post(`/room/checkmember/${params.userId}`).then((rsp) => setCheck(rsp.data));
+			await axios.post(`/room/checkmember/${params.userId}`).then((rsp:any) => setCheck(rsp.data)).catch((err:any) => navigate('/404'));
 		}
 		checkMember();
 	}, [])
@@ -386,7 +386,12 @@ function Chat(props: any) {
 	useEffect(() => {
 		if (props.params) {
 			const FetchData = async () => {
-				await axios.get(`/room/${userId}/getdetails`).then((rsp: any) => setRoomData(rsp.data));
+				await axios.get(`/room/${userId}/getdetails`).then((rsp: any) => {
+					if(rsp.data === false)
+						navigate('/404')
+					else
+						setRoomData(rsp.data)
+				});
 			}
 			FetchData();
 		}

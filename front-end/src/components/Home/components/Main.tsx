@@ -1,4 +1,4 @@
-import { lazy, StrictMode } from 'react'
+import { lazy } from 'react'
 import Search from './Main/Search'
 import MsgNot from './Main/MsgNot'
 // import GamesMode from './Main/GamesMode'
@@ -58,9 +58,7 @@ function Main(props: any) {
 					<Routes>
 						<Route path="/" element={<AnimatePresence mode='wait'>
 							<Hero />
-							{/* <StrictMode> */}
 								<GamesMode />
-								{/* </StrictMode> */}
 								<BestPlayers />
 								</AnimatePresence>} />
 						<Route path="chat" element={<Chat params={false} />} />

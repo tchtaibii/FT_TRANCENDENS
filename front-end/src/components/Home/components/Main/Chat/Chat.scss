@@ -577,7 +577,7 @@
                 }
             }
 
-          
+
         }
     }
 }
@@ -875,6 +875,7 @@
         background-color: #ED5152;
     }
 }
+
 .inputContainer {
     width: toRem(250);
     height: toRem(35);
@@ -887,7 +888,8 @@
     align-items: center;
 
     input[type=text],
-    input[type=password] {
+    input[type=password],
+    input[type=number] {
         width: 100%;
         height: 100%;
         border-radius: toRem(40);
@@ -901,6 +903,7 @@
         line-height: normal;
     }
 }
+
 .buttonNewGroup {
     display: flex;
     gap: toRem(23);
@@ -923,4 +926,30 @@
         background-color: #ED5152;
     }
 
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0;
+    /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+    /* Firefox */
+}
+.muteBtn {
+    width: toRem(80);
+    height: toRem(30);
+    background-color: #17AFA0;
+    border-radius: toRem(19);
+    font-size: toRem(14);
+    transition: all 0.5s ease-in-out;
+
+    &:disabled {
+        cursor: not-allowed;
+        background-color: #13655d;
+    }
 }

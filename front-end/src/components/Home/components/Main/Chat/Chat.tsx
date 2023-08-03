@@ -193,6 +193,10 @@ function ChatContent(params: any) {
 										params.setIsPop(true);
 										params.setSecurity({ isSecurity: true, changeP: false, setP: false, passsword: { oldP: '', newP: '' } })
 									}} className='Securite'>Securité</button>}
+									{(params.roomData.isChannel === true && (params.roomData.UserRole === 'Owner')) && <button onClick={async () => {
+										await axios.delete(`/room/${params.roomData.RoomId}/Delete`).catch((error) => console.log(error));
+										window.location.reload();
+									}} className='Block'>Delete Room</button>}
 									{(params.roomData.isChannel === true) && <button onClick={async () => {
 										await axios.delete(`/room/${params.roomData.RoomId}/leave/${myData.UserId}`);
 										navigate('/');
@@ -267,7 +271,7 @@ type CreateRoomT = {
 	type: string
 }
 
-function UserMember({ MyUserID, e, UserId, UserRole, RoomID }: any) {
+function UserMember({ MyUserID, e, UserRole, RoomID, setMute }: any) {
 	const userRef = useRef(null);
 	const handleClickOutside = () => {
 		setUserO(false);
@@ -283,12 +287,12 @@ function UserMember({ MyUserID, e, UserId, UserRole, RoomID }: any) {
 					!e.isBanned &&
 					<>
 						<h3 onClick={async () => {
-							console.log(e)
 							if (!e.isMuted)
-								await axios.post(`/room/${RoomID}/mute/${e.MembershipId}`).then((rsp) => console.log(rsp));
-							else
+								setMute({is: true, memberId: e.MembershipId});
+							else {
 								await axios.post(`/room/${RoomID}/umute/${e.MembershipId}`).then((rsp) => console.log(rsp));
-							window.location.reload();
+								window.location.reload();
+							}
 						}} className={e.isMuted ? '' : 'Danger'}>{e.isMuted ? 'Unmute' : 'Mute'}</h3>
 						<h3 className='Danger' onClick={async () => {
 							await axios.delete(`/room/${RoomID}/kick/${e.member.UserId}`);
@@ -395,6 +399,8 @@ function Chat(props: any) {
 		}
 		setDmsLast(map);
 	}, [Dms])
+	const [isMute, setMute] = useState<any>({is: false, memberId: 0});
+	const [MuteNumber, setMuteNumber] = useState<number>(0);
 
 	return (
 		<div style={{ marginTop: '5rem' }} className="main-core">
@@ -611,7 +617,7 @@ function Chat(props: any) {
 																{
 																	RoomData.members.map((e: any) => (
 																		<div key={e.member.UserId} >
-																			< UserMember e={e} MyUserID={myData.UserId} RoomID={userId} UserRole={RoomData.UserRole} />
+																			< UserMember setMute={setMute} e={e} MyUserID={myData.UserId} RoomID={userId} UserRole={RoomData.UserRole} />
 																		</div>
 																	))
 																}
@@ -780,6 +786,34 @@ function Chat(props: any) {
 														}
 
 													</div>
+												</motion.div>
+											}{
+												isMute.is && <motion.div
+													key='securite-popup'
+													initial={{ scale: 0 }}
+													animate={{ scale: 1 }}
+													exit={{ scale: 0 }}
+													className="newGroup"
+													style={{ width: '20.875rem', height: '10rem' }}
+												>
+													<div style={{ padding: '0.5rem', alignItems: 'center', gap: '1rem' }} className="addMember">
+														<h2>Time of Mute</h2>
+														<div className="inputContainer"><input onChange={(e: any) => {
+															const value = Math.max(0, Math.min(100, Number(event.target.value)));
+															setMuteNumber(value);
+														}} type="number" placeholder='How Many Hour (1 => 100)?' /></div>
+														<div style={{ height: '1.875rem' }}>
+															{
+																<button disabled={MuteNumber <= 0} onClick={async () => {
+																	if (MuteNumber > 0)
+																		await axios.post(`/room/${userId}/mute/${isMute.memberId}`, {time: MuteNumber.toString()}).then((rsp) => console.log(rsp));
+																}} className='muteBtn'>Done</button>
+															}
+
+														</div>
+													</div>
+
+
 												</motion.div>
 											}
 										</motion.div>

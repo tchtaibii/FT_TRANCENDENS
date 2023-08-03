@@ -11,6 +11,7 @@ import { CreateMembershipDto, CreateRoomDto } from "./dto/room.dto";
 import { StringDecoder } from "string_decoder";
 import * as bcrypt from "bcrypt";
 import { ChatGateway } from "./messages.gateway";
+import { info } from "console";
 
 @Injectable()
 export class MessagesService {
@@ -159,7 +160,7 @@ export class MessagesService {
 	async addMemberToRoom(roomId: number, username: string, userIDmin: string) {
 		const membership = await this.prisma.membership.findFirst({
 			where: {
-				AND: [{ RoomId: roomId }, { UserId: userIDmin }],
+				RoomId: roomId,  UserId: userIDmin,
 			},
 		});
 
@@ -178,7 +179,7 @@ export class MessagesService {
 
 		const checkmember = await this.prisma.membership.findFirst({
 			where: {
-				AND: [{ RoomId: roomId }, { UserId: member.UserId }],
+				RoomId: roomId, UserId: member.UserId,
 			},
 		});
 
@@ -349,7 +350,7 @@ export class MessagesService {
 
 		messages.map((msg) => {
 			msg.user.avatar =
-				msg.user.avatar.search("https://cdn.intra.42.fr/users/") === -1 &&
+				msg.user.avatar && msg.user.avatar.search("https://cdn.intra.42.fr/users/") === -1 &&
 					!msg.user.avatar.search("/uploads/")
 					? process.env.HOST + process.env.PORT + msg.user.avatar
 					: msg.user.avatar;
@@ -382,7 +383,8 @@ export class MessagesService {
 		var avatar;
 		var name;
 		var status;
-		if (!infos.ischannel) {
+
+		if (infos && !infos.ischannel) {
 			if (infos.members && infos.members.length == 2) {
 				avatar =
 					infos.members[0].UserId === user.UserId
@@ -398,21 +400,23 @@ export class MessagesService {
 						: infos.members[0].member.status;
 			}
 		} else {
-			name = infos.RoomNAme;
+				name = infos ? infos.RoomNAme : undefined;
 		}
-		return {
-			type: infos.Type,
-			isChannel: infos.ischannel,
-			avatar:
-				avatar &&
-					avatar.search("https://cdn.intra.42.fr/users/") === -1 &&
-					!avatar.search("/uploads/")
-					? process.env.HOST + process.env.PORT + avatar
-					: avatar,
-			name,
-			status,
-		};
-	}
+
+		if (infos)
+			return {
+				type: infos.Type,
+				isChannel: infos.ischannel,
+				avatar:
+					avatar &&
+						avatar.search("https://cdn.intra.42.fr/users/") === -1 &&
+						!avatar.search("/uploads/")
+						? process.env.HOST + process.env.PORT + avatar
+						: avatar,
+				name,
+				status,
+			};
+		}
 
 	async getRooms(userid: string) {
 		const rooms = await this.prisma.room.findMany({
@@ -564,7 +568,7 @@ export class MessagesService {
 						: null,
 			};
 			check.avatar =
-				check.avatar.search("https://cdn.intra.42.fr/users/") === -1 &&
+				check.avatar && check.avatar.search("https://cdn.intra.42.fr/users/") === -1 &&
 					!check.avatar.search("/uploads/")
 					? process.env.HOST + process.env.PORT + check.avatar
 					: check.avatar;
@@ -644,9 +648,12 @@ export class MessagesService {
 			},
 		});
 
+		if (!roomDetails)
+			return false;
+
 		roomDetails.members.map((member) => {
 			member.member.avatar =
-				member.member.avatar.search("https://cdn.intra.42.fr/users/") === -1 &&
+				member.member.avatar && member.member.avatar.search("https://cdn.intra.42.fr/users/") === -1 &&
 					!member.member.avatar.search("/uploads/")
 					? process.env.HOST + process.env.PORT + member.member.avatar
 					: member.member.avatar;

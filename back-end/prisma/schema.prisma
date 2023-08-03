@@ -15,7 +15,7 @@ model User {
   UserId    String   @id
   username  String   @unique
   FullName  String
-  avatar    String
+  avatar    String?
   FA_On     Boolean?
   FAsecret  String?
   XP        Int?     @default(0)

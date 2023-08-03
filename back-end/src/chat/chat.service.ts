@@ -53,7 +53,7 @@ export class ChatService {
         var blocked = [];
         if (send.room.ischannel)
             blocked = await this.getBlockeduserIds(send.UserId, RoomId);
-        send.user.avatar =  send.user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !send.user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + send.user.avatar : send.user.avatar;
+        send.user.avatar =  send.user.avatar && send.user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !send.user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + send.user.avatar : send.user.avatar;
         return {
             send, blocked, ischannel : send.room.ischannel
         };
@@ -92,7 +92,9 @@ export class ChatService {
         });
             
         return {
-            avatar : user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + user.avatar : user.avatar,
+            avatar : user.avatar && user.avatar.search("https://cdn.intra.42.fr/users/") === -1
+                && !user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + user.avatar
+                    : user.avatar,
             username : user.username,
             Type : "Message",
             receiver : room.members[0].UserId,
@@ -127,23 +129,23 @@ export class ChatService {
 			}
 		});
 
-        // const banned = await this.prisma.membership.findMany({
-        //     where : {
-        //             RoomId : roomId,
-        //             isBanned : true,
-        //     },
-        //     select : {
-        //         UserId : true,
-        //     }
-        // })
+        const banned = await this.prisma.membership.findMany({
+            where : {
+                    RoomId : roomId,
+                    isBanned : true,
+            },
+            select : {
+                UserId : true,
+            }
+        })
 
 		let blockedUserIds = blockedUser.map(friendship =>
 			friendship.SenderId === user ? friendship.ReceiverId : friendship.SenderId
 		);
 	
-        // banned.map((user) => {
-        //     blockedUserIds.push(user.UserId);
-        // })
+        banned.map((user) => {
+            blockedUserIds.push(user.UserId);
+        })
 
 		return blockedUserIds;
 	}

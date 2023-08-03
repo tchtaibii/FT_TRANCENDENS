@@ -39,7 +39,16 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	async handleDisconnect(client :Socket) {
 
-		await this.prisma.user.update({
+		const exist = await this.prisma.user.findFirst({
+			where : {
+				UserId : client.data.playload.userId,
+			}
+		})
+
+		if (!exist)
+			return ;
+		
+			await this.prisma.user.update({
 			where : { UserId : client.data.playload.userId },
 			data : { status : false},
 		})

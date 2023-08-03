@@ -7,6 +7,7 @@ import {
 	ParseIntPipe,
 	Post,
 	Req,
+	Res,
 	UseGuards,
 } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
@@ -59,9 +60,10 @@ export class RoomsController {
 	}
 
 	@Delete(":roomId/Delete")
-	async deleteRoom(@Req() req, @Param("roomId", ParseIntPipe) roomId: number) {
+	async deleteRoom(@Req() req, @Param("roomId", ParseIntPipe) roomId: number, @Res() res) {
 		await this.messagesservice.deleteRoom(roomId, req.user.UserId);
-		return { message: "Room deleted successfully" };
+		res.redirect(process.env.FrontIp + '/chat');
+		res.json(true);
 	}
 
 	//should be admin or owner
@@ -237,7 +239,7 @@ export class RoomsController {
 						: null,
 			};
 			check.avatar =
-				check.avatar.search("https://cdn.intra.42.fr/users/") === -1 &&
+				check.avatar && check.avatar.search("https://cdn.intra.42.fr/users/") === -1 &&
 					!check.avatar.search("/uploads/")
 					? process.env.HOST + process.env.PORT + check.avatar
 					: check.avatar;

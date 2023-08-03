@@ -104,7 +104,7 @@ export class UsersService {
 		const final : notification[] = notifications.map(user => {
 
 			return {
-				avatar : user.sender.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !user.sender.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + user.sender.avatar : user.sender.avatar,
+				avatar : user.sender.avatar && user.sender.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !user.sender.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + user.sender.avatar : user.sender.avatar,
 				username : user.sender.username,
 				isRead : user.isRead,
 				notificationId : user.NotificationId,
@@ -275,7 +275,10 @@ export class UsersService {
 			},
 			take : 1,
 		})
-		const isFirst = FA[0].FAsecret ? false : true;
-		return {isFirst, FA_ON : FA[0].FA_On};
+		if (FA)
+		{
+			const isFirst = FA[0].FAsecret ? false : true;
+			return {isFirst, FA_ON : FA[0].FA_On};
+		}
 	}
 }

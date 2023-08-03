@@ -287,9 +287,8 @@ function UserMember({ MyUserID, e, UserRole, RoomID, setMute, setmember }: any) 
 					!e.isBanned &&
 					<>
 						<h3 onClick={async () => {
-							if (!e.isMuted)
-							{
-								setMute({is: true, memberId: e.MembershipId});
+							if (!e.isMuted) {
+								setMute({ is: true, memberId: e.MembershipId });
 								setmember(false)
 							}
 							else {
@@ -402,7 +401,7 @@ function Chat(props: any) {
 		}
 		setDmsLast(map);
 	}, [Dms])
-	const [isMute, setMute] = useState<any>({is: false, memberId: 0});
+	const [isMute, setMute] = useState<any>({ is: false, memberId: 0 });
 	const [MuteNumber, setMuteNumber] = useState<number>(0);
 
 	return (
@@ -806,17 +805,16 @@ function Chat(props: any) {
 															setMuteNumber(value);
 														}} type="number" placeholder='How Many Hour (1 => 100)?' /></div>
 														<div style={{ height: '1.875rem' }}>
-															{
-																<button disabled={MuteNumber <= 0} onClick={async () => {
-																	if (MuteNumber > 0)
-																	{
-																		await axios.post(`/room/${userId}/mute/${isMute.memberId}`, {time: MuteNumber.toString()}).then((rsp) => console.log(rsp));
-																		setMute({is: false, memberId: 0});
-																		window.location.reload();
-																	}
-																		
-																	}} className='muteBtn'>Done</button>
-															}
+															<button disabled={MuteNumber <= 0} onClick={async () => {
+																if (MuteNumber > 0) {
+																	await axios.post(`/room/${userId}/mute/${isMute.memberId}`, { time: MuteNumber.toString() }).then((rsp) => console.log(rsp));
+																	setMute({ is: false, memberId: 0 });
+																	window.location.reload();
+																}
+															}} className='muteBtn cancel'>Done</button>
+															<button disabled={MuteNumber <= 0} onClick={async () => {
+																	setMute({ is: fasle, memberId: 0 });
+															}} className='muteBtn'>Cancel</button>
 
 														</div>
 													</div>

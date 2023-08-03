@@ -113,6 +113,7 @@ export class RoomsController {
 			},
 		},
 	})
+
 	async muteMember(
 		@Req() req,
 		@Param("membershipid", ParseIntPipe) membershipid: number,
@@ -128,6 +129,7 @@ export class RoomsController {
 
 		return { message: "Member muted" };
 	}
+
 	//should be admin or owner
 	@Post(":roomId/ban/:membershipid") //should impliment with socket
 	async BannedMember(

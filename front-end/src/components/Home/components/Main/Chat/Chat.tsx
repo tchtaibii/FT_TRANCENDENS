@@ -271,7 +271,7 @@ type CreateRoomT = {
 	type: string
 }
 
-function UserMember({ MyUserID, e, UserRole, RoomID, setMute }: any) {
+function UserMember({ MyUserID, e, UserRole, RoomID, setMute, setmember }: any) {
 	const userRef = useRef(null);
 	const handleClickOutside = () => {
 		setUserO(false);
@@ -288,7 +288,10 @@ function UserMember({ MyUserID, e, UserRole, RoomID, setMute }: any) {
 					<>
 						<h3 onClick={async () => {
 							if (!e.isMuted)
+							{
 								setMute({is: true, memberId: e.MembershipId});
+								setmember(false)
+							}
 							else {
 								await axios.post(`/room/${RoomID}/umute/${e.MembershipId}`).then((rsp) => console.log(rsp));
 								window.location.reload();
@@ -617,7 +620,7 @@ function Chat(props: any) {
 																{
 																	RoomData.members.map((e: any) => (
 																		<div key={e.member.UserId} >
-																			< UserMember setMute={setMute} e={e} MyUserID={myData.UserId} RoomID={userId} UserRole={RoomData.UserRole} />
+																			< UserMember setmember={setmember} setMute={setMute} e={e} MyUserID={myData.UserId} RoomID={userId} UserRole={RoomData.UserRole} />
 																		</div>
 																	))
 																}
@@ -806,8 +809,13 @@ function Chat(props: any) {
 															{
 																<button disabled={MuteNumber <= 0} onClick={async () => {
 																	if (MuteNumber > 0)
+																	{
 																		await axios.post(`/room/${userId}/mute/${isMute.memberId}`, {time: MuteNumber.toString()}).then((rsp) => console.log(rsp));
-																}} className='muteBtn'>Done</button>
+																		setMute({is: false, memberId: 0});
+																		window.location.reload();
+																	}
+																		
+																	}} className='muteBtn'>Done</button>
 															}
 
 														</div>

@@ -64,7 +64,7 @@ export class MessagesService {
 	async deleteRoom(roomId: number, userId: string) {
 		const membership = await this.prisma.membership.findFirst({
 			where: {
-				AND: [{ RoomId: roomId }, { UserId: userId }],
+				RoomId: roomId, UserId: userId,
 			},
 		});
 
@@ -75,11 +75,11 @@ export class MessagesService {
 		}
 
 		const deleted = await this.prisma.$transaction(async (prisma) => {
-			await prisma.message.deleteMany({
-				where: {
-					RoomId: roomId,
-				},
-			}),
+				await prisma.message.deleteMany({
+					where: {
+						RoomId: roomId,
+					},
+				}),
 				await prisma.membership.deleteMany({
 					where: {
 						RoomId: roomId,
@@ -96,7 +96,7 @@ export class MessagesService {
 	async kickFromRoom(roomId: number, userId: string, userIDmin: string) {
 		const membership = await this.prisma.membership.findFirst({
 			where: {
-				AND: [{ RoomId: roomId }, { UserId: userIDmin }],
+				 RoomId: roomId, UserId: userIDmin,
 			},
 		});
 
@@ -112,6 +112,8 @@ export class MessagesService {
 				UserId: userId,
 			},
 		});
+
+		this.ChatGateaway.kickuser(roomId, userId);
 	}
 
 	async leaveRoom(roomId: number, userId: string) {

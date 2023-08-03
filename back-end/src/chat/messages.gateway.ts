@@ -90,7 +90,6 @@ export class ChatGateway implements OnGatewayConnection{
     {
         this.rooms[roomId] = this.rooms[roomId].filter((user) => {
             if (user.data.playload.userId === UserId) {
-            console.log(user.data.playload.userId);
               user.leave(roomId);
               return false;
             }

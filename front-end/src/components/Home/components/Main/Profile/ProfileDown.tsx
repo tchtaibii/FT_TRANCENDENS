@@ -37,7 +37,7 @@ function TheGame(props: any) {
                     props.theGame === 'lose' ? 'gameSta loseGame' : 'gameSta'}>
                     <div className="infoGame">
                         <Link to={`/profile/${props.login}`}>
-                            <img src={props.avatar} onError={(e: any) => {
+                            <img src={props.avatar ? props.avatar : defaultAvatar} onError={(e: any) => {
                                 e.target.src = defaultAvatar;
                             }
                             } alt="Enemey" />

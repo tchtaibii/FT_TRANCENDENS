@@ -16,7 +16,7 @@ function ActivityContent(props: any) {
 			className="activity-x">
 
 			<div className="part1">
-				<Link to={'/profile/' + props.p1}><img src={props.avatar1} onError={(e: any) => {
+				<Link to={'/profile/' + props.p1}><img src={props.avatar1 ? props.avatar1 : defaultAvatar} onError={(e: any) => {
 					e.target.src = defaultAvatar;
 				}
 				} alt="" /></Link>

@@ -139,7 +139,7 @@ export function ProfileProfile() {
                 <div className="container-Profile-profile">
                     <h1>Profile</h1>
                     <div className='imgS'>
-                        <img src={ProfileRight.avatar} onError={(e: any) => {
+                        <img src={ProfileRight.avatar ? ProfileRight.avatar : defaultAvatar} onError={(e: any) => {
                             e.target.src = defaultAvatar;
                         }
                         } alt="" />

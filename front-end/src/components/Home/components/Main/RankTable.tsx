@@ -55,7 +55,7 @@ function RankTable({ data }) {
 					{
 						newObject.map((e, index) => {
 							// if (index < 1)
-							return <div key={nanoid()} ><PlayerRank award={e.award} avatar={e.avatar} login={e.login} points={e.points} level={e.level} /></div>
+							return <PlayerRank award={e.award} avatar={e.avatar} login={e.login} points={e.points} level={e.level} />
 						})}
 				</div>
 			</div>

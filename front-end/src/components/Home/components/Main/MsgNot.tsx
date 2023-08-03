@@ -227,7 +227,7 @@ function Invitation(props: any) {
 							<img onError={(e: any) => {
 								e.target.src = defaultAvatar;
 							}
-							} src={props.data.avatar} />
+							} src={props.data.avatar ? props.data.avatar : defaultAvatar} />
 							<div className="who">
 								<h4>{props.data.username}</h4>
 								<p>Sent a request to you</p>

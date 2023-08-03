@@ -57,7 +57,6 @@ export class ChatGateway implements OnGatewayConnection{
         if (exist && this.rooms[payload.RoomId])
         {
             const message = await this.ChatService.sendMessage(payload.message, client.data.playload.userId, payload.RoomId);
-            
             if (!message.ischannel || !message.blocked.length)
             {
                 this.server.to(payload.RoomId).emit('message', message.send);
@@ -91,6 +90,7 @@ export class ChatGateway implements OnGatewayConnection{
         this.rooms[roomId] = this.rooms[roomId].filter((user) => {
             if (user.data.playload.userId === UserId) {
               user.leave(roomId);
+              user.disconnect();
               return false;
             }
             return true;

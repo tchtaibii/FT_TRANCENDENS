@@ -159,7 +159,9 @@ export function ProfileProfile() {
                                             <>
                                                 <button onClick={CancelFriend}><UnFriendbtn /></button>
                                                 <button onClick={BlockUser}><Blockbtn /></button>
-                                                <button><Chatbtn /></button>
+                                                <button onClick={() => {
+                                                    navigate(`/chat/${ProfileRight.RoomId}`)
+                                                }}><Chatbtn /></button>
                                                 <button><Playbtn /></button>
                                             </> :
                                             <>

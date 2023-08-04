@@ -252,10 +252,10 @@ function ChatContent(params: any) {
 						<div className="messages">
 							{AllMsgs.map((e: any) => {
 								return (
-									<Link to={`/profile/${e.user.username}`} key={nanoid()} className={e.UserId === myData.UserId ? "myMessage messageShow" : 'messageShow'}>
-										<img src={e.UserId === myData.UserId ? (myData?.avatar ? myData?.avatar : defaultAvatar) : (e.user.avatar ? e.user.avatar : defaultAvatar)} alt="" />
+									<div key={nanoid()} className={e.UserId === myData.UserId ? "myMessage messageShow" : 'messageShow'}>
+										<Link to={`/profile/${e.user.username}`}><img src={e.UserId === myData.UserId ? (myData?.avatar ? myData?.avatar : defaultAvatar) : (e.user.avatar ? e.user.avatar : defaultAvatar)} alt="" /></Link>
 										<p className='theTextMsg'>{e.Content}</p>
-									</Link>
+									</div>
 								);
 							})}
 						</div>
@@ -570,19 +570,19 @@ function Chat(props: any) {
 															</div>
 															<div className="buttonNewGroup">
 																<button disabled={shouldJoin.type === 'protected' && (shouldJoin.password === null || (shouldJoin.password && shouldJoin.password.length <= 0))} onClick={async () => {
-																	
-																		await axios.post(`/room/${shouldJoin.roomId}/joinroom`, { roomId: shouldJoin.roomId, password: shouldJoin.password }).then((rsp) => {
-																			if (rsp.data.is) {
-																				setShouldJoin({ display: false, name: '', roomId: '', type: '', password: null });
-																				setPopUp(false);
-																				setError(false);
-																				window.location.reload();
-																			}
-																			else {
-																				setError(true);
-																			}
-																		})
-																	
+
+																	await axios.post(`/room/${shouldJoin.roomId}/joinroom`, { roomId: shouldJoin.roomId, password: shouldJoin.password }).then((rsp) => {
+																		if (rsp.data.is) {
+																			setShouldJoin({ display: false, name: '', roomId: '', type: '', password: null });
+																			setPopUp(false);
+																			setError(false);
+																			window.location.reload();
+																		}
+																		else {
+																			setError(true);
+																		}
+																	})
+
 
 																}} className='btnNewGrp' disabled={(shouldJoin.type === 'protected' && (shouldJoin.password === null || (shouldJoin.password && shouldJoin.password.length <= 0)))} >join</button>
 																<button onClick={() => {

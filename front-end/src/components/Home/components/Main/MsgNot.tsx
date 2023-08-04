@@ -190,7 +190,7 @@ function Notification(props: any) {
 				navigate(`/profile/${props.username}`);
 		}} style={{ cursor: 'pointer' }} id={props.key} className="notification">
 			<div className={!isRead ? "no-read" : ""}>
-				<img src={props.img !== null ? props.img : 'badge'} alt="" />
+				<img src={props.type === 'Achievement' ? 'badge' :  (props.img ? props.img : defaultAvatar) } alt="" />
 			</div>
 			<div className="noti-text">{textNotifi}</div>
 		</div>

@@ -26,7 +26,7 @@ function MsgNot(props: any) {
 	const ref = useRef(null)
 	const refI = useRef(null)
 	const [Login, setLogin] = useState('')
-	
+
 	useEffect(() => {
 		axios.get('/Home/Hero').then((response) => setLogin(response.data))
 	}, [])
@@ -158,7 +158,7 @@ function MsgNot(props: any) {
 }
 function Notification(props: any) {
 	const [textNotifi, setText] = useState('')
-
+	const [isRead, setRead] = useState<boolean>(props.isRead);
 	useEffect(() => {
 		setText(text());
 	}, [])
@@ -181,9 +181,15 @@ function Notification(props: any) {
 		}
 	}
 	text();
+	const navigate = useNavigate();
 	return (
-		<div id={props.key} className="notification">
-			<div className={!props.isRead ? "no-read" : ""}>
+		<div onClick={async () => {
+			await axios.post('/ReadNotification', { notificationId: props.notificationId }).catch((err) => console.log());
+			setRead(true);
+			if (props.username)
+				navigate(`/profile/${props.username}`);
+		}} style={{ cursor: 'pointer' }} id={props.key} className="notification">
+			<div className={!isRead ? "no-read" : ""}>
 				<img src={props.img !== null ? props.img : 'badge'} alt="" />
 			</div>
 			<div className="noti-text">{textNotifi}</div>
@@ -265,7 +271,7 @@ function NotificationCont(props: any) {
 							data.map((e: any, i: number) => <Invitation key={nanoid()} data={e} />)
 							:
 							data.map((e: any) => {
-								return (<Notification key={nanoid()} username={e.username} type={e.Type} isRead={e.isRead} img={e.avatar ? e.avatar : null} />);
+								return (<Notification notificationId={e.notificationId} key={nanoid()} username={e.username} type={e.Type} isRead={e.isRead} img={e.avatar ? e.avatar : null} />);
 							})
 						// onClick={() => handleNotificationClick(index + 1)}
 						// props.isN === true ? notifi.map((e: any, index: number) => {

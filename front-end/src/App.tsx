@@ -109,7 +109,7 @@ function Invitation({ state, data, wichOne }: InvitationFunc) {
 						</svg>
 					</div>
 					<div className="invitation-content">
-						<img className='img-invitation' src={wichOne === 1 ? (data.sender && data.sender.avatar) : (data.avatar ? data.avatar  : defaultAvatar)} alt="" />
+						<img className='img-invitation' src={wichOne === 1 ? (data.sender && data.sender.avatar ? data.sender.avatar : defaultAvatar) : (data.avatar ? data.avatar  : defaultAvatar)} alt="" />
 						<p>{wichOne === 1 ? `${data.sender && data.sender.username} has sent you a friend request! Accept or decline the invitation now.` : text}</p>
 					</div>
 					{

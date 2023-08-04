@@ -165,7 +165,7 @@ function Notification(props: any) {
 	const text = () => {
 		switch (props.type) {
 			case "Accepted_request":
-				return `${props.username} has accept your request. You are friends now!`;
+				return `${props.username} accepted your request.`;
 				break;
 			case "game_invitation":
 				return `${props.username} has invited you to a game of Ping Pong! Accept or decline the invitation now.`

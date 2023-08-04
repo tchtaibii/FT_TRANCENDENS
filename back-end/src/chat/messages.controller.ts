@@ -139,7 +139,7 @@ export class RoomsController {
 		@Param("membershipid", ParseIntPipe) membershipid: number,
 		@Param("roomId", ParseIntPipe) roomId: number
 	) {
-		console.log(membershipid, roomId);
+		//console.log(membershipid, roomId);
 
 		await this.messagesservice.BannedMember(
 			req.user.UserId,

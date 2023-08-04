@@ -6,7 +6,6 @@ import { ReactSVG } from 'react-svg';
 import ProfImg from "../../../assets/img/profile.svg";
 import SetfImg from "../../../assets/img/Settings.svg";
 import ChatImg from "../../../assets/img/chat.svg";
-import Stream from "../../../assets/img/stream.svg";
 import LeaderBoard from "../../../assets/img//leaderBoard.svg";
 import { NavLink } from "react-router-dom";
 // import axios from '../../../Interceptor/Interceptor'
@@ -43,12 +42,6 @@ function LeftBar() {
             } to='chat'>
               <ReactSVG src={ChatImg} />
               {/* <img style={{ width: '1.5rem' }} src={ChatImg} alt="Chat" /> */}
-            </NavLink>
-            <NavLink className={({ isActive }) =>
-              isActive ? 'nav-icon-act' : 'nav-icon'
-            } to='stream'>
-              <ReactSVG src={Stream} />
-              {/* <img style={{ width: '1.5rem' }} src={Stream} alt="Stream" /> */}
             </NavLink>
             <NavLink className={({ isActive }) =>
               isActive ? 'nav-icon-act' : 'nav-icon'

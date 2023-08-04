@@ -14,7 +14,6 @@ import ProfImg from "../../../../assets/img/profile.svg";
 import SetfImg from "../../../../assets/img/Settings.svg";
 import ChatImg from "../../../../assets/img/chat.svg";
 import defaultAvatar from "../../../../assets/img/avatar.png";
-import Stream from "../../../../assets/img/stream.svg";
 import LeaderBoard from "../../../../assets/img/leaderBoard.svg";
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom';
@@ -134,12 +133,6 @@ function MsgNot(props: any) {
 							} to='chat'>
 								<ReactSVG src={ChatImg} />
 								{/* <img style={{ width: '1.5rem' }} src={ChatImg} alt="Chat" /> */}
-							</NavLink>
-							<NavLink onClick={() => setNavMo(false)} className={({ isActive }) =>
-								isActive ? 'nav-icon-act nav-mobile-icon' : 'nav-icon nav-mobile-icon'
-							} to='stream'>
-								<ReactSVG src={Stream} />
-								{/* <img style={{ width: '1.5rem' }} src={Stream} alt="Stream" /> */}
 							</NavLink>
 							<NavLink onClick={() => setNavMo(false)} className={({ isActive }) =>
 								isActive ? 'nav-icon-act nav-mobile-icon' : 'nav-icon nav-mobile-icon'

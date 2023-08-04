@@ -416,12 +416,6 @@ function Chat(props: any) {
 				<div className="chatContainer">
 					<div className="chatUsers">
 						<div className="chatUsersmesage">
-							<div className="headerLeftChat">
-								<div className="chatSearch">
-									<input type="text" placeholder='Search for a Message...' />
-									<button><SearchChat /></button>
-								</div>
-							</div>
 							<div className="button-switch">
 								<div className={!isDm ? "switch-back friend-active-btn" : 'switch-back all-active-btn'} />
 								<button onClick={() => !isDm && setDm(true)} className='all-btn'>DM's</button>

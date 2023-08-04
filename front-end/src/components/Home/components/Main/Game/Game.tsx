@@ -4,6 +4,7 @@ import Hk from '../../../../../assets/img/Hk.webp'
 import GradienBox from '../../../../../tools/GradienBox'
 import { useSelector } from 'react-redux'
 import { useState, useEffect } from 'react'
+import defaultAvatar from '../../../../../assets/img/avatar.png'
 
 function Game({isBlackHole} : {isBlackHole : boolean}) {
 
@@ -39,7 +40,7 @@ function Game({isBlackHole} : {isBlackHole : boolean}) {
                 <div className="gameContent">
                     <div className="gameHeader">
                         <div className="Player">
-                            <img src={admin.avatar} />
+                            <img src={admin.avatar ? admin.avatar : defaultAvatar} />
                             <div className="scoreUser">
                                 <p>{admin.username}</p>
                                 <div className="score">

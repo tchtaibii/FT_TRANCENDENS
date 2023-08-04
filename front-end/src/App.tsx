@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from './store/store'
 // import Secure from '';
 import { io } from 'socket.io-client';
+import defaultAvatar from './assets/img/avatar.png'
 import GradienBox from './tools/GradienBox';
 import { motion, AnimatePresence } from 'framer-motion';
 // const Home = lazy(() => import('./components/Home/Home'));
@@ -108,7 +109,7 @@ function Invitation({ state, data, wichOne }: InvitationFunc) {
 						</svg>
 					</div>
 					<div className="invitation-content">
-						<img className='img-invitation' src={wichOne === 1 ? (data.sender && data.sender.avatar) : data.avatar} alt="" />
+						<img className='img-invitation' src={wichOne === 1 ? (data.sender && data.sender.avatar) : (data.avatar ? data.avatar  : defaultAvatar)} alt="" />
 						<p>{wichOne === 1 ? `${data.sender && data.sender.username} has sent you a friend request! Accept or decline the invitation now.` : text}</p>
 					</div>
 					{

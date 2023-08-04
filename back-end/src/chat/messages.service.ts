@@ -325,8 +325,43 @@ export class MessagesService {
 		});
 	}
 
+	async getBlockeduserIds(user, roomId)
+	{
+		const blockedUser = await this.prisma.friendship.findMany({
+			where : {
+				OR : [
+					{
+						SenderId : user,
+						OR : [
+								{blockedBySender : true},
+								{blockedByReceiver : true},
+						]
+					},
+					{
+						ReceiverId : user,
+						OR : [
+							{blockedBySender : true},
+							{blockedByReceiver : true},
+						]
+					},
+                    
+				]
+			},
+			select : {
+				SenderId : true,
+				ReceiverId : true,
+			}
+		});
+
+		let blockedUserIds = blockedUser.map(friendship =>
+			friendship.SenderId === user ? friendship.ReceiverId : friendship.SenderId
+		);
+
+		return blockedUserIds;
+	}
+
 	async getMessage(roomid: number, User: User) {
-		const messages = await this.prisma.message.findMany({
+		var messages = await this.prisma.message.findMany({
 			where: {
 				RoomId: roomid,
 				room: {
@@ -336,9 +371,9 @@ export class MessagesService {
 							isBanned: false,
 						},
 					},
-				},
+				}
 			},
-			include: {
+			include: {				
 				user: {
 					select: {
 						avatar: true,
@@ -348,6 +383,10 @@ export class MessagesService {
 			},
 		});
 
+		const blocked = await this.getBlockeduserIds(User.UserId, roomid);
+		
+		messages = messages.filter((msg) => !blocked.includes(msg.UserId));
+
 		messages.map((msg) => {
 			msg.user.avatar =
 				msg.user.avatar && msg.user.avatar.search("https://cdn.intra.42.fr/users/") === -1 &&
@@ -355,6 +394,7 @@ export class MessagesService {
 					? process.env.HOST + process.env.PORT + msg.user.avatar
 					: msg.user.avatar;
 		});
+
 		return messages;
 	}
 

@@ -231,6 +231,7 @@ function App() {
 			};
 		}
 	}, [token]);
+	console.log(import.meta.env);
 	return (
 		<div className="App">
 			{/* <Suspense fallback={<><Loading /></>}> */}

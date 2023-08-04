@@ -623,6 +623,34 @@ export class MessagesService {
 		const roomDetails = await this.prisma.room.findUnique({
 			where: {
 				RoomId: roomId,
+				OR: [
+					{
+						Type: "public",
+						ischannel : true,
+					},
+					{
+						Type: "protected",
+						ischannel : true,
+					},
+					{
+						AND: [
+							{
+								Type: "private",
+								ischannel : true,
+							},
+							{
+								members: {
+									some: {
+										UserId: User.UserId,
+									},
+								},
+							},
+						],
+					},
+					{
+						ischannel : false,
+					}
+				],
 			},
 			select: {
 				RoomId: true,

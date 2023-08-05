@@ -74,6 +74,7 @@ export class UsersController {
 	}
 
 	@Post('GameInvitation')
+	@UseGuards(JwtAuthGuard)
 	async SendGameInvitaion(@Req() req, @Body('receiver') receiver : string)
 	{
 		await this.UserService.sendGameInvitaion(receiver, req.user);

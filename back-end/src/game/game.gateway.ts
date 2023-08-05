@@ -28,12 +28,14 @@ export class GameGateway implements OnGatewayConnection {
 	private rooms: Record<string, { ballPos: { x: number, y: number }, moveAngle: number, ballSpeed: number | any, intervalId: NodeJS.Timer | null, players: { id: string, pos: number }[] }> = {};
 
 	handleConnection(client: Socket, ...args: any[]) {
-		console.log('A client just connected: ' + client.id);
+		console.log('A client just connected: ' + client.data.playload.userId);
 
 		const sockets = this.socketsMap.get(client.data.playload.userId) || [];
 
+		console.log('here');
 		if (sockets.length) {
 			client.emit('GamesInfo', null);
+			client.disconnect();
 			return;
 		}
 
@@ -217,9 +219,14 @@ export class GameGateway implements OnGatewayConnection {
 		}
 	}
 
-	@SubscribeMessage('gameended')
-	handleEndgame(client: Socket, payload: { room: string }): void {
-		
+
+	handleEndgame(roomId : string): void {
+		const socket = this.socketsMap.get(roomId);
+
+		if (socket)
+		{
+			socket[0].disconnect();
+		}
 	}
 
 }

@@ -460,7 +460,6 @@ export class MessagesService {
 				members: {
 					select: {
 						UserId: true,
-
 						member: {
 							select: {
 								avatar: true,
@@ -476,7 +475,7 @@ export class MessagesService {
 		var avatar;
 		var name;
 		var status;
-
+		var UserId;
 		if (infos && !infos.ischannel) {
 			if (infos.members && infos.members.length == 2) {
 				avatar =
@@ -491,6 +490,10 @@ export class MessagesService {
 					infos.members[0].UserId === user.UserId
 						? infos.members[1].member.status
 						: infos.members[0].member.status;
+				UserId = 
+					infos.members[0].UserId === user.UserId
+					? infos.members[1].UserId
+					: infos.members[0].UserId;
 			}
 		} else {
 				name = infos ? infos.RoomNAme : undefined;

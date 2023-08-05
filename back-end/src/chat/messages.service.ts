@@ -431,6 +431,9 @@ export class MessagesService {
 					},
 				},
 			},
+			orderBy : {
+				SendTime : "asc",
+			}
 		});
 
 		const blocked = await this.getBlockeduserIds(User.UserId, roomid);

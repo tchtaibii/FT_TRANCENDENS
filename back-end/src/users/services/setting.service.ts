@@ -96,14 +96,14 @@ export class SettingService {
     async removeAccount(@Res() res, User : User)
 	{
         await this.prisma.$transaction(async (prisma) => {
-			// try {
-				await this.prisma.game.deleteMany({where : {
+			try {
+				await prisma.game.deleteMany({where : {
 					OR : [
 						{PlayerId1 : User.UserId},
 						{PlayerId2 : User.UserId},
 					]
 				}}),
-				await this.prisma.friendship.deleteMany({
+				await prisma.friendship.deleteMany({
 					where : {
 						OR : [
 							{SenderId : User.UserId},
@@ -111,7 +111,7 @@ export class SettingService {
 						]
 					}
 				}),
-				await this.prisma.notification.deleteMany({
+				await prisma.notification.deleteMany({
 					where : {
 						OR : [
 							{senderId : User.UserId},
@@ -119,21 +119,21 @@ export class SettingService {
 						]
 					}
 				})
-				await this.prisma.membership.deleteMany({
+				await prisma.membership.deleteMany({
 					where : {
 						UserId : User.UserId,
 					}
 				}),
-				await this.prisma.message.deleteMany({
+				await prisma.message.deleteMany({
 					where: {
 						UserId : User.UserId,
 					}
 				})
-				await this.prisma.achievement.delete({where : { UserId : User.UserId}}),
-				await this.prisma.user.delete({where : { UserId : User.UserId}})
-			// }	catch (error) {
+				await prisma.achievement.delete({where : { UserId : User.UserId}}),
+				await prisma.user.delete({where : { UserId : User.UserId}})
+			}	catch (error) {
 
-			// }
+			}
         });
 		res.clearCookie('access_token');
 		res.clearCookie('refresh_token');

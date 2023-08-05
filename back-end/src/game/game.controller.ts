@@ -28,8 +28,14 @@ export class GameController {
 	}
 
 	@Post('blackhole')
-	async blackhole(@Req() req,)
+	async blackhole(@Req() req)
 	{
 		this.GameService.blackhole(req.user);
+	}
+
+	@Post('AI')
+	async AI(@Req() req)
+	{
+		this.AI(req.user);	
 	}
 }

@@ -148,6 +148,27 @@ export class GameService {
 
 	async blackhole(User : User)
 	{
-		// await this.prisma.achievement.update
+		await this.prisma.achievement.update({
+			where :
+			{
+				UserId : User.UserId,
+			},
+			data : {
+				Hawking : true,
+			}
+		})
+	}
+
+	async AI(User : User)
+	{
+		await this.prisma.achievement.update({
+			where :
+			{
+				UserId : User.UserId,
+			},
+			data : {
+				kasparov : true,
+			}
+		})
 	}
 }

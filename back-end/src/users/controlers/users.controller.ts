@@ -72,4 +72,10 @@ export class UsersController {
 	{
 		return await this.UserService.notificationState(req.user);
 	}
+
+	@Post('GameInvitation')
+	async SendGameInvitaion(@Req() req, @Body('receiver') receiver : string)
+	{
+		await this.UserService.sendGameInvitaion(receiver, req.user);
+	}
 }

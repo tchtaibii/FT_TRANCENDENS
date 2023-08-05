@@ -116,11 +116,6 @@ model Membership {
   CreationTime DateTime @default(now())
 }
 
-enum MODE {
-  classic
-  AI
-  Friends
-}
 
 model Game {
   GameId       Int      @id @default(autoincrement())

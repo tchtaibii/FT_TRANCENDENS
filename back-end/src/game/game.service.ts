@@ -10,80 +10,84 @@ export class GameService {
 		private readonly prisma: PrismaClient,
 	) { }
 
-	async calcullevel(User : User, Data)
+	async calcullevel(User : User, PlayerId, Data : GameDto)
 	{
-		let { level, XP } = User;
 
-		if (Data.WinnerId === User.UserId)
-		{
-			if (XP + 120 <= (level + 1) * 200)
-				XP += 120;
-			else
-			{
-				level += 1;
-				XP = (XP + 120) - (200 * level + 1);
+		const Player = await this.prisma.user.findFirst({
+			where : {
+				UserId : PlayerId,
 			}
-		}
-		else
-		{
-			if (XP - 120 >= 0)
+		})
+		
+		let {level, XP} = Player;
+	
+		if (Player.UserId === Data.WinnerId) {
+			if (XP + 120 >= (level + 1) * 200) {
+			  XP = (XP + 120) - ((level + 1) * 200);
+			  level += 1;
+			} else {
+			  XP += 120;
+			}
+		  } else {
+			if (level === 0 && XP - 120 <= 0) {
+			  XP = 0;
+			} else {
+			  if (XP - 120 >= 0) {
 				XP -= 120;
-			else
-			{ 
+			  } else if (level) {
 				level -= 1;
-				XP = (level * 200) - (120 - XP);
+				XP = ((level + 1) * 200) - (120 - XP);
+			  }
 			}
-		}
+		  }
 
-		return {level, XP};
+		await this.prisma.user.update({
+			where : {
+				UserId : Player.UserId,
+			},
+			data : {
+				level : level,
+				XP : XP,
+			}
+		})
 	}
 
 	async storeGame(User : User, Data : GameDto)
 	{
-		const { level, XP } = await this.calcullevel(User, Data);
+		await this.calcullevel(User, Data.PlayerId1, Data);
+		await this.calcullevel(User, Data.PlayerId2, Data);
 
-		await this.prisma.$transaction(async (prisma) => {
-			await prisma.game.create({
-				data : {
-					PlayerId1 : Data.PlayerId1,
-					PlayerId2 : Data.PlayerId2,
-					WinnerId : Data.WinnerId,
-					Mode : Data.Mode,
-					WinnerXP : Data.WinnerXP,
-					looserXP : Data.looserXP,
-					Rounds : 1,
-				},
-			})
-			await prisma.user.update({
-				where : {
-					UserId : User.UserId
-				},
-				data : {
-					level : level,
-					XP : XP,
-				}
-			})
-
+		const game = await this.prisma.game.create({
+			data : {
+				PlayerId1 : Data.PlayerId1,
+				PlayerId2 : Data.PlayerId2,
+				WinnerId : Data.WinnerId,
+				WinnerXP : Data.WinnerXP,
+				looserXP : Data.looserXP,
+				Rounds : 1,
+			}
 		})
 
-		// this.checkAchievement(User);
+		await this.checkAchievement(Data.PlayerId1);
+		await this.checkAchievement(Data.PlayerId2);
 	}
 
-	async checkAchievement(User : User)
+	async checkAchievement(UserId : string)
 	{
 		const achievement = await this.prisma.achievement.findFirst({
-			where : {UserId : User.UserId},
+			where : {UserId : UserId},
 		})
 
-		var PongPlayer = false;
-		var Helmchen = false;
-		var Worldcup = false;
+		var PongPlayer = achievement.PongPlayer;
+		var Helmchen = achievement.Helmchen;
+		var Worldcup = achievement.Worldcup;
+		var Batal = achievement.Batal;
 
 		if (!achievement.Helmchen)
 		{
 			const HelmchenTest = await this.prisma.game.count({
 				where : {
-					WinnerId : User.UserId
+					WinnerId : UserId
 				}
 			});
 		
@@ -95,7 +99,7 @@ export class GameService {
 			const WorldcupCheck = await this.prisma.game.count({
 				where : {
 					OR : [
-						{PlayerId1 : User.UserId} , {PlayerId2 : User.UserId}
+						{PlayerId1 : UserId} , {PlayerId2 : UserId}
 					],
 					Mode : "football",
 				}
@@ -103,12 +107,12 @@ export class GameService {
 			Worldcup = WorldcupCheck === 7 ? true : false;
 		}
 
-		if (achievement.PongPlayer)
+		if (!achievement.PongPlayer)
 		{
 			const PongPlayerCheck = await this.prisma.game.count({
 				where : {
 					OR : [
-						{PlayerId1 : User.UserId} , {PlayerId2 : User.UserId}
+						{PlayerId1 : UserId} , {PlayerId2 : UserId}
 					],
 				}
 			})
@@ -116,14 +120,28 @@ export class GameService {
 			PongPlayer = PongPlayerCheck !== 0 ? true : false;
 		}
 		
+		if (!Batal && achievement.PongPlayer)
+		{
+			const RankCheck = await this.prisma.user.findMany({
+				orderBy: [
+					{ level: 'desc' },
+					{ XP: 'desc' },
+					{ username : 'asc' }
+				]
+			});
+
+			Batal = RankCheck[0].UserId === UserId ? true : false; 
+		}
+
 		await this.prisma.achievement.update({
 			where : {
-				UserId : User.UserId,
+				UserId : UserId,
 			},
 			data : {
 				PongPlayer : PongPlayer,
 				Worldcup : Worldcup,
 				Helmchen : Helmchen,
+				Batal : Batal,
 			}
 		})
 	}

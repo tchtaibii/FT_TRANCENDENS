@@ -24,7 +24,6 @@ export class GameController {
 	@Post('StoreData')
 	async StoreGameData(@Req() req, @Body() Data : GameDto)
 	{
-		// console.log('here', req.user);
 		await this.GameService.storeGame(req.user, Data);
 	}
 }

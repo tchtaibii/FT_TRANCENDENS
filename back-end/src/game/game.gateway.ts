@@ -207,7 +207,6 @@ export class GameGateway implements OnGatewayConnection {
 	@SubscribeMessage('paddlemove')
 	handlepaddlemove(client: Socket, payload: { room: string, pos: number, SecondPlayer: number }): void {
 
-		console.log('hbucguugdcgudfhhudfhdfudhdhnjnddjdjjhdj', payload.room);
 		client.broadcast.to(payload.room).emit('paddlemove', payload.pos);
 		if (this.rooms[payload.room] && payload.SecondPlayer === 1) {
 			this.rooms[payload.room].players[0].pos = payload.pos;
@@ -215,7 +214,6 @@ export class GameGateway implements OnGatewayConnection {
 
 		else if (this.rooms[payload.room] && payload.SecondPlayer === 2) {
 			this.rooms[payload.room].players[1].pos = payload.pos;
-			console.log('player 2 pos : ', this.rooms[payload.room].players[1].pos);
 		}
 	}
 

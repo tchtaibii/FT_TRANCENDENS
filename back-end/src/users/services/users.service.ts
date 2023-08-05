@@ -3,12 +3,13 @@ import { PrismaClient, User, Game, notificationType, Prisma } from '@prisma/clie
 import { GamesDTO, AllGames, topPlayers, RecentActivity, ProfileFriends, blockedlist, notification } from '../dto/dto-classes';
 import { create } from 'domain';
 import { type } from 'os';
+import { EventsGateway } from '../events/events.gateway';
 
 
 @Injectable()
 export class UsersService {
 	prisma = new PrismaClient();
-	constructor(){}
+	constructor(private readonly NotificationGateway : EventsGateway){}
     
 
 	async notificationState(User : User)
@@ -280,5 +281,44 @@ export class UsersService {
 			const isFirst = FA[0].FAsecret ? false : true;
 			return {isFirst, FA_ON : FA[0].FA_On};
 		}
+	}
+
+	async sendGameInvitaion(receiver : string, User : User)
+	{
+		const notification = await this.prisma.notification.create({
+			data : {
+				senderId : User.UserId,
+				receiverId : receiver,
+				Type : notificationType.game_invitation,
+				isRead : false,
+			},
+			select : 
+			{
+				NotificationId : true,
+				receiverId : true,
+				senderId : true,
+				Type : true,
+				isRead : true,
+				sender : {
+					select : {
+						username : true,
+						avatar : true,
+						UserId : true,
+					}
+				}
+			}
+		})
+
+		const websocketNotifiation = {
+            avatar : notification.sender.avatar && notification.sender.avatar.search("https://cdn.intra.42.fr/users/") === -1
+                && !notification.sender.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + notification.sender.avatar
+                    : notification.sender.avatar,
+            username : notification.sender.username,
+            isRead : notification.isRead,
+            Type : notification.Type,
+            notificationId : notification.NotificationId,
+        };
+
+        this.NotificationGateway.handleNotification(notification.receiverId, websocketNotifiation);
 	}
 }

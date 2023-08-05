@@ -145,4 +145,9 @@ export class GameService {
 			}
 		})
 	}
+
+	async blackhole(User : User)
+	{
+		// await this.prisma.achievement.update
+	}
 }

@@ -26,4 +26,10 @@ export class GameController {
 	{
 		await this.GameService.storeGame(req.user, Data);
 	}
+
+	@Post('blackhole')
+	async blackhole(@Req() req,)
+	{
+		this.GameService.blackhole(req.user);
+	}
 }

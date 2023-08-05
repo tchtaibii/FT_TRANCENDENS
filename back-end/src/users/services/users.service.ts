@@ -316,6 +316,8 @@ export class UsersService {
             username : notification.sender.username,
             isRead : notification.isRead,
             Type : notification.Type,
+			senderId : notification.sender.UserId,
+			receiverId : notification.receiverId,
             notificationId : notification.NotificationId,
         };
 

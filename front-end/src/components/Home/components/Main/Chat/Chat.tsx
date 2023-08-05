@@ -177,7 +177,7 @@ function ChatContent(params: any) {
 								threDots && params.roomData &&
 								<div className="threedots">
 									{params.roomData.isChannel === false && <button className='threeD'>Invite to play</button>}
-									{params.roomData.isChannel === false && <Link to={`/profile/${Data.name}`} className='threeD'>invite Profile</Link>}
+									{params.roomData.isChannel === false && <Link to={`/profile/${Data.name}`} className='threeD'>Visit Profile</Link>}
 									{params.roomData.isChannel === false && <button onClick={async () => {
 										await axios.post('/Profile/blockUser', {
 											blockedUser: Data.name

@@ -1,6 +1,6 @@
 FROM postgres
 
-COPY mydb.sql /docker-entrypoint-initdb.d/
+# COPY mydb.sql /docker-entrypoint-initdb.d/
 
 
 CMD ["postgres"]

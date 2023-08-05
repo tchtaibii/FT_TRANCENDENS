@@ -79,6 +79,5 @@ export class AuthService {
 				FA_On : false,
 			}
 		})
-		// console.log(change.FA_On);
 	}
 }

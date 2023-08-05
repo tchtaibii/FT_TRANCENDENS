@@ -21,12 +21,10 @@ export class ChatGateway implements OnGatewayConnection{
     }
 
     async handleConnection(client: Socket) {
-        console.log('chat connected');
     }
 
     handleDisconnect(client)
     {
-        console.log('discoonected');
         for (const roomName in this.rooms) {
             this.rooms[roomName] = this.rooms[roomName].filter((socket) => socket.id !== client.id);
             if (this.rooms[roomName].length === 0) {
@@ -46,7 +44,6 @@ export class ChatGateway implements OnGatewayConnection{
 
         client.join(roomId);
 
-        console.log(`Client ${client.id} joined room ${roomId}`);
     }
 
     @SubscribeMessage('message')
@@ -82,7 +79,6 @@ export class ChatGateway implements OnGatewayConnection{
     @SubscribeMessage('leaveRoom')
     handleLeaveRoom(client: Socket, roomId: string) {
         client.leave(roomId);
-        console.log(`Client ${client.id} left room ${roomId}`);
     }
 
     async kickuser(roomId, UserId)

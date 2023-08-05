@@ -28,11 +28,9 @@ export class GameGateway implements OnGatewayConnection {
 	private rooms: Record<string, { ballPos: { x: number, y: number }, moveAngle: number, ballSpeed: number | any, intervalId: NodeJS.Timer | null, players: { id: string, pos: number }[] }> = {};
 
 	handleConnection(client: Socket, ...args: any[]) {
-		console.log('A client just connected: ' + client.data.playload.userId);
 
 		const sockets = this.socketsMap.get(client.data.playload.userId) || [];
 
-		console.log('here');
 		if (sockets.length) {
 			client.emit('GamesInfo', null);
 			client.disconnect();
@@ -45,7 +43,6 @@ export class GameGateway implements OnGatewayConnection {
 	}
 
 	handleDisconnect(client: Socket) {
-		console.log('A client disconnected: ' + client.id);
 		for (const gameMode in this.waitingRooms) {
 			if (this.waitingRooms[gameMode]?.id === client.id) {
 				this.waitingRooms[gameMode] = null;
@@ -109,7 +106,6 @@ export class GameGateway implements OnGatewayConnection {
 
 	@SubscribeMessage('gameMode')
 	handleGameMode(client: Socket, gameMode: 'classic' | 'football'): void {
-		console.log(`Client ${client.data.playload.username} chose ${gameMode} mode`);
 
 		if (this.waitingRooms[gameMode]) {
 			const room = `${this.waitingRooms[gameMode].id}-${client.id}`;
@@ -145,7 +141,6 @@ export class GameGateway implements OnGatewayConnection {
 			this.server.to(this.waitingRooms[gameMode].id).emit('startgame', { room: room, SecondPlayer: 1, chosen: gameMode });
 			this.server.to(client.id).emit('startgame', { room: room, SecondPlayer: 2, chosen: gameMode });
 
-			console.log(`Game started in ${gameMode} mode between ${this.waitingRooms[gameMode].data.playload.username} and ${client.data.playload.username}`);
 
 			this.waitingRooms[gameMode] = null;
 		} else {

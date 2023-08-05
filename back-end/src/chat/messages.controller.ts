@@ -266,7 +266,6 @@ export class RoomsController {
 		@Param("roomId", ParseIntPipe) roomId: number,
 		@Body("password") password: string
 	) {
-		console.log(typeof password);
 		const joinroom = await this.messagesservice.joinroom(
 			req.user.UserId,
 			roomId,

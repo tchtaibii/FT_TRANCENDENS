@@ -173,7 +173,6 @@ export class FriendshipService {
 
     async checkRoom(UserId1, UserId2)
     {
-        console.log(UserId1, UserId2);
         const user1Memberships = await this.prisma.membership.findMany({
             where: {
               UserId: UserId1,

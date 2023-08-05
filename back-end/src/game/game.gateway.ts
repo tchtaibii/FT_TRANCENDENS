@@ -11,7 +11,7 @@ interface Ball {
 
 @WebSocketGateway({ cors: true, namespace: 'game' })
 export class GameGateway implements OnGatewayConnection {
-    private socketsMap: Map<string, Socket[]> = new Map();
+	private socketsMap: Map<string, Socket[]> = new Map();
 	@WebSocketServer()
 	server: Server
 
@@ -32,11 +32,9 @@ export class GameGateway implements OnGatewayConnection {
 
 		const sockets = this.socketsMap.get(client.data.playload.userId) || [];
 
-		if (sockets.length)
-		{
+		if (sockets.length) {
 			client.emit('GamesInfo', null);
-			client.disconnect();
-			return ;	
+			return;
 		}
 
 		sockets.push(client);
@@ -61,11 +59,34 @@ export class GameGateway implements OnGatewayConnection {
 		}
 	}
 
-
+	private waitingFriend: Socket | null = null;
 	@SubscribeMessage('friends')
 	handleFriendsMode(client: Socket): void {
+		if (this.waitingFriend) {
+			const room = `${this.waitingFriend.id}-${client.id}`;
+			client.join(room);
+			this.waitingFriend.join(room);
 
+			const initialBall: Ball = { pos: { x: 0, y: 0 }, speed: 6 / 16, angle: Math.PI / 4 };
+
+			this.rooms[room] = {
+				ballPos: initialBall.pos,
+				moveAngle: initialBall.angle,
+				ballSpeed: initialBall.speed,
+				intervalId: setInterval(() => this.updateBallPosition(room, initialBall, "classic"), 1000 / 60),
+				players: [{ id: this.waitingFriend.id, pos: 0 }, { id: client.id, pos: 0 }]
+			};
+
+			this.server.to(this.waitingFriend.id).emit('startgame', { room: room, SecondPlayer: 1, chosen: "classic" });
+			this.server.to(client.id).emit('startgame', { room: room, SecondPlayer: 2, chosen: "classic" });
+
+			this.waitingFriend = null;
+		}
+		else {
+			this.waitingFriend = client;
+		}
 	}
+
 
 	@SubscribeMessage('gameMode')
 	handleGameMode(client: Socket, gameMode: 'classic' | 'football'): void {
@@ -79,13 +100,13 @@ export class GameGateway implements OnGatewayConnection {
 			const initialBall: Ball = { pos: { x: 0, y: 0 }, speed: 6 / 16, angle: Math.PI / 4 };
 
 			const Players = {
-				Player1Avatar : this.waitingRooms[gameMode].data.playload.avatar,
-				Player2Avatar : client.data.playload.avatar,
-				Player1Username : this.waitingRooms[gameMode].data.playload.username,
-				Player2Username : client.data.playload.username,
-				Player1Id : this.waitingRooms[gameMode].data.playload.userId,
-				Player2Id : client.data.playload.userId,
-				Mode : gameMode,
+				Player1Avatar: this.waitingRooms[gameMode].data.playload.avatar,
+				Player2Avatar: client.data.playload.avatar,
+				Player1Username: this.waitingRooms[gameMode].data.playload.username,
+				Player2Username: client.data.playload.username,
+				Player1Id: this.waitingRooms[gameMode].data.playload.userId,
+				Player2Id: client.data.playload.userId,
+				Mode: gameMode,
 			}
 
 			this.server.to(room).emit('GamesInfo', Players);
@@ -117,13 +138,13 @@ export class GameGateway implements OnGatewayConnection {
 
 
 
-		if (newX > 540 / 16 && newY <= this.rooms[room].players[1].pos + paddleHeight / 2 && newY >= this.rooms[room].players[1].pos - paddleHeight / 2) {
-			newX = 540 / 16;
+		if (newX > 520 / 16 && newY <= this.rooms[room].players[1].pos + paddleHeight / 2 && newY >= this.rooms[room].players[1].pos - paddleHeight / 2) {
+			newX = 520 / 16;
 			ball.angle = Math.PI - ball.angle;
 		}
 
-		if (newX < -535 / 16 && newY <= this.rooms[room].players[0].pos + paddleHeight / 2 && newY >= this.rooms[room].players[0].pos - paddleHeight / 2) {
-			newX = -535 / 16;
+		if (newX < -520 / 16 && newY <= this.rooms[room].players[0].pos + paddleHeight / 2 && newY >= this.rooms[room].players[0].pos - paddleHeight / 2) {
+			newX = -520 / 16;
 			ball.angle = Math.PI - ball.angle;
 		}
 
@@ -131,24 +152,24 @@ export class GameGateway implements OnGatewayConnection {
 		if ((newX < -575 / 16 || newX > 580 / 16)) {
 
 			if ((mode === "football" && newY > 10) || (mode === "football" && newY < -10)) {
-				if (newX < -575 / 16) {
-					newX = -574 / 16;
+				if (newX < -565 / 16) {
+					newX = -564 / 16;
 					ball.angle = Math.PI - ball.angle;
 				}
-				else if (newX > 580 / 16) {
-					newX = 579 / 16;
+				else if (newX > 570 / 16) {
+					newX = 569 / 16;
 					ball.angle = Math.PI - ball.angle;
 				}
 			}
 
-			if (newX < -575 / 16) {
+			if (newX < -565 / 16) {
 				this.server.to(this.rooms[room].players[0].id).emit('rightscored');
 				this.server.to(this.rooms[room].players[1].id).emit('leftscored');
 				newX = 0;
 				newY = 0;
 				ball.speed = 6 / 16;
 			}
-			else if (newX > 580 / 16) {
+			else if (newX > 570 / 16) {
 				this.server.to(this.rooms[room].players[0].id).emit('leftscored');
 				this.server.to(this.rooms[room].players[1].id).emit('rightscored');
 				newX = 0;
@@ -172,7 +193,8 @@ export class GameGateway implements OnGatewayConnection {
 
 	@SubscribeMessage('paddlemove')
 	handlepaddlemove(client: Socket, payload: { room: string, pos: number, SecondPlayer: number }): void {
-		
+
+		console.log('hbucguugdcgudfhhudfhdfudhdhnjnddjdjjhdj', payload.room);
 		client.broadcast.to(payload.room).emit('paddlemove', payload.pos);
 		if (this.rooms[payload.room] && payload.SecondPlayer === 1) {
 			this.rooms[payload.room].players[0].pos = payload.pos;
@@ -180,12 +202,15 @@ export class GameGateway implements OnGatewayConnection {
 
 		else if (this.rooms[payload.room] && payload.SecondPlayer === 2) {
 			this.rooms[payload.room].players[1].pos = payload.pos;
+			console.log('player 2 pos : ', this.rooms[payload.room].players[1].pos);
 		}
 	}
 
 	@SubscribeMessage('gameended')
 	handleEndgame(client: Socket, payload: { room: string }): void {
-
+		this.rooms[payload.room].ballSpeed = 0;
+		this.rooms[payload.room].ballPos.x = 0;
+		this.rooms[payload.room].ballPos.y = 0;
 	}
 
 }

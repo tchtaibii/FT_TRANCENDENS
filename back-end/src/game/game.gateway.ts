@@ -25,7 +25,7 @@ export class GameGateway implements OnGatewayConnection {
 		football: null,
 	};
 
-	private rooms: Record<string, { ballPos: { x: number, y: number }, moveAngle: number, ballSpeed: number, intervalId: NodeJS.Timer | null, players: { id: string, pos: number }[] }> = {};
+	private rooms: Record<string, { ballPos: { x: number, y: number }, moveAngle: number, ballSpeed: number | any, intervalId: NodeJS.Timer | null, players: { id: string, pos: number }[] }> = {};
 
 	handleConnection(client: Socket, ...args: any[]) {
 		console.log('A client just connected: ' + client.id);

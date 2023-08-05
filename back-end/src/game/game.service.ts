@@ -66,7 +66,7 @@ export class GameService {
 
 		})
 
-		this.checkAchievement(User);
+		// this.checkAchievement(User);
 	}
 
 	async checkAchievement(User : User)

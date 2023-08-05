@@ -12,7 +12,7 @@ import axios from '../../../../../Interceptor/Interceptor'
 import OnlineMode from './Online'
 
 function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline: boolean, mode: string }) {
- const admin = useSelector((state: any) => state.admin);
+    const admin = useSelector((state: any) => state.admin);
     const [leftscore, setLeftScore] = useState(0);
     const [rightscore, setRightScore] = useState(0);
 
@@ -45,8 +45,8 @@ function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline:
     }, [])
     const token = useSelector((state: any) => state.token).token;
     const [isOne, setOne] = useState<boolean | null>(null);
-    const FsetOne = ()=> {
-        admin.UserId === Game.player1.id ? setOne(true) :  setOne(false);
+    const FsetOne = () => {
+        admin.UserId === Game.player1.id ? setOne(true) : setOne(false);
     }
     const [Game, setGame] = useState({
         player1: {
@@ -73,86 +73,97 @@ function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline:
     const navigate = useNavigate();
     const [isFound, setFound] = useState<boolean>(false);
     useEffect(() => {
-        if(isDone){
+        if (isDone) {
             FsetOne();
-            const SendData = async() => {
-                await axios.post('/game/StoreData', {
-                    PlayerId1 : Game.player1.id,
-                    PlayerId2 : Game.player2.id,
+        }
+    }, [isDone])
+
+
+    const [twoTime, setTwoTime] = useState(0);
+    useEffect(() => {
+        if (isOne && isDone && twoTime === 0) {
+            const SendData = async () => {
+                console.log(Game.player1.id, Game.player2.id, rightscore, leftscore);
+                await axios.post('/game/StoreData',{
+                    PlayerId1: Game.player1.id,
+                    PlayerId2: Game.player2.id,
                     Mode: mode,
-                    WinnerXP : 5,
-                    looserXP : leftscore > rightscore ? rightscore : leftscore,
-                    WinnerId : (isWin && isOne) ? Game.player1.id : (isWin && !isOne) ? Game.player2.id : (!isWin && isOne) ? Game.player2.id : Game.player1.id
-                })
+                    WinnerXP: 5,
+                    looserXP: leftscore > rightscore ? rightscore : leftscore,
+                    WinnerId: (isWin && isOne) ? Game.player1.id : (isWin && !isOne) ? Game.player2.id : (!isWin && isOne) ? Game.player2.id : Game.player1.id
+                }
+                )
             }
             SendData();
+            setTwoTime(1);
         }
-    },[isDone])
+
+    }, [isOne])
     return (
-            <div style={{ position: 'relative' }} className='GameContainer'>
-                <GradienBox mywidth="1201px" myheight="815px" myborder="40px">
-                    <div className="gameContent">
-                      { isFound && <div className="gameHeader">
-                            <div className="Player">
-                                <img src={admin.avatar ? admin.avatar : defaultAvatar} />
-                                <div className="scoreUser">
-                                    <p>{admin.username}</p>
-                                    <div className="score">
-                                        {scoreL}
-                                    </div>
+        <div style={{ position: 'relative' }} className='GameContainer'>
+            <GradienBox mywidth="1201px" myheight="815px" myborder="40px">
+                <div className="gameContent">
+                    {isFound && <div className="gameHeader">
+                        <div className="Player">
+                            <img src={admin.avatar ? admin.avatar : defaultAvatar} />
+                            <div className="scoreUser">
+                                <p>{admin.username}</p>
+                                <div className="score">
+                                    {scoreL}
                                 </div>
-                            </div>
-                            <div className="Player Player2">
-
-
-                                <img src={(!isOnline ? Game.player2.avatar : (admin.UserId !== Game.player1.id ? Game.player1.avatar : Game.player2.avatar))} />
-                                <div className="scoreUser">
-                                    <p style={{ display: 'flex', flexDirection: 'row-reverse' }}>{(!isOnline ? Game.player2.username : (admin.UserId !== Game.player1.id ? Game.player1.username : Game.player2.username))}</p>
-                                    <div style={{ flexDirection: 'row-reverse' }} className="score">
-                                        {scoreR}
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>}
-                        <div className="Tablecont">
-                            <div className="TableC">
-                                {!isOnline ? <Table  isBlackHole={isBlackHole} leftscore={leftscore} setLeftScore={setLeftScore} rightscore={rightscore} setRightScore={setRightScore} /> : 
-                                <OnlineMode setDone={setDone} isFound={isFound} isOnline={isOnline}  setFound={setFound} setGame={setGame} token={token} chosenMode={mode} leftscore={leftscore} rightscore={rightscore} setLeftScore={setLeftScore} setRightScore={setRightScore} />}
                             </div>
                         </div>
-                    </div>
-                </GradienBox >
-                {
-                    isDone &&
-                    <div className="gamePopup">
-                        <div style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className={isWin ? "statusGame" : "statusGame lose"}>
-                            <img style={{ width: '6.25rem', height: '6.25rem' }} className='emoji' src={(isWin ? emojiWin : emojiLose)} alt="" />
-                            <h1>{(isWin ? 'WIN' : 'LOSE')}</h1>
-                            <div style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className="vs">
-                                <div className="player">
-                                    <img src={admin.avatar ? admin.avatar : defaultAvatar} alt="" />
-                                    <p>{admin.username}</p>
-                                </div>
-                                <div style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className="vsC">VS</div>
-                                <div style={{ flexDirection: 'row-reverse' }} className="player">
-                                    <img src={(!isOnline ? Game.player2.avatar : (admin.UserId !== Game.player1.id ? Game.player1.avatar : Game.player2.avatar))} alt="" />
-                                    <p>{(!isOnline ? Game.player2.username : (admin.UserId !== Game.player1.id ? Game.player1.username : Game.player2.username))}</p>
+                        <div className="Player Player2">
+
+
+                            <img src={(!isOnline ? Game.player2.avatar : (admin.UserId !== Game.player1.id ? Game.player1.avatar : Game.player2.avatar))} />
+                            <div className="scoreUser">
+                                <p style={{ display: 'flex', flexDirection: 'row-reverse' }}>{(!isOnline ? Game.player2.username : (admin.UserId !== Game.player1.id ? Game.player1.username : Game.player2.username))}</p>
+                                <div style={{ flexDirection: 'row-reverse' }} className="score">
+                                    {scoreR}
                                 </div>
                             </div>
-                            <div className="scoreN">
-                                <div style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className="numberScore">{Math.floor(isOnline ? leftscore : leftscore / 2)}</div>
-                                <div style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className="numberScore">{Math.floor(isOnline ? rightscore : rightscore / 2)}</div>
-                            </div>
-                            <div style={{ color: (isWin ? '#25B2A4' : '#E15253') }} className="pointsScore">{(isWin ? (isOnline ? '+ 120 Points' : '+ 0 Points') : (isOnline ? '- 120 Points' : '- 0 Points'))}</div>
-                            <button onClick={() => {
-                                navigate('/')
-                            }} style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className='returnFromGame'>Return Home</button>
+
+                        </div>
+                    </div>}
+                    <div className="Tablecont">
+                        <div className="TableC">
+                            {!isOnline ? <Table isBlackHole={isBlackHole} leftscore={leftscore} setLeftScore={setLeftScore} rightscore={rightscore} setRightScore={setRightScore} /> :
+                                <OnlineMode setDone={setDone} isFound={isFound} isOnline={isOnline} setFound={setFound} setGame={setGame} token={token} chosenMode={mode} leftscore={leftscore} rightscore={rightscore} setLeftScore={setLeftScore} setRightScore={setRightScore} />}
                         </div>
                     </div>
-                }
+                </div>
+            </GradienBox >
+            {
+                isDone &&
+                <div className="gamePopup">
+                    <div style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className={isWin ? "statusGame" : "statusGame lose"}>
+                        <img style={{ width: '6.25rem', height: '6.25rem' }} className='emoji' src={(isWin ? emojiWin : emojiLose)} alt="" />
+                        <h1>{(isWin ? 'WIN' : 'LOSE')}</h1>
+                        <div style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className="vs">
+                            <div className="player">
+                                <img src={admin.avatar ? admin.avatar : defaultAvatar} alt="" />
+                                <p>{admin.username}</p>
+                            </div>
+                            <div style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className="vsC">VS</div>
+                            <div style={{ flexDirection: 'row-reverse' }} className="player">
+                                <img src={(!isOnline ? Game.player2.avatar : (admin.UserId !== Game.player1.id ? Game.player1.avatar : Game.player2.avatar))} alt="" />
+                                <p>{(!isOnline ? Game.player2.username : (admin.UserId !== Game.player1.id ? Game.player1.username : Game.player2.username))}</p>
+                            </div>
+                        </div>
+                        <div className="scoreN">
+                            <div style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className="numberScore">{Math.floor(isOnline ? leftscore : leftscore / 2)}</div>
+                            <div style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className="numberScore">{Math.floor(isOnline ? rightscore : rightscore / 2)}</div>
+                        </div>
+                        <div style={{ color: (isWin ? '#25B2A4' : '#E15253') }} className="pointsScore">{(isWin ? (isOnline ? '+ 120 Points' : '+ 0 Points') : (isOnline ? '- 120 Points' : '- 0 Points'))}</div>
+                        <button onClick={() => {
+                            navigate('/')
+                        }} style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className='returnFromGame'>Return Home</button>
+                    </div>
+                </div>
+            }
 
-            </div >
+        </div >
     )
 }
 export default Game;

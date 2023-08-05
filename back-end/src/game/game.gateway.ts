@@ -73,8 +73,12 @@ export class GameGateway implements OnGatewayConnection {
 			const initialBall: Ball = { pos: { x: 0, y: 0 }, speed: 6 / 16, angle: Math.PI / 4 };
 
 			const Players = {
-				Player1Avatar: this.waitingFriend[adv].data.playload.avatar,
-				Player2Avatar: client.data.playload.avatar,
+				Player1Avatar: this.waitingFriend[adv].data.playload.avatar && this.waitingFriend[adv].data.playload.avatar.search("https://cdn.intra.42.fr/users/") === -1
+				&& !this.waitingFriend[adv].data.playload.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + this.waitingFriend[adv].data.playload.avatar
+					: this.waitingFriend[adv].data.playload.avatar,
+				Player2Avatar: client.data.playload.avatar && client.data.playload.avatar.search("https://cdn.intra.42.fr/users/") === -1
+				&& !client.data.playload.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + client.data.playload.avatar
+					: client.data.playload.avatar,
 				Player1Username: this.waitingFriend[adv].data.playload.username,
 				Player2Username: client.data.playload.username,
 				Player1Id: this.waitingFriend[adv].data.playload.userId,
@@ -115,8 +119,12 @@ export class GameGateway implements OnGatewayConnection {
 			const initialBall: Ball = { pos: { x: 0, y: 0 }, speed: 6 / 16, angle: Math.PI / 4 };
 
 			const Players = {
-				Player1Avatar: this.waitingRooms[gameMode].data.playload.avatar,
-				Player2Avatar: client.data.playload.avatar,
+				Player1Avatar: this.waitingRooms[gameMode].data.playload.avatar && this.waitingRooms[gameMode].data.playload.avatar.search("https://cdn.intra.42.fr/users/") === -1
+				&& !this.waitingRooms[gameMode].data.playload.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + this.waitingRooms[gameMode].data.playload.avatar
+					: this.waitingRooms[gameMode].data.playload.avatar,
+				Player2Avatar: client.data.playload.avatar && client.data.playload.avatar.search("https://cdn.intra.42.fr/users/") === -1
+				&& !client.data.playload.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + client.data.playload.avatar
+					: client.data.playload.avatar,
 				Player1Username: this.waitingRooms[gameMode].data.playload.username,
 				Player2Username: client.data.playload.username,
 				Player1Id: this.waitingRooms[gameMode].data.playload.userId,

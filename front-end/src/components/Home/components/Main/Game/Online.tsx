@@ -249,7 +249,6 @@ function App({roomId, setDone, isFound, isOnline, token, setGame, setFound, chos
 
     React.useEffect(() => {
         if (isOnline && token && !Socket) {
-            console.log('how many time')
             const socket = io('http://localhost:3001/game', {
                 extraHeaders: {
                     Authorization: `Bearer ${token}`,

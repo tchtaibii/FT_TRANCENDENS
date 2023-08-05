@@ -38,10 +38,10 @@ function BOxGame(props: any) {
 
 function GamesMode() {
 	const GameModesArr = [
-		<div className={'gsss'} key={nanoid()}><BOxGame idA='classicA' imgID='classicIMG' classB="classic" titleB="Classic" StitleB='Challenge the computer' linkB="/game/classic" imgB={classicI} /></div>,
-		<div className={'gsss'} key={nanoid()}><BOxGame idA='aiA' imgID='aiIMG' classB="ai" titleB="HK-47 Mode" StitleB='Traditional gameplay' linkB="/game" imgB={aiI} /></div>,
+		<div className={'gsss'} key={nanoid()}><BOxGame idA='classicA' imgID='classicIMG' classB="classic" titleB="Classic" StitleB='Challenge Random Player' linkB="/game/classic" imgB={classicI} /></div>,
+		<div className={'gsss'} key={nanoid()}><BOxGame idA='aiA' imgID='aiIMG' classB="ai" titleB="HK-47 Mode" StitleB='Challenge HK-47' linkB="/game" imgB={aiI} /></div>,
 		<div className={'gsss'} key={nanoid()}><BOxGame idA='Foot' imgID='FootIMG' classB="FOOT" titleB="Football Mode" StitleB='Play like a Football Player' linkB="/game/football" imgB={footBall} /></div>,
-		<div className={'gsss'} key={nanoid()}><BOxGame idA='BlackHole' imgID='BlackHoleIMG' classB="BLACKHOLE" titleB="Black Hole" StitleB='Play and challenge the blackholes' linkB="/game/blackhole" imgB={blackHole} /></div>,
+		<div className={'gsss'} key={nanoid()}><BOxGame idA='BlackHole' imgID='BlackHoleIMG' classB="BLACKHOLE" titleB="Black Hole" StitleB='Play and challenge the Blackholes' linkB="/game/blackhole" imgB={blackHole} /></div>,
 		// <div className={'gsss'} key={nanoid()}><BOxGame idA='friendA' imgID='friendIMG' classB="friend" titleB="Friends Mode" StitleB='Social play, easy invites' linkB="#" imgB={friendI} /></div>,
 	];
 	return (

@@ -1,7 +1,7 @@
 import './Profile.scss'
 import GradienBox from '../../../../../tools/GradienBox'
 import { AppDispatch } from '../../../../../store/store'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
@@ -72,7 +72,7 @@ type ProfileRightType = {
 export function ProfileProfile() {
 
     const { login } = useParams();
-
+    const myData = useSelector((state:any) =>state.admin)
     const [widthPro, setwidthPro] = useState(0);
     const [opacity, setOpacity] = useState(0);
     const [ProfileRight, setPR] = useState<ProfileRightType>({
@@ -162,7 +162,12 @@ export function ProfileProfile() {
                                                 <button onClick={() => {
                                                     navigate(`/chat/${ProfileRight.RoomId}`)
                                                 }}><Chatbtn /></button>
-                                                <button><Playbtn /></button>
+                                                <button onClick={async() => {
+                                                    await axios.post('/GameInvitation', {
+                                                        receiver: ProfileRight.UserId
+                                                    })
+                                                    navigate(`/game/friends/${myData.UserId}`);
+                                                }}><Playbtn /></button>
                                             </> :
                                             <>
                                                 <button onClick={BlockUser}><Blockbtn /></button>

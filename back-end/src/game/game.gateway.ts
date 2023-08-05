@@ -35,6 +35,7 @@ export class GameGateway implements OnGatewayConnection {
 		if (sockets.length)
 		{
 			client.emit('GamesInfo', null);
+			client.disconnect();
 			return ;	
 		}
 

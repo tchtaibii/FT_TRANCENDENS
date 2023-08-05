@@ -53,7 +53,7 @@ export class SettingService {
 
 		blockedBySender.map((friend) => {
 			let { avatar, UserId, username} = friend.receiver;
-			avatar = avatar.search("https://cdn.intra.42.fr/users/") === -1 && !avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + avatar : avatar;
+			avatar = avatar && avatar.search("https://cdn.intra.42.fr/users/") === -1 && !avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + avatar : avatar;
 			blockedlist.push({
 				friendshipId : friend.FriendshipId,
 				avatar,

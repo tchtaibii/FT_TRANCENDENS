@@ -126,19 +126,8 @@ function Invitation({ state, data, wichOne }: InvitationFunc) {
 	);
 }
 
-// type invitationRequest = {
-// 	FriendshipId: number;
-// 	ReceiverId: string;
-// 	sender: {
-// 		UserId: string,
-// 		avatar: string,
-// 		username: string,
-// 	}
-
-// }
 
 function App() {
-	// const data:any = useSelector((state:any) => state.admin)
 	const [invit, setInvit] = useState(0)
 	const dispatch: AppDispatch = useDispatch()
 	const [isLogin, setisLogin] = useState(false);
@@ -155,9 +144,7 @@ function App() {
 				await axios.get('/').then((resp) => {
 					dispatch(seIsDown(false));
 				}).catch(error => {
-					// if (error.request)
 					dispatch(seIsDown(true));
-					// tesServer();
 				})
 			}
 
@@ -201,6 +188,9 @@ function App() {
 					Authorization: `Bearer ${token}`,
 				}
 			});
+			socket.on('connect_error', (error: any) => {
+				console.error('');
+			  });
 			socket.on('connect', () => {
 			});
 
@@ -231,7 +221,6 @@ function App() {
 			};
 		}
 	}, [token]);
-	console.log(import.meta.env);
 	return (
 		<div className="App">
 			{/* <Suspense fallback={<><Loading /></>}> */}

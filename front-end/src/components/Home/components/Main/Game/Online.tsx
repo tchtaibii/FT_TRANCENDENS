@@ -171,7 +171,8 @@ function App({setDone, isFound, isOnline, token, setGame, setFound, chosenMode, 
             });
             Socket.emit('gameMode', chosenMode);
             Socket.on('GamesInfo', (data: any) => {
-                if (!data) {
+                console.log(data);
+                if (data === null) {
                     setMessage('You are already in a GAME!');
                 }
                 else {
@@ -259,6 +260,7 @@ function App({setDone, isFound, isOnline, token, setGame, setFound, chosenMode, 
         if (gameOver) {
             Socket.disconnect();
             setDone(true);
+            
         }
     }, [gameOver])
     const navigate = useNavigate();

@@ -8,7 +8,7 @@ import defaultAvatar from '../../../../../assets/img/avatar.png'
 import emojiLose from '../../../../../assets/img/lose.svg'
 import emojiWin from '../../../../../assets/img/win.svg'
 import { useNavigate } from 'react-router-dom'
-import Loading from '../../../../Loading'
+import axios from '../../../../../Interceptor/Interceptor'
 import OnlineMode from './Online'
 
 function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline: boolean, mode: string }) {
@@ -44,7 +44,10 @@ function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline:
         }
     }, [])
     const token = useSelector((state: any) => state.token).token;
-
+    const [isOne, setOne] = useState<boolean | null>(null);
+    const FsetOne = ()=> {
+        admin.UserId === Game.player1.id ? setOne(true) :  setOne(false);
+    }
     const [Game, setGame] = useState({
         player1: {
             avatar: '',
@@ -58,41 +61,6 @@ function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline:
         },
         mode: ''
     });
-    // useEffect(() => {
-    //     if (Socket) {
-    //         Socket.on('connect', () => {
-    //         });
-    //         Socket.emit('gameMode', mode);
-    //         Socket.on('GamesInfo', (data: any) => {
-    //             console.log(data)
-    //             if (!data) {
-
-    //             }
-    //             else {
-    //                 setGame({
-    //                     player1: {
-    //                         avatar: data.Player1Avatar,
-    //                         username: data.Player1Username,
-    //                         id: data.Player1Id,
-    //                     },
-    //                     player2: {
-    //                         avatar: data.Player2Avatar,
-    //                         username: data.Player2Username,
-    //                         id: data.Player2Id,
-    //                     },
-    //                     mode: data.gameMode
-    //                 });
-    //             }
-    //             setFound(true);
-    //         });
-    //         Socket.on('disconnect', () => {
-    //         });
-    //         return () => {
-    //             Socket.disconnect();
-    //         };
-    //     }
-    // }, [Socket])
-
 
     const [isDone, setDone] = useState(false);
     const [isWin, setWin] = useState(false);
@@ -103,9 +71,23 @@ function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline:
         }
     }, [leftscore, rightscore])
     const navigate = useNavigate();
-
     const [isFound, setFound] = useState<boolean>(false);
-
+    useEffect(() => {
+        if(isDone){
+            FsetOne();
+            const SendData = async() => {
+                await axios.post('/game/StoreData', {
+                    PlayerId1 : Game.player1.id,
+                    PlayerId2 : Game.player2.id,
+                    Mode: mode,
+                    WinnerXP : 5,
+                    looserXP : leftscore > rightscore ? rightscore : leftscore,
+                    WinnerId : (isWin && isOne) ? Game.player1.id : (isWin && !isOne) ? Game.player2.id : (!isWin && isOne) ? Game.player2.id : Game.player1.id
+                })
+            }
+            SendData();
+        }
+    },[isDone])
     return (
             <div style={{ position: 'relative' }} className='GameContainer'>
                 <GradienBox mywidth="1201px" myheight="815px" myborder="40px">

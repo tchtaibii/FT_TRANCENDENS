@@ -1,58 +1,130 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaClient, User } from '@prisma/client';
 import { Socket } from 'socket.io';
+import { GameDto } from './gameDto';
 
 @Injectable()
 export class GameService {
-    private socketsMap: Map<string, Socket[]> = new Map();
 
-    // storeSocket(clientId: string, socket: Socket): void {
-    //   const sockets = this.socketsMap.get(clientId) || [];
-    //   sockets.push(socket);
-    //   this.socketsMap.set(clientId, sockets);
-    // }
+	constructor(
+		private readonly prisma: PrismaClient,
+	) { }
 
-    // getSocket(clientId: string): Socket[] | undefined {
-    //     return this.socketsMap.get(clientId);
-    // }
+	async calcullevel(User : User, Data)
+	{
+		let { level, XP } = User;
 
-    // removeSocket(clientId: string, socket: Socket): boolean {
-	// 	const sockets = this.socketsMap.get(clientId);
-	// 	if (sockets) {
-	// 		const index = sockets.indexOf(socket);
-	// 		if (index !== -1) {
-	// 			sockets.splice(index, 1);
-	// 			if (sockets.length === 0) {
-	// 			this.socketsMap.delete(clientId);
-	// 			}
-	// 			return true;
-	// 		}
-	// 	}
-	// 	return false;
-    // }
+		if (Data.WinnerId === User.UserId)
+		{
+			if (XP + 120 <= (level + 1) * 200)
+				XP += 120;
+			else
+			{
+				level += 1;
+				XP = (XP + 120) - (200 * level + 1);
+			}
+		}
+		else
+		{
+			if (XP - 120 >= 0)
+				XP -= 120;
+			else
+			{ 
+				level -= 1;
+				XP = (level * 200) - (120 - XP);
+			}
+		}
 
-    // emitToClient(clientId: string, event: string, data: any): boolean {
+		return {level, XP};
+	}
 
-	// 	const sockets = this.socketsMap.get(clientId);
-	// 	console.log(clientId);
-	// 	if (sockets) {
-	// 		sockets.forEach(socket => {
-	// 			// socket.emit(event, data);
-	// 	});
-	// 		return true;
-	// 	}
-	// 	return false;
-    // }
-  
-	// async getInfo(user1 : string, user2 : string)
-	// {
-	// 	const player1 
-	// 	return {
-	// 		Player1Avatar : "",
-	// 		Player2Avatar : "",
-	// 		Player1Username : "",
-	// 		Player2Username : "",
-	// 		Player1Id : "",
-	// 		Player2Id : "",
-	// 	}
-	// }
+	async storeGame(User : User, Data : GameDto)
+	{
+		const { level, XP } = await this.calcullevel(User, Data);
+
+		await this.prisma.$transaction(async (prisma) => {
+			await prisma.game.create({
+				data : {
+					PlayerId1 : Data.PlayerId1,
+					PlayerId2 : Data.PlayerId2,
+					WinnerId : Data.WinnerId,
+					Mode : Data.Mode,
+					WinnerXP : Data.WinnerXP,
+					looserXP : Data.looserXP,
+					Rounds : 1,
+				},
+			})
+			await prisma.user.update({
+				where : {
+					UserId : User.UserId
+				},
+				data : {
+					level : level,
+					XP : XP,
+				}
+			})
+
+		})
+
+		this.checkAchievement(User);
+	}
+
+	async checkAchievement(User : User)
+	{
+		const achievement = await this.prisma.achievement.findFirst({
+			where : {UserId : User.UserId},
+		})
+
+		var PongPlayer = false;
+		var Helmchen = false;
+		var Worldcup = false;
+
+		if (!achievement.Helmchen)
+		{
+			const HelmchenTest = await this.prisma.game.count({
+				where : {
+					WinnerId : User.UserId
+				}
+			});
+		
+			Helmchen = HelmchenTest === 10 ? true : false;
+		}
+
+		if (!achievement.Worldcup)
+		{
+			const WorldcupCheck = await this.prisma.game.count({
+				where : {
+					OR : [
+						{PlayerId1 : User.UserId} , {PlayerId2 : User.UserId}
+					],
+					Mode : "football",
+				}
+			})
+			Worldcup = WorldcupCheck === 7 ? true : false;
+		}
+
+		if (achievement.PongPlayer)
+		{
+			const PongPlayerCheck = await this.prisma.game.count({
+				where : {
+					OR : [
+						{PlayerId1 : User.UserId} , {PlayerId2 : User.UserId}
+					],
+				}
+			})
+
+			PongPlayer = PongPlayerCheck !== 0 ? true : false;
+		}
+		
+		await this.prisma.achievement.update({
+			where : {
+				UserId : User.UserId,
+			},
+			data : {
+				PongPlayer : PongPlayer,
+				Worldcup : Worldcup,
+				Helmchen : Helmchen,
+			}
+		})
+	}
 }

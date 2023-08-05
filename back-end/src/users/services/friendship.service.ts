@@ -84,8 +84,7 @@ export class FriendshipService {
                 data: { Accepted : true},
             });
         } catch (error) {
-            if (error)
-                throw new InternalServerErrorException('no friendship request has been found');
+
         }
 
 		const notification =  await this.prisma.notification.create({
@@ -136,6 +135,39 @@ export class FriendshipService {
                                                             { RoomId: room.RoomId, UserId : notification.senderId } ]
                 });
             });
+        }
+
+        const achievement = await this.prisma.achievement.findFirst({
+            where : {
+                UserId : User.UserId,
+            }
+        })
+
+        if (!achievement.extrovert)
+        {
+            const countFriends = await this.prisma.friendship.count({
+                where : {
+                    OR : [
+                        {SenderId : User.UserId}, {ReceiverId : User.UserId},
+                    ],
+                    Accepted : true,
+                    blockedByReceiver : false,
+                    blockedBySender : false,
+                }
+            })
+
+            if (countFriends === 10)
+            {
+                await this.prisma.achievement.update({
+                    where :
+                    {
+                        UserId : User.UserId,
+                    },
+                    data : {
+                        extrovert : true,
+                    }
+                })
+            }
         }
 	}
 

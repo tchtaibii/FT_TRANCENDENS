@@ -128,7 +128,6 @@ function ProfileDown() {
         }
         FecthData();
     }, [])
-    console.log(AchivementArr)
     return (
         <div className="profileDown">
             <motion.div

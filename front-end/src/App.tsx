@@ -222,7 +222,6 @@ function App() {
 
 			socket.on('notification', (data: any) => {
 				setInvit(2);
-				console.log(data);
 				setInviRequest(data);
 				setIsfullN(true)
 				setTimeout(() => {

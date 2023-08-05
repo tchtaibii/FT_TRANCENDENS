@@ -36,6 +36,6 @@ export class GameController {
 	@Post('AI')
 	async AI(@Req() req)
 	{
-		this.AI(req.user);	
+		this.GameService.AI(req.user);	
 	}
 }

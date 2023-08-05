@@ -169,7 +169,7 @@ export class GameGateway implements OnGatewayConnection {
 
 		if ((newX < -560 / 16 || newX > 560 / 16)) {
 
-			if ((mode === "football" && newY > 10) || (mode === "football" && newY < -10)) {
+			if ((mode === "football" && newY > 11) || (mode === "football" && newY < -11)) {
 				if (newX < -560 / 16) {
 					newX = -559 / 16;
 					ball.angle = Math.PI - ball.angle;

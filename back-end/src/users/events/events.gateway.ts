@@ -27,7 +27,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	async handleConnection(client: Socket) {
 		
-
 		await this.prisma.user.update({
 			where : { UserId : client.data.playload.userId },
 			data : { status : true},

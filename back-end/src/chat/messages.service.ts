@@ -308,7 +308,6 @@ export class MessagesService {
 			throw new UnauthorizedException("You don't have the right to ban.");
 		}
 
-
 		const bannedUser = await this.prisma.membership.update({
 			where: {
 				RoomId: roomid,

@@ -92,7 +92,7 @@ function App({setDone, isFound, isOnline, token, setGame, setFound, chosenMode, 
     };
 
 
-    const [gameMode, setGameMode] = React.useState<null | 'classic' | 'football'>(null);
+    const [gameMode, setGameMode] = React.useState<null | 'classic' | 'football' | 'friends'>(null);
 
     const [ballPos, setBallPos] = React.useState({ x: 0, y: 0 });
     React.useEffect(() => {
@@ -104,7 +104,7 @@ function App({setDone, isFound, isOnline, token, setGame, setFound, chosenMode, 
     const [rightcolor, setRColor] = React.useState('#E15253');
 
     React.useEffect(() => {
-        if (chosenMode === "classic") {
+        if (chosenMode === "classic" || chosenMode === "friends") {
             setLColor("#E15253");
             setRColor("#5699AF");
         }
@@ -194,7 +194,7 @@ function App({setDone, isFound, isOnline, token, setGame, setFound, chosenMode, 
             });
             Socket.on('startgame', ({ room, SecondPlayer }: { room: any, SecondPlayer: any }) => {
                 setIsPlayer(SecondPlayer);
-                if (chosenMode === "classic") {
+                if (chosenMode === "classic" || chosenMode === "friends") {
                     setLColor("#E15253");
                     setRColor("#5699AF");
                 }
@@ -254,6 +254,11 @@ function App({setDone, isFound, isOnline, token, setGame, setFound, chosenMode, 
             setSocket(socket);
         }
     }, [token]);
+    useEffect(()=>{
+        if (!isFound)
+            setTimeout(() => { setMessage('Sorry!! try again, next time...') }, 60000);
+        // 60000 == 1min
+    },[])
     useEffect(() => {
         if (gameOver) {
             Socket.disconnect();

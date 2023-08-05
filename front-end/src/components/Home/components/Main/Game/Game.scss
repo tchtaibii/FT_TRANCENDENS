@@ -307,7 +307,7 @@
 
 }
 
-.table-classic {
+.table-classic, .table-friends  {
     display: flex;
     width: 100%;
     height: 100%;
@@ -319,7 +319,7 @@
     border: 4px solid white;
 }
 
-.table-classic::before {
+.table-classic::before, .table-friends::before  {
     content: "";
     position: absolute;
     top: 0;
@@ -375,7 +375,7 @@
 .Found {
     background-color: rgba($color: #000000, $alpha: 0.5);
     width: 75.0625rem;
-    height: 50.9375rem;
+    height: 53.9rem;
     border-radius: 2.5rem;
     top: 0;
     left: 0;

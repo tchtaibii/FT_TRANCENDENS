@@ -15,14 +15,14 @@ import { io } from 'socket.io-client'
 import { useNavigate } from "react-router-dom";
 import EmojiPicker, { EmojiStyle, Theme, EmojiClickData } from "emoji-picker-react";
 import defaultAvatar from '../../../../../assets/img/avatar.png'
-
+import iconChat from '../../../../../assets/img/iConChat.svg'
 
 function StartChat() {
 	return (
 		<div className="chatContent">
 			<div className="startChat">
-				Welcome to Chat page!
-				{/* <br /> */}
+				<p>Welcome to ChatPage! 🎉 Connect and chat with friends, family, and colleagues in a seamless and fun environment. Share thoughts, exchange emojis, and make every conversation memorable. Enjoy! 😊</p>
+				<img src={iconChat} alt="" />
 			</div>
 		</div>
 	)
@@ -68,7 +68,7 @@ function ChatContent(params: any) {
 	const [threDots, setThreDots] = useState(false);
 	const [AllMsgs, setMessages] = useState<any>([]);
 	const [Socket, setSocket] = useState<any>(null);
-	const [Data, setData] = useState<any>({ isChannel: false, avatar: '', name: '', status: false, type: '' });
+	const [Data, setData] = useState<any>({ isChannel: false, avatar: '', name: '', status: false, type: '', UserId: '' });
 	const ref = useRef(null)
 	const token = useSelector((state: any) => state.token).token;
 	useEffect(() => {
@@ -176,7 +176,12 @@ function ChatContent(params: any) {
 							{
 								threDots && params.roomData &&
 								<div className="threedots">
-									{params.roomData.isChannel === false && <button className='threeD'>Invite to play</button>}
+									{params.roomData.isChannel === false && <button onClick={async () => {
+										await axios.post('/GameInvitation', {
+											receiver: Data.UserId
+										})
+										navigate('/game/friends');
+									}} className='threeD'>Invite to play</button>}
 									{params.roomData.isChannel === false && <Link to={`/profile/${Data.name}`} className='threeD'>Visit Profile</Link>}
 									{params.roomData.isChannel === false && <button onClick={async () => {
 										await axios.post('/Profile/blockUser', {

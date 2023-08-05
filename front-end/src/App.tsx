@@ -15,20 +15,40 @@ import { io } from 'socket.io-client';
 import defaultAvatar from './assets/img/avatar.png'
 import GradienBox from './tools/GradienBox';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+
 const Secure = lazy(() => import('./Secure'));
+
+
+
+
+
+
 const originalConsoleError = console.error;
 const originalConsoleWarn = console.warn;
 
+
+
 console.error = () => { };
 console.warn = () => { };
+
 function SlideButton(props: any) {
+
 	const [slideChanger, SetSlideChange] = useState({ circle: props.isAccept ? 'sliderA' : 'sliderD' })
 	const handler = () => {
-		const PostData = async () => {
-			await axios.post((props.isAccept ? '/AcceptRequest' : '/CancelRequest'), { FriendshipId: props.data });
+		if (props.isGame) {
+			if (props.isAccept)
+				window.location.replace('/game/friends');
+			// navigate('/about', { replace: true });
+			// SetSlideChange({ circle: props.isAccept ? 'sliderA slider-accept' : 'sliderD slider-decline' });
 		}
-		SetSlideChange({ circle: props.isAccept ? 'sliderA slider-accept' : 'sliderD slider-decline' });
-		PostData();
+		else {
+			const PostData = async () => {
+				await axios.post((props.isAccept ? '/AcceptRequest' : '/CancelRequest'), { FriendshipId: props.data });
+			}
+			SetSlideChange({ circle: props.isAccept ? 'sliderA slider-accept' : 'sliderD slider-decline' });
+			PostData();
+		}
 		setTimeout(() => { props.set(false) }, 500);
 	}
 	const Accept = () => (
@@ -92,7 +112,7 @@ function Invitation({ state, data, wichOne }: InvitationFunc) {
 			exit={{ opacity: 0 }}
 			transition={{ duration: 0.5 }}
 			className="invitation-container">
-			<GradienBox zIndex={100000} mywidth="397px" myheight={wichOne === 1 ? "157.02px" : "100px"} myborder="20px">
+			<GradienBox zIndex={100000} mywidth="397px" myheight={(wichOne === 1 || (wichOne === 2 && data.Type === 'game_invitation')) ? "157.02px" : "100px"} myborder="20px">
 				{data && <div className="invitation">
 					<div className="close-invi" onClick={() => {
 						setTimeout(() => {
@@ -104,14 +124,14 @@ function Invitation({ state, data, wichOne }: InvitationFunc) {
 						</svg>
 					</div>
 					<div className="invitation-content">
-						<img className='img-invitation' src={wichOne === 1 ? (data.sender && data.sender.avatar ? data.sender.avatar : defaultAvatar) : (data.avatar ? data.avatar  : defaultAvatar)} alt="" />
+						<img className='img-invitation' src={wichOne === 1 ? (data.sender && data.sender.avatar ? data.sender.avatar : defaultAvatar) : (data.avatar ? data.avatar : defaultAvatar)} alt="" />
 						<p>{wichOne === 1 ? `${data.sender && data.sender.username} has sent you a friend request! Accept or decline the invitation now.` : text}</p>
 					</div>
 					{
-						wichOne === 1 &&
+						(wichOne === 1 || (wichOne === 2 && data.Type === 'game_invitation')) &&
 						<div className="footer-onvitation">
-							<SlideButton set={stater} data={data.FriendshipId} isAccept={1} />
-							<SlideButton set={stater} data={data.FriendshipId} isAccept={0} />
+							<SlideButton isGame={(wichOne === 2 && data.Type === 'game_invitation')} set={stater} data={data.FriendshipId} isAccept={1} />
+							<SlideButton isGame={(wichOne === 2 && data.Type === 'game_invitation')} set={stater} data={data.FriendshipId} isAccept={0} />
 						</div>
 					}
 
@@ -183,9 +203,12 @@ function App() {
 					Authorization: `Bearer ${token}`,
 				}
 			});
+			socket.on('connect_failed', function () {
+				document.write("Sorry, there seems to be an issue with the connection!");
+			})
 			socket.on('connect_error', (error: any) => {
 				console.error('');
-			  });
+			});
 			socket.on('connect', () => {
 			});
 

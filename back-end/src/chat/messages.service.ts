@@ -93,6 +93,37 @@ export class MessagesService {
 				});
 		});
 	}
+	async deleteRoomwithnomembers(roomId: number) {
+		const membership = await this.prisma.membership.findFirst({
+			where: {
+				RoomId: roomId,
+			},
+		});
+
+		if (!membership) throw new UnauthorizedException("Membership doesnt exist");
+
+		if (membership.Role !== "Owner") {
+			throw new UnauthorizedException("u dont have the right to delete room");
+		}
+
+		const deleted = await this.prisma.$transaction(async (prisma) => {
+				await prisma.message.deleteMany({
+					where: {
+						RoomId: roomId,
+					},
+				}),
+				await prisma.membership.deleteMany({
+					where: {
+						RoomId: roomId,
+					},
+				}),
+				await prisma.room.delete({
+					where: {
+						RoomId: roomId,
+					},
+				});
+		});
+	}
 
 	async kickFromRoom(roomId: number, userId: string, userIDmin: string) {
 		const membership = await this.prisma.membership.findFirst({
@@ -120,41 +151,60 @@ export class MessagesService {
 	async leaveRoom(roomId: number, userId: string) {
 		const membership = await this.prisma.membership.findFirst({
 			where: {
-				AND: [{ RoomId: roomId }, { UserId: userId }],
+			  AND: [
+				{ RoomId: roomId },
+				{ UserId: userId},
+			  ],
+			},
+		  });
+		  if(!membership)
+			return {message : 'membership doesnt found'};
+		  if(membership.Role === 'Owner')
+		  {
+			const roommembers = await this.prisma.membership.findMany({
+			  where :{
+				RoomId : roomId,
+			  },
+			});
+		if(roommembers.length > 1)
+		{
+			  const membersfindinroom = roommembers.filter((member) => member.UserId !== userId);
+			  const randomuser = Math.floor(Math.random() * membersfindinroom.length);
+			  const newowner = membersfindinroom[randomuser];
+			  await this.prisma.membership.update({
+				where: { 
+				  MembershipId: newowner.MembershipId
+				 },
+				data: { 
+				  Role: 'Owner' },
+			  });
+		}
+		  }
+		  await this.prisma.membership.deleteMany({
+			where: {
+			  RoomId: roomId,
+			  UserId: userId,
+			},
+		  });
+
+		  const checkifnomember = await this.prisma.membership.findMany({
+			where: {
+				RoomId: roomId,
 			},
 		});
-
-		if (!membership) return { message: "membership doesnt found" };
-		if (membership.Role === "Owner") {
-			const roommembers = await this.prisma.membership.findMany({
+	
+		if (checkifnomember.length === 0) {
+			await this.prisma.room.delete({
 				where: {
 					RoomId: roomId,
 				},
 			});
-
-			if (roommembers.length > 1) {
-				const membersfindinroom = roommembers.filter(
-					(member) => member.UserId !== userId
-				);
-				const randomuser = Math.floor(Math.random() * membersfindinroom.length);
-				const newowner = membersfindinroom[randomuser];
-				await this.prisma.membership.update({
-					where: {
-						MembershipId: newowner.MembershipId,
-					},
-					data: {
-						Role: "Owner",
-					},
-				});
-			}
+			await this.prisma.message.deleteMany({
+				where: {
+					RoomId: roomId,
+				},
+			});
 		}
-
-		await this.prisma.membership.deleteMany({
-			where: {
-				RoomId: roomId,
-				UserId: userId,
-			},
-		});
 	}
 
 	async addMemberToRoom(roomId: number, username: string, userIDmin: string) {

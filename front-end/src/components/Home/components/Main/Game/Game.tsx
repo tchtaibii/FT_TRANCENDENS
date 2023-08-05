@@ -83,7 +83,6 @@ function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline:
     useEffect(() => {
         if (isOne && isDone && twoTime === 0) {
             const SendData = async () => {
-                console.log(Game.player1.id, Game.player2.id, rightscore, leftscore);
                 await axios.post('/game/StoreData',{
                     PlayerId1: Game.player1.id,
                     PlayerId2: Game.player2.id,

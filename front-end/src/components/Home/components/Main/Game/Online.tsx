@@ -171,7 +171,6 @@ function App({setDone, isFound, isOnline, token, setGame, setFound, chosenMode, 
             });
             Socket.emit('gameMode', chosenMode);
             Socket.on('GamesInfo', (data: any) => {
-                console.log(data);
                 if (data === null) {
                     setMessage('You are already in a GAME!');
                 }
@@ -211,7 +210,6 @@ function App({setDone, isFound, isOnline, token, setGame, setFound, chosenMode, 
             Socket.on('leftscored', () => {
                 setLeftScore((prevScore: number) => {
                     const newScore = prevScore + 1;
-                    console.log(newScore)
                     if (removeDecimalPart(newScore) === 5) {
                         setGameOver(true);
                         Socket.emit('gameended', { room: roomid });

@@ -59,23 +59,23 @@ export class GameGateway implements OnGatewayConnection {
 		}
 	}
 
-	private waitingFriend: Socket | null = null;
+	private waitingFriend: Record<string, Socket | null> = {adv : null,};
 	@SubscribeMessage('friends')
-	handleFriendsMode(client: Socket): void {
-		if (this.waitingFriend) {
+	handleFriendsMode(client: Socket, adv : string): void {
+		if (this.waitingFriend[adv]) {
 
 			const room = `${this.waitingFriend.id}-${client.id}`;
 			client.join(room);
-			this.waitingFriend.join(room);
+			this.waitingFriend[adv].join(room);
 
 			const initialBall: Ball = { pos: { x: 0, y: 0 }, speed: 6 / 16, angle: Math.PI / 4 };
 
 			const Players = {
-				Player1Avatar: this.waitingFriend.data.playload.avatar,
+				Player1Avatar: this.waitingFriend[adv].data.playload.avatar,
 				Player2Avatar: client.data.playload.avatar,
-				Player1Username: this.waitingFriend.data.playload.username,
+				Player1Username: this.waitingFriend[adv].data.playload.username,
 				Player2Username: client.data.playload.username,
-				Player1Id: this.waitingFriend.data.playload.userId,
+				Player1Id: this.waitingFriend[adv].data.playload.userId,
 				Player2Id: client.data.playload.userId,
 				Mode: "classic",
 			}
@@ -87,16 +87,16 @@ export class GameGateway implements OnGatewayConnection {
 				moveAngle: initialBall.angle,
 				ballSpeed: initialBall.speed,
 				intervalId: setInterval(() => this.updateBallPosition(room, initialBall, "classic"), 1000 / 60),
-				players: [{ id: this.waitingFriend.id, pos: 0 }, { id: client.id, pos: 0 }]
+				players: [{ id: this.waitingFriend[adv].id, pos: 0 }, { id: client.id, pos: 0 }]
 			};
 
-			this.server.to(this.waitingFriend.id).emit('startgame', { room: room, SecondPlayer: 1, chosen: "classic" });
+			this.server.to(this.waitingFriend[adv].id).emit('startgame', { room: room, SecondPlayer: 1, chosen: "classic" });
 			this.server.to(client.id).emit('startgame', { room: room, SecondPlayer: 2, chosen: "classic" });
 
 			this.waitingFriend = null;
 		}
 		else {
-			this.waitingFriend = client;
+			this.waitingFriend[adv] = client;
 		}
 	}
 

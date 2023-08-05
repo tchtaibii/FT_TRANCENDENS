@@ -270,10 +270,6 @@ function NotificationCont(props: any) {
 							data.map((e: any) => {
 								return (<Notification notificationId={e.notificationId} key={nanoid()} username={e.username} type={e.Type} isRead={e.isRead} img={e.avatar ? e.avatar : null} />);
 							})
-						// onClick={() => handleNotificationClick(index + 1)}
-						// props.isN === true ? notifi.map((e: any, index: number) => {
-						// 	return (<Notification onClick={() => handleNotificationClick(index + 1)} key={'noti-' + index} isRead={e.isRead} img={test} text={e.text} />);
-						// });
 					}
 				</div>
 				<div className="fot-notification">

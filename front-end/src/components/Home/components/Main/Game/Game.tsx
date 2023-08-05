@@ -15,7 +15,7 @@ function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline:
     const admin = useSelector((state: any) => state.admin);
     const [leftscore, setLeftScore] = useState(0);
     const [rightscore, setRightScore] = useState(0);
-    const {FriendsRoom} = useParams();
+    const { FriendsRoom } = useParams();
     const scoreL = Array.from({ length: Math.floor((isOnline ? leftscore : leftscore / 2)) }, (_, index) => (
         <div key={index + '-goal'} className="goal"></div>
     ));
@@ -83,7 +83,7 @@ function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline:
     useEffect(() => {
         if (isOne && isDone && twoTime === 0) {
             const SendData = async () => {
-                await axios.post('/game/StoreData',{
+                await axios.post('/game/StoreData', {
                     PlayerId1: Game.player1.id,
                     PlayerId2: Game.player2.id,
                     Mode: mode,
@@ -98,6 +98,18 @@ function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline:
         }
 
     }, [isOne])
+
+    useEffect(() => {
+        const postOffline = async () => {
+            if (!isOnline && isWin) {
+                if (isBlackHole)
+                    await axios.post('/game/blackhole').catch((err) => console.log());
+                else
+                    await axios.post('/game/AI').catch((err) => console.log());
+            }
+        }
+        postOffline();
+    }, [isDone, isWin])
     return (
         <div style={{ position: 'relative' }} className='GameContainer'>
             <GradienBox mywidth="1201px" myheight="815px" myborder="40px">

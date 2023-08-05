@@ -17,4 +17,6 @@ EXPOSE 3000
 
 EXPOSE 5555
 
-ENTRYPOINT ["sh", "-c", "trap 'exit' INT TERM; concurrently 'npx prisma migrate dev' 'npx prisma generate' 'npm run start:dev' "]
+# ENTRYPOINT ["sh", "-c", "trap 'exit' INT TERM; concurrently 'npx prisma migrate dev' 'npx prisma generate' 'npm run start:dev' "]
+
+CMD npx prisma migrate dev && npx prisma generate && npm run start:dev

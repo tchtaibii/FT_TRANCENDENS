@@ -144,7 +144,7 @@ function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline:
                             </div>
                             <div style={{ borderColor: (isWin ? '#25B2A4' : '#E15253') }} className="vsC">VS</div>
                             <div style={{ flexDirection: 'row-reverse' }} className="player">
-                                <img src={(!isOnline ? Game.player2.avatar : (admin.UserId !== Game.player1.id ? Game.player1.avatar : Game.player2.avatar))} alt="" />
+                                <img src={(!isOnline ? (Game.player2.avatar ? Game.player2.avatar : defaultAvatar) : (admin.UserId !== Game.player1.id ? (Game.player1.avatar ? Game.player1.avatar : defaultAvatar) : (Game.player2.avatar ? Game.player2.avatar : defaultAvatar)))} alt="" />
                                 <p>{(!isOnline ? Game.player2.username : (admin.UserId !== Game.player1.id ? Game.player1.username : Game.player2.username))}</p>
                             </div>
                         </div>

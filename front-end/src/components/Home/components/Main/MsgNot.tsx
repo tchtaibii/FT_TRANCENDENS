@@ -173,9 +173,6 @@ function Notification(props: any) {
 			case "GroupInvitation":
 				return `Check your Inbox Chat, ${props.username} has invited you in a Group!`;
 				break;
-			case "Achievement":
-				return `Congratulations! You have been awarded a new Archievement.`
-				break;
 			default:
 				return '';
 		}
@@ -190,7 +187,7 @@ function Notification(props: any) {
 				navigate(`/profile/${props.username}`);
 		}} style={{ cursor: 'pointer' }} id={props.key} className="notification">
 			<div className={!isRead ? "no-read" : ""}>
-				<img src={props.type === 'Achievement' ? 'badge' :  (props.img ? props.img : defaultAvatar) } alt="" />
+				<img src={(props.img ? props.img : defaultAvatar) } alt="" />
 			</div>
 			<div className="noti-text">{textNotifi}</div>
 		</div>

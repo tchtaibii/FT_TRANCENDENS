@@ -197,6 +197,17 @@
         align-items: center;
         padding: 1.4rem;
         filter: drop-shadow(0px toRem(50) toRem(80) rgba(0, 136, 122, 0.3));
+
+        .returnFromGame {
+            width: toRem(138);
+            height: toRem(37);
+            border-radius: toRem(18);
+            background: rgba(47, 45, 53, 0.30);
+            box-shadow: 0px toRem(4) toRem(80) 0px rgba(190, 190, 190, 0.30);
+            backdrop-filter: blur(toRem(2));
+            border: toRem(1) #FFF solid;
+        }
+
         h1 {
             font-size: toRem(48);
             font-style: normal;
@@ -288,18 +299,155 @@
             line-height: normal;
         }
 
-        .returnFromGame {
-            width: toRem(138);
-            height: toRem(37);
-            border-radius: toRem(18);
-            background: rgba(47, 45, 53, 0.30);
-            box-shadow: 0px toRem(4) toRem(80) 0px rgba(190, 190, 190, 0.30);
-            backdrop-filter: blur(toRem(2));
-            border:toRem(1) #FFF solid;
-        }
     }
-    .lose{
+
+    .lose {
         filter: drop-shadow(0px toRem(50) toRem(80) rgba(225, 82, 83, 0.3));
     }
+
+}
+
+.table-classic {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+    border-radius: 30px;
+    border: 4px solid white;
+}
+
+.table-classic::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, #E15253, #5699AF);
+    opacity: 0.2;
+    border-radius: 30px;
+}
+
+.table-football {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+    border-radius: 30px;
+    border: 4px solid white;
+}
+
+.table-football::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('../../../../../assets/img/football_map.png') no-repeat center center;
+    background-size: cover;
+    border-radius: 30px;
+}
+
+
+.lineC {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.line {
+    height: 99.4%;
+    border: 2px solid white;
+    position: absolute;
+    opacity: 0.45;
+}
+
+.Found {
+    background-color: rgba($color: #000000, $alpha: 0.5);
+    width: 75.0625rem;
+    height: 50.9375rem;
+    border-radius: 2.5rem;
+    top: 0;
+    left: 0;
+    z-index: 999999999999999999999999;
+    position: absolute;
+    transform: translate(toRem(-34), toRem(-130));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: toRem(50);
+    flex-direction: column;
+
+    .backHome {}
+
+    .blockss {
+        display: flex;
+
+        .block {
+            --sz: 7rem;
+            --tX: 0;
+            --animation: 600ms cubic-bezier(0.3, 0.5, 0.4, 0.9) infinite alternate-reverse;
+            --hm: 4.5vmin;
+            height: var(--sz);
+            width: var(--sz);
+            background-image: var(--bg);
+            border-radius: 50%;
+            transform: translateX(var(--tX));
+            mix-blend-mode: lighten;
+        }
+
+        .orange {
+            --bg: linear-gradient(-50deg, #ED5152 0%, #d55151 100%);
+            margin-right: var(--hm);
+            animation: attract-orange var(--animation);
+        }
+
+        .blue {
+            --bg: linear-gradient(50deg, #00887A 0%, #1d978b 100%);
+            margin-left: var(--hm);
+            animation: attract-blue var(--animation);
+        }
+
+        @keyframes attract-orange {
+            to {
+                transform: translateX(calc(var(--sz) + calc(var(--hm) / 4)));
+            }
+        }
+
+        @keyframes attract-blue {
+            to {
+                transform: translateX(calc(var(--sz) * -1 - calc(var(--hm) / 4)));
+            }
+        }
+    }
+
+    .returnFromGame {
+        width: toRem(138);
+        height: toRem(37);
+        border-radius: toRem(18);
+        background: rgba(47, 45, 53, 0.30);
+        box-shadow: 0px toRem(4) toRem(80) 0px rgba(190, 190, 190, 0.30);
+        backdrop-filter: blur(toRem(2));
+        border: toRem(1) #FFF solid;
+    }
+
+    .ctnBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: toRem(37);
+        width: 100%;
+    }
+
 
 }

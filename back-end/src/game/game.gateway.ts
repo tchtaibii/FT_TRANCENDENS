@@ -221,9 +221,7 @@ export class GameGateway implements OnGatewayConnection {
 
 	@SubscribeMessage('gameended')
 	handleEndgame(client: Socket, payload: { room: string }): void {
-		this.rooms[payload.room].ballSpeed = 0;
-		this.rooms[payload.room].ballPos.x = 0;
-		this.rooms[payload.room].ballPos.y = 0;
+		
 	}
 
 }

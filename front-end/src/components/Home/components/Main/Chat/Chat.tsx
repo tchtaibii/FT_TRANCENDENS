@@ -166,7 +166,7 @@ function ChatContent(params: any) {
 					<div className="header">
 						<div className="infoUser">
 							{/* userImg */}
-							<div style={{ backgroundImage: `url(${!Data.isChannel ? Data.avatar : grpsImg})` }} className="img"></div>
+							<div style={{ backgroundImage: `url(${!Data.isChannel ? (Data.avatar ? Data.avatar : defaultAvatar) : grpsImg})` }} className="img"></div>
 							<div className="nameAndStatus">
 								<h1>{Data.name}<span className={!Data.isChannel ? (Data.status === true ? 'activeUser' : '') : 'room'}></span></h1>
 								<p>{!Data.isChannel ? (Data.status === true ? 'Active Now' : 'Disconnected') : params.roomData.Type}</p>

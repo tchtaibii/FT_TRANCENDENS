@@ -134,7 +134,7 @@ export class GameGateway implements OnGatewayConnection {
 		let newX = ball.pos.x - (ball.speed * Math.cos(ball.angle));
 		let newY = ball.pos.y + (ball.speed * Math.sin(ball.angle));
 
-		const paddleHeight = 6.625;
+		const paddleHeight = 6;
 
 
 
@@ -149,7 +149,7 @@ export class GameGateway implements OnGatewayConnection {
 		}
 
 
-		if ((newX < -575 / 16 || newX > 580 / 16)) {
+		if ((newX < -565 / 16 || newX > 570 / 16)) {
 
 			if ((mode === "football" && newY > 10) || (mode === "football" && newY < -10)) {
 				if (newX < -565 / 16) {

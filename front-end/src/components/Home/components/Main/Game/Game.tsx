@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
 import defaultAvatar from '../../../../../assets/img/avatar.png'
 import emojiLose from '../../../../../assets/img/lose.svg'
 import emojiWin from '../../../../../assets/img/win.svg'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from '../../../../../Interceptor/Interceptor'
 import OnlineMode from './Online'
 
@@ -15,7 +15,7 @@ function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline:
     const admin = useSelector((state: any) => state.admin);
     const [leftscore, setLeftScore] = useState(0);
     const [rightscore, setRightScore] = useState(0);
-
+    const {FriendsRoom} = useParams();
     const scoreL = Array.from({ length: Math.floor((isOnline ? leftscore : leftscore / 2)) }, (_, index) => (
         <div key={index + '-goal'} className="goal"></div>
     ));
@@ -126,7 +126,7 @@ function Game({ isBlackHole, isOnline, mode }: { isBlackHole: boolean, isOnline:
                     <div className="Tablecont">
                         <div className="TableC">
                             {!isOnline ? <Table isBlackHole={isBlackHole} leftscore={leftscore} setLeftScore={setLeftScore} rightscore={rightscore} setRightScore={setRightScore} /> :
-                                <OnlineMode setDone={setDone} isFound={isFound} isOnline={isOnline} setFound={setFound} setGame={setGame} token={token} chosenMode={mode} leftscore={leftscore} rightscore={rightscore} setLeftScore={setLeftScore} setRightScore={setRightScore} />}
+                                <OnlineMode roomId={FriendsRoom} setDone={setDone} isFound={isFound} isOnline={isOnline} setFound={setFound} setGame={setGame} token={token} chosenMode={mode} leftscore={leftscore} rightscore={rightscore} setLeftScore={setLeftScore} setRightScore={setRightScore} />}
                         </div>
                     </div>
                 </div>

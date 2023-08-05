@@ -70,7 +70,7 @@ function Main(props: any) {
 						<Route path="/game/blackhole" element={<Game isBlackHole={true} isOnline={false} mode={'blackhole'} />} />
 						<Route path="/game/classic" element={<Game isBlackHole={false} isOnline={true} mode={'classic'} />} />
 						<Route path="/game/football" element={<Game isBlackHole={false} isOnline={true} mode={'football'} />} />
-						<Route path="/game/friends" element={<Game isBlackHole={false} isOnline={true} mode={'friends'} />} />
+						<Route path="/game/friends/:FriendsRoom" element={<Game isBlackHole={false} isOnline={true} mode={'friends'} />} />
 						<Route path="/404" element={<Error404 />} />
 						<Route path="*" element={<Error404 />} />
 

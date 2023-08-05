@@ -180,7 +180,7 @@ function ChatContent(params: any) {
 										await axios.post('/GameInvitation', {
 											receiver: Data.UserId
 										})
-										navigate('/game/friends');
+										navigate(`/game/friends/${myData.UserId}`);
 									}} className='threeD'>Invite to play</button>}
 									{params.roomData.isChannel === false && <Link to={`/profile/${Data.name}`} className='threeD'>Visit Profile</Link>}
 									{params.roomData.isChannel === false && <button onClick={async () => {

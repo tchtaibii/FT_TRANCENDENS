@@ -258,7 +258,7 @@ function NotificationCont(props: any) {
 			<div className="notification-container">
 				<div className="head-noti-container">
 					<div className="notication-head">{props.isN === true ? 'NOTIFICATIONS' : 'NEW REQUESTS'}</div>
-					<span className='notifi-num'>{data.length}</span>
+					<span className='notifi-num'>{data.filter((e:any) => !e.isRead).length}</span>
 					{/* notifi.filter((not: any) => not.isRead === 0).length */}
 				</div>
 				<div className="main-noti">
@@ -278,7 +278,10 @@ function NotificationCont(props: any) {
 				</div>
 				<div className="fot-notification">
 					{
-						props.isN === true ? <button className='mark-read'>Mark all as read</button> : <button className='mark-read dec'>Decline all</button>
+						props.isN === true ? <button onClick={async() => {
+							await axios.post('/readallnotification');
+							window.location.reload();
+						}} className='mark-read'>Mark all as read</button> : <button className='mark-read dec'>Decline all</button>
 						// onClick={markAllAsRead}
 					}
 

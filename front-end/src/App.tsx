@@ -38,7 +38,7 @@ function SlideButton(props: any) {
 	const handler = () => {
 		if (props.isGame) {
 			if (props.isAccept)
-				window.location.replace('/game/friends');
+				window.location.replace(`/game/friends/${props.username}`);
 			// navigate('/about', { replace: true });
 			// SetSlideChange({ circle: props.isAccept ? 'sliderA slider-accept' : 'sliderD slider-decline' });
 		}
@@ -105,7 +105,6 @@ function Invitation({ state, data, wichOne }: InvitationFunc) {
 		return '';
 	}
 	return (
-
 		<motion.div
 			initial={{ y: '-100vh', opacity: 0 }}
 			animate={{ y: 0, opacity: 1 }}
@@ -130,8 +129,8 @@ function Invitation({ state, data, wichOne }: InvitationFunc) {
 					{
 						(wichOne === 1 || (wichOne === 2 && data.Type === 'game_invitation')) &&
 						<div className="footer-onvitation">
-							<SlideButton isGame={(wichOne === 2 && data.Type === 'game_invitation')} set={stater} data={data.FriendshipId} isAccept={1} />
-							<SlideButton isGame={(wichOne === 2 && data.Type === 'game_invitation')} set={stater} data={data.FriendshipId} isAccept={0} />
+							<SlideButton username={data.senderId} isGame={(wichOne === 2 && data.Type === 'game_invitation')} set={stater} data={data.FriendshipId} isAccept={1} />
+							<SlideButton username={data.senderId} isGame={(wichOne === 2 && data.Type === 'game_invitation')} set={stater} data={data.FriendshipId} isAccept={0} />
 						</div>
 					}
 
@@ -223,6 +222,7 @@ function App() {
 
 			socket.on('notification', (data: any) => {
 				setInvit(2);
+				console.log(data);
 				setInviRequest(data);
 				setIsfullN(true)
 				setTimeout(() => {
@@ -246,7 +246,7 @@ function App() {
 			{
 				isDown ? <Loading /> :
 					!isLogin ? <Login /> : (!isSecure ? <><Home isFull={isFull} setIsfull={setIsfull} isFullN={isFullN} setIsfullN={setIsfullN} socketInvi={setInvit} /><AnimatePresence mode='wait'>
-						{invit && <Invitation wichOne={invit} data={invitationRequest} state={setInvit} />}
+						{invit && <Invitation wichOne={invit} data={invitationRequest && invitationRequest} state={setInvit} />}
 					</AnimatePresence>
 					</> : <Secure setSec={setSecure} />)
 			}

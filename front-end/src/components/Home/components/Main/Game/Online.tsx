@@ -7,7 +7,7 @@ function removeDecimalPart(number: number): number {
     return Math.floor(number);
 }
 
-function App({setDone, isFound, isOnline, token, setGame, setFound, chosenMode, leftscore, rightscore, setLeftScore, setRightScore }: {setDone:any, isFound: any, isOnline: any, token: any, setGame: any, setFound: any, chosenMode: string, leftscore: number, rightscore: number, setLeftScore: any, setRightScore: any }) {
+function App({roomId, setDone, isFound, isOnline, token, setGame, setFound, chosenMode, leftscore, rightscore, setLeftScore, setRightScore }: {roomId:string | undefined, setDone:any, isFound: any, isOnline: any, token: any, setGame: any, setFound: any, chosenMode: string, leftscore: number, rightscore: number, setLeftScore: any, setRightScore: any }) {
     const [firstPaddlePos, setFirstPaddlePos] = React.useState(0);
     const movePaddle = React.useRef(0);
     const [secondPaddlePos, setSecondPaddlePos] = React.useState(0);
@@ -97,7 +97,10 @@ function App({setDone, isFound, isOnline, token, setGame, setFound, chosenMode, 
     const [ballPos, setBallPos] = React.useState({ x: 0, y: 0 });
     React.useEffect(() => {
         if (gameMode && Socket) {
-            Socket.emit('gameMode', gameMode);
+            if(gameMode === 'friends')
+                Socket.emit('friends', roomId );
+            else
+                Socket.emit('gameMode', gameMode );
         }
     }, [gameMode]);
     const [leftcolor, setLColor] = React.useState('#E15253')

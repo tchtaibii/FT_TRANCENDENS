@@ -149,15 +149,15 @@ export class GameGateway implements OnGatewayConnection {
 		}
 
 
-		if ((newX < -565 / 16 || newX > 570 / 16)) {
+		if ((newX < -565 / 16 || newX > 565 / 16)) {
 
 			if ((mode === "football" && newY > 10) || (mode === "football" && newY < -10)) {
 				if (newX < -565 / 16) {
 					newX = -564 / 16;
 					ball.angle = Math.PI - ball.angle;
 				}
-				else if (newX > 570 / 16) {
-					newX = 569 / 16;
+				else if (newX > 565 / 16) {
+					newX = 564 / 16;
 					ball.angle = Math.PI - ball.angle;
 				}
 			}
@@ -169,7 +169,7 @@ export class GameGateway implements OnGatewayConnection {
 				newY = 0;
 				ball.speed = 6 / 16;
 			}
-			else if (newX > 570 / 16) {
+			else if (newX > 565 / 16) {
 				this.server.to(this.rooms[room].players[0].id).emit('leftscored');
 				this.server.to(this.rooms[room].players[1].id).emit('rightscored');
 				newX = 0;

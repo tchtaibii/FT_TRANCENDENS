@@ -21,7 +21,7 @@ function StartChat() {
 	return (
 		<div className="chatContent">
 			<div className="startChat">
-				<p>Welcome to ChatPage! 🎉 Connect and chat with friends, family, and colleagues in a seamless and fun environment. Share thoughts, exchange emojis, and make every conversation memorable. Enjoy! 😊</p>
+				<p>Welcome to ChatPage ! 🎉 Communicate with your opponents or team members seamlessly using our real-time chat feature ! 😊</p>
 				<img src={iconChat} alt="" />
 			</div>
 		</div>

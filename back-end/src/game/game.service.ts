@@ -5,15 +5,15 @@ import { Socket } from 'socket.io';
 export class GameService {
     private socketsMap: Map<string, Socket[]> = new Map();
 
-    storeSocket(clientId: string, socket: Socket): void {
-      const sockets = this.socketsMap.get(clientId) || [];
-      sockets.push(socket);
-      this.socketsMap.set(clientId, sockets);
-    }
+    // storeSocket(clientId: string, socket: Socket): void {
+    //   const sockets = this.socketsMap.get(clientId) || [];
+    //   sockets.push(socket);
+    //   this.socketsMap.set(clientId, sockets);
+    // }
 
-    getSocket(clientId: string): Socket[] | undefined {
-        return this.socketsMap.get(clientId);
-    }
+    // getSocket(clientId: string): Socket[] | undefined {
+    //     return this.socketsMap.get(clientId);
+    // }
 
     // removeSocket(clientId: string, socket: Socket): boolean {
 	// 	const sockets = this.socketsMap.get(clientId);
@@ -43,4 +43,16 @@ export class GameService {
 	// 	return false;
     // }
   
+	// async getInfo(user1 : string, user2 : string)
+	// {
+	// 	const player1 
+	// 	return {
+	// 		Player1Avatar : "",
+	// 		Player2Avatar : "",
+	// 		Player1Username : "",
+	// 		Player2Username : "",
+	// 		Player1Id : "",
+	// 		Player2Id : "",
+	// 	}
+	// }
 }

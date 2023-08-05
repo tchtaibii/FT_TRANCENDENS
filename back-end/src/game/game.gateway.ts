@@ -1,7 +1,7 @@
 import { OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { Server } from 'http';
-import { Socket } from 'socket.io';
 import { SocketIOMIDDELWARE } from 'src/auth/auth-services/ws';
+import { Socket, Server } from 'socket.io';
+
 
 interface Ball {
 	pos: { x: number, y: number },
@@ -11,7 +11,7 @@ interface Ball {
 
 @WebSocketGateway({ cors: true, namespace: 'game' })
 export class GameGateway implements OnGatewayConnection {
-
+    private socketsMap: Map<string, Socket[]> = new Map();
 	@WebSocketServer()
 	server: Server
 
@@ -29,6 +29,18 @@ export class GameGateway implements OnGatewayConnection {
 
 	handleConnection(client: Socket, ...args: any[]) {
 		console.log('A client just connected: ' + client.id);
+
+		const sockets = this.socketsMap.get(client.data.playload.userId) || [];
+
+		if (sockets.length)
+		{
+			client.emit('GamesInfo', null);
+			return ;	
+		}
+
+		sockets.push(client);
+
+		this.socketsMap.set(client.data.playload.userId, sockets);
 	}
 
 	handleDisconnect(client: Socket) {
@@ -36,6 +48,14 @@ export class GameGateway implements OnGatewayConnection {
 		for (const gameMode in this.waitingRooms) {
 			if (this.waitingRooms[gameMode]?.id === client.id) {
 				this.waitingRooms[gameMode] = null;
+			}
+		}
+
+		const sockets = this.socketsMap.get(client.data.playload.userId);
+		if (sockets) {
+			const index = sockets.indexOf(client);
+			if (index !== -1) {
+				this.socketsMap.delete(client.data.playload.userId);
 			}
 		}
 	}
@@ -48,7 +68,7 @@ export class GameGateway implements OnGatewayConnection {
 
 	@SubscribeMessage('gameMode')
 	handleGameMode(client: Socket, gameMode: 'classic' | 'football'): void {
-		console.log(`Client ${client.id} chose ${gameMode} mode`);
+		console.log(`Client ${client.data.playload.username} chose ${gameMode} mode`);
 
 		if (this.waitingRooms[gameMode]) {
 			const room = `${this.waitingRooms[gameMode].id}-${client.id}`;
@@ -56,6 +76,18 @@ export class GameGateway implements OnGatewayConnection {
 			this.waitingRooms[gameMode].join(room);
 
 			const initialBall: Ball = { pos: { x: 0, y: 0 }, speed: 6 / 16, angle: Math.PI / 4 };
+
+			const Players = {
+				Player1Avatar : this.waitingRooms[gameMode].data.playload.avatar,
+				Player2Avatar : client.data.playload.avatar,
+				Player1Username : this.waitingRooms[gameMode].data.playload.username,
+				Player2Username : client.data.playload.username,
+				Player1Id : this.waitingRooms[gameMode].data.playload.userId,
+				Player2Id : client.data.playload.userId,
+				Mode : gameMode,
+			}
+
+			this.server.to(room).emit('GamesInfo', Players);
 
 			this.rooms[room] = {
 				ballPos: initialBall.pos,
@@ -68,7 +100,7 @@ export class GameGateway implements OnGatewayConnection {
 			this.server.to(this.waitingRooms[gameMode].id).emit('startgame', { room: room, SecondPlayer: 1, chosen: gameMode });
 			this.server.to(client.id).emit('startgame', { room: room, SecondPlayer: 2, chosen: gameMode });
 
-			console.log(`Game started in ${gameMode} mode between ${this.waitingRooms[gameMode].id} and ${client.id}`);
+			console.log(`Game started in ${gameMode} mode between ${this.waitingRooms[gameMode].data.playload.username} and ${client.data.playload.username}`);
 
 			this.waitingRooms[gameMode] = null;
 		} else {

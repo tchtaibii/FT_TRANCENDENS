@@ -1,11 +1,16 @@
-import { Controller, Post, Req } from '@nestjs/common';
+import { Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/auth-guard/jwt-guard';
+import { GameDto } from './gameDto';
 
 @Controller('game')
+@UseGuards(JwtAuthGuard)
+@ApiTags('friendship')
 export class GameController {
     constructor(){}
 	
 	@Post('StoreData')
-	async StoreGammedData(@Req() req,)
+	async StoreGameData(@Req() req, Data : GameDto)
 	{
 		
 	}

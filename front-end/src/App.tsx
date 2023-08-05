@@ -11,14 +11,11 @@ import { useSelector } from 'react-redux';
 import Loading from './components/Loading';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from './store/store'
-// import Secure from '';
 import { io } from 'socket.io-client';
 import defaultAvatar from './assets/img/avatar.png'
 import GradienBox from './tools/GradienBox';
 import { motion, AnimatePresence } from 'framer-motion';
-// const Home = lazy(() => import('./components/Home/Home'));
 const Secure = lazy(() => import('./Secure'));
-// const Particle = lazy(() => import('./tools/ParticalComponent'));
 const originalConsoleError = console.error;
 const originalConsoleWarn = console.warn;
 
@@ -79,8 +76,6 @@ function Invitation({ state, data, wichOne }: InvitationFunc) {
 					return `${data.username} has invited you to a game of Ping Pong! Accept or decline the invitation now.`
 				case "GroupInvitation":
 					return `Check your Inbox Chat, ${data.username} has invited you in a Group!`;
-				case "Achievement":
-					return `Congratulations! You have been awarded a new Archievement.`
 				case "Message":
 					return `${data.username} sent you a Message.`
 				default:

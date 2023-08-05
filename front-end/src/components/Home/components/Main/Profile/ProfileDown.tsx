@@ -115,9 +115,18 @@ function ProfileDown() {
         };
         calculateWidths();
     }, [ProfileRight])
-
     var arrayArch: Archivement[] = [];
     arrayArch.push({ title: 'Batal', img: batal }, { title: 'Hawking', img: hawking })
+
+    const [AchivementArr, setAchievement] = useState([]);
+
+    useEffect(() => {
+        const FecthData = async () => {
+            await axios.get('/Profile/Achievement').then((rsp:any) => {
+                setAchievement(rsp.data);
+            })
+        }
+    },[])
     return (
         <div className="profileDown">
             <motion.div

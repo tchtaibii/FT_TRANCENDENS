@@ -531,18 +531,19 @@ function Chat(props: any) {
 															</div>
 															<div className="buttonNewGroup">
 																<button onClick={async () => {
-																	await axios.post('/room/create', { room: CreateRoom }).then(async (resp) => {
-																		if (resp) {
-																			// await axios.get('/room/rooms').then((resp: any) => setGrps(resp.data));
-																			setNewGroup(false);
-																			setPopUp(false);
-																			window.location.reload();
-																		}
-																		else {
-																			setError(true);
-																		}
-																	});
-
+																	if (CreateRoom.name.length) {
+																		await axios.post('/room/create', { room: CreateRoom }).then(async (resp) => {
+																			if (resp) {
+																				// await axios.get('/room/rooms').then((resp: any) => setGrps(resp.data));
+																				setNewGroup(false);
+																				setPopUp(false);
+																				window.location.reload();
+																			}
+																			else {
+																				setError(true);
+																			}
+																		});
+																	}
 																}} className='btnNewGrp' disabled={CreateRoom.type === 'protected' && (CreateRoom.password?.length === 0 || CreateRoom.password === null)}>Done</button>
 																<button onClick={() => {
 																	setNewGroup(false);

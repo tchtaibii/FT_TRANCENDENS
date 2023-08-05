@@ -63,11 +63,24 @@ export class GameGateway implements OnGatewayConnection {
 	@SubscribeMessage('friends')
 	handleFriendsMode(client: Socket): void {
 		if (this.waitingFriend) {
+
 			const room = `${this.waitingFriend.id}-${client.id}`;
 			client.join(room);
 			this.waitingFriend.join(room);
 
 			const initialBall: Ball = { pos: { x: 0, y: 0 }, speed: 6 / 16, angle: Math.PI / 4 };
+
+			const Players = {
+				Player1Avatar: this.waitingFriend.data.playload.avatar,
+				Player2Avatar: client.data.playload.avatar,
+				Player1Username: this.waitingFriend.data.playload.username,
+				Player2Username: client.data.playload.username,
+				Player1Id: this.waitingFriend.data.playload.userId,
+				Player2Id: client.data.playload.userId,
+				Mode: "classic",
+			}
+
+			this.server.to(room).emit('GamesInfo', Players);
 
 			this.rooms[room] = {
 				ballPos: initialBall.pos,

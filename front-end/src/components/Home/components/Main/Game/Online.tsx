@@ -248,7 +248,8 @@ function App({roomId, setDone, isFound, isOnline, token, setGame, setFound, chos
     }, [Socket]);
 
     React.useEffect(() => {
-        if (isOnline && token) {
+        if (isOnline && token && !Socket) {
+            console.log('how many time')
             const socket = io('http://localhost:3001/game', {
                 extraHeaders: {
                     Authorization: `Bearer ${token}`,
@@ -256,7 +257,8 @@ function App({roomId, setDone, isFound, isOnline, token, setGame, setFound, chos
             });
             setSocket(socket);
         }
-    }, [token]);
+    }, []);
+
     useEffect(()=>{
         if (!isFound)
             setTimeout(() => { setMessage('Sorry!! try again, next time...') }, 60000);

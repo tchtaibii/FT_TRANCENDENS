@@ -231,7 +231,7 @@ export class UsersService {
 
 
 		const fetchusers = users.map((user) => {
-			user.avatar = user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
+			user.avatar = user.avatar && user.avatar.search("https://cdn.intra.42.fr/users/") === -1 && !user.avatar.search('/uploads/') ? process.env.HOST + process.env.PORT + user.avatar : user.avatar;
 			const check = friends.includes(user.UserId);
 			const badge = this.getBadge(user.level);
 			return {

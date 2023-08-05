@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { PrismaClient, User } from '@prisma/client';
 import { Socket } from 'socket.io';
 import { GameDto } from './gameDto';
+import { GameGateway } from './game.gateway';
 
 @Injectable()
 export class GameService {
 
 	constructor(
 		private readonly prisma: PrismaClient,
+		private readonly GameSocket : GameGateway,
 	) { }
 
 	async calcullevel(User : User, PlayerId, Data : GameDto)
@@ -54,6 +56,8 @@ export class GameService {
 
 	async storeGame(User : User, Data : GameDto)
 	{
+		await this.GameSocket.handleEndgame(Data.PlayerId1);
+		await this.GameSocket.handleEndgame(Data.PlayerId2);
 		await this.calcullevel(User, Data.PlayerId1, Data);
 		await this.calcullevel(User, Data.PlayerId2, Data);
 
@@ -64,6 +68,7 @@ export class GameService {
 				WinnerId : Data.WinnerId,
 				WinnerXP : Data.WinnerXP,
 				looserXP : Data.looserXP,
+				Mode : Data.Mode,
 				Rounds : 1,
 			}
 		})

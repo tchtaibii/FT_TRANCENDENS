@@ -200,6 +200,11 @@ export class MessagesService {
 				},
 			});
 			await this.prisma.message.deleteMany({
+				where : {
+					RoomId : roomId,
+				}
+			})
+			await this.prisma.message.deleteMany({
 				where: {
 					RoomId: roomId,
 				},

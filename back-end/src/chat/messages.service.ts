@@ -503,6 +503,7 @@ export class MessagesService {
 			return {
 				type: infos.Type,
 				isChannel: infos.ischannel,
+				UserId : UserId,
 				avatar:
 					avatar &&
 						avatar.search("https://cdn.intra.42.fr/users/") === -1 &&

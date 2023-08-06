@@ -197,7 +197,7 @@ function App() {
 	const [isFullN, setIsfullN] = useState(false);
 	useEffect(() => {
 		if (token) {
-			const socket = io('http://localhost:3001/notification', {
+			const socket = io('http://159.65.225.210:3001/notification', {
 				extraHeaders: {
 					Authorization: `Bearer ${token}`,
 				}

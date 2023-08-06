@@ -3,7 +3,7 @@ import axios from 'axios'
 import { NotificationType } from '../interface/interfaces'
 
 export const getNotification = createAsyncThunk('notification/getNotification', async () => {
-    const response = await axios.get("http://localhost:3001/notifications");
+    const response = await axios.get("http://159.65.225.210:3001/notifications");
     return response.data;
 });
 

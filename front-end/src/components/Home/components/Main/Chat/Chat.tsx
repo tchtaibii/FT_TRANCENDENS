@@ -73,7 +73,7 @@ function ChatContent(params: any) {
 	const token = useSelector((state: any) => state.token).token;
 	useEffect(() => {
 		if (token) {
-			const socket = io('http://localhost:3001/chat', {
+			const socket = io('http://159.65.225.210:3001/chat', {
 				extraHeaders: {
 					Authorization: `Bearer ${token}`,
 				}

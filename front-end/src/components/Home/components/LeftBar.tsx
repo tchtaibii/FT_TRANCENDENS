@@ -56,7 +56,7 @@ function LeftBar() {
               {/* <img style={{ width: '1.5rem' }} src={SetfImg} alt="Settings" /> */}
             </NavLink>
           </ul>
-          <a href="http://localhost:3001/auth/logout" className='logout'>
+          <a href="http://159.65.225.210:3001/auth/logout" className='logout'>
             <img style={{ width: '2.5rem' }} src={LogoutImg} alt="" />
           </a>
         </div>

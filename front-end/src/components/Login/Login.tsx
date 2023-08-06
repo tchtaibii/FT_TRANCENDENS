@@ -67,13 +67,13 @@ function Login() {
                     </div>
                     <div className="btn-log">
                         <div className="btn-b">
-                            <LoginBtn classImg={1} img={I42} title={'Continue with'} link={'http://localhost:3001/auth/intra'} />
-                            <LoginBtn classImg={0} img={google} title={'Continue with'} link={'http://localhost:3001/auth/google'} />
+                            <LoginBtn classImg={1} img={I42} title={'Continue with'} link={'http://159.65.225.210:3001/auth/intra'} />
+                            <LoginBtn classImg={0} img={google} title={'Continue with'} link={'http://159.65.225.210:3001/auth/google'} />
                             {/* <GradienBox mywidth="216px" myheight="79px" myborder='15px'>
-                                <a href="http://localhost:3001/auth/intra">SIGN IN</a>
+                                <a href="http://159.65.225.210:3001/auth/intra">SIGN IN</a>
                             </GradienBox>
                             <GradienBox mywidth="216px" myheight="79px" myborder='15px'>
-                                <a href="http://localhost:3001/auth/google">SIGN UP</a>
+                                <a href="http://159.65.225.210:3001/auth/google">SIGN UP</a>
                             </GradienBox> */}
                         </div>
                         <p>This web app requires a 42intra account for sign up and sign in.</p>

@@ -4,7 +4,7 @@ import { AppDispatch } from "../store/store"
 import { useDispatch } from 'react-redux';
 
 const api = axios.create({
-    baseURL: 'http://localhost:3001',
+    baseURL: 'http://159.65.225.210:3001',
     withCredentials: true,
 });
 

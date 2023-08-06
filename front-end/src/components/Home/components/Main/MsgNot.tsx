@@ -146,7 +146,7 @@ function MsgNot(props: any) {
 								<ReactSVG src={SetfImg} />
 								{/* <img style={{ width: '1.5rem' }} src={SetfImg} alt="Settings" /> */}
 							</NavLink>
-							<a style={{ paddingTop: '10rem' }} href="http://localhost:3001/auth/logout" className='logout'>
+							<a style={{ paddingTop: '10rem' }} href="http://159.65.225.210:3001/auth/logout" className='logout'>
 								<img style={{ width: '15rem' }} src={LogoutImg} alt="" />
 							</a>
 						</ul>

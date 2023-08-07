@@ -3,7 +3,7 @@ import axios from "axios";
 import {userType} from '../interface/interfaces'
 
 export const getUsers = createAsyncThunk("users/getUsers", async () => {
-  const response = await axios.get("http://159.65.225.210:3001/users");
+  const response = await axios.get(`${import.meta.env.VITE_URL + import.meta.env.VITE_PORT}/users`);
   return response.data;
 });
 

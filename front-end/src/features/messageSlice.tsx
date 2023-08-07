@@ -3,7 +3,7 @@ import axios from 'axios'
 import { MessageType } from '../interface/interfaces'
 
 export const getMessage = createAsyncThunk('message/Message', async () => {
-    const response = await axios.get("http://159.65.225.210:3001/messages");
+    const response = await axios.get(`${import.meta.env.VITE_URL + import.meta.env.VITE_PORT}/messages`);
     return response.data;
 });
 

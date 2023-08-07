@@ -16,6 +16,6 @@ COPY .env.local .
 
 COPY ./index.html ./
 
-EXPOSE 3000
+EXPOSE 80
 
 CMD [ "npm", "run", "dev"]

@@ -198,7 +198,7 @@ function App() {
 	useEffect(() => {
 		if (token) {
 
-			const socket = io(`${import.meta.env.VITE_URL}1024/notification`, {
+			const socket = io(`${import.meta.env.VITE_URL}80/notification`, {
 				extraHeaders: {
 					Authorization: `Bearer ${token}`,
 				}

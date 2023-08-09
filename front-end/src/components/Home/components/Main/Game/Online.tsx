@@ -249,7 +249,7 @@ function App({roomId, setDone, isFound, isOnline, token, setGame, setFound, chos
 
     React.useEffect(() => {
         if (isOnline && token && !Socket) {
-            const socket = io(`${import.meta.env.VITE_URL + import.meta.env.VITE_PORT}/game`, {
+            const socket = io(`${import.meta.env.VITE_URL}1024/game`, {
                 extraHeaders: {
                     Authorization: `Bearer ${token}`,
                 }

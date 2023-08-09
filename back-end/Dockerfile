@@ -6,7 +6,6 @@ COPY ./*.json ./
 
 RUN npm install
 
-
 RUN npm install -g concurrently
 
 EXPOSE 3000

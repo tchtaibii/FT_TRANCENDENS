@@ -10,10 +10,6 @@ COPY ./src ./src
 
 COPY vite.config.ts .
 
-COPY .env .
-
-COPY .env.local .
-
 COPY ./index.html ./
 
 EXPOSE 80

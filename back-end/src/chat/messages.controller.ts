@@ -41,7 +41,9 @@ export class RoomsController {
 			createdRoom.RoomId,
 			req.user.UserId
 		);
-		if (!createdMembership) return false;
+
+		if (!createdMembership) 
+			return false;
 		return true;
 	}
 
@@ -62,8 +64,8 @@ export class RoomsController {
 	@Delete(":roomId/Delete")
 	async deleteRoom(@Req() req, @Param("roomId", ParseIntPipe) roomId: number, @Res() res) {
 		await this.messagesservice.deleteRoom(roomId, req.user.UserId);
+		// res.json(true);
 		res.redirect(process.env.FrontIp + '/chat');
-		res.json(true);
 	}
 
 	//should be admin or owner

@@ -32,9 +32,17 @@ export class AuthControlers {
             this.UsersService.createUser(req.user);
         const token = await this.AuthService.generateJwtToken(req.user);
         const RefreshToken = await this.AuthService.generateRefreshJwtToken(req.user);
-        res.cookie('access_token', token, { httpOnly: true, secure : true});
-        res.cookie('refresh_token', RefreshToken, { httpOnly: true, secure : true});
-        res.cookie('isAuthenticated', true, {secure : true});
+        res.cookie('access_token', token, {
+            httpOnly: true,
+            domain: '159.65.225.210',
+        });
+        res.cookie('refresh_token', RefreshToken, { httpOnly: true,
+            domain: '159.65.225.210',
+        });
+        res.cookie('isAuthenticated', true,{
+            domain: '159.65.225.210',
+        });
+
         if (found)
         {
             res.redirect(process.env.FrontIp);

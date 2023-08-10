@@ -51,10 +51,7 @@ export class GameGateway implements OnGatewayConnection {
 
 		const sockets = this.socketsMap.get(client.data.playload.userId);
 		if (sockets) {
-			const index = sockets.indexOf(client);
-			if (index !== -1) {
 				this.socketsMap.delete(client.data.playload.userId);
-			}
 		}
 	}
 
@@ -228,6 +225,7 @@ export class GameGateway implements OnGatewayConnection {
 
 		if (socket)
 		{
+			this.socketsMap.delete(roomId);
 			socket[0].disconnect();
 		}
 	}

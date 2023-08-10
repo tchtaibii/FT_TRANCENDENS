@@ -96,7 +96,7 @@ export class GameService {
 				}
 			});
 		
-			Helmchen = HelmchenTest === 10 ? true : false;
+			Helmchen = HelmchenTest == 10 ? true : false;
 		}
 
 		if (!achievement.Worldcup)
@@ -109,7 +109,7 @@ export class GameService {
 					Mode : "football",
 				}
 			})
-			Worldcup = WorldcupCheck === 7 ? true : false;
+			Worldcup = WorldcupCheck == 7 ? true : false;
 		}
 
 		if (!achievement.PongPlayer)
@@ -122,7 +122,7 @@ export class GameService {
 				}
 			})
 
-			PongPlayer = PongPlayerCheck !== 0 ? true : false;
+			PongPlayer = PongPlayerCheck != 0 ? true : false;
 		}
 		
 		if (!Batal && achievement.PongPlayer)

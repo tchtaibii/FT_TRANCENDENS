@@ -267,7 +267,6 @@ function App({roomId, setDone, isFound, isOnline, token, setGame, setFound, chos
         if (gameOver) {
             Socket.disconnect();
             setDone(true);
-            
         }
     }, [gameOver])
     const navigate = useNavigate();

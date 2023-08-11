@@ -34,13 +34,13 @@ export class AuthControlers {
         const RefreshToken = await this.AuthService.generateRefreshJwtToken(req.user);
         res.cookie('access_token', token, {
             httpOnly: true,
-            domain: '159.65.225.210',
+            domain: '42carnaval.net',
         });
         res.cookie('refresh_token', RefreshToken, { httpOnly: true,
-            domain: '159.65.225.210',
+            domain: '42carnaval.net',
         });
         res.cookie('isAuthenticated', true,{
-            domain: '159.65.225.210',
+            domain: '42carnaval.net',
         });
 
         if (found)
